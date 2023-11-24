@@ -8,8 +8,8 @@ namespace app.Repositorios.Interfaces
     {
         Task<Escola> ObterPorIdAsync(Guid id, bool incluirEtapas = false, bool incluirMunicipio = false);
 
-        Escola Criar(CadastroEscolaData escolaData, Municipio municipio, double distanciaSuperintendencia = 0, Superintendencia? superintendencia = null);
-        Escola Criar(EscolaModel escola, double distanciaSuperintendencia = 0, Superintendencia? superintendencia = null);
+        Escola Criar(CadastroEscolaData escolaData, Municipio municipio, double distanciaSuperintendencia = 0, Polo? superintendencia = null);
+        Escola Criar(EscolaModel escola, double distanciaSuperintendencia = 0, Polo? superintendencia = null);
         Task<ListaPaginada<Escola>> ListarPaginadaAsync(PesquisaEscolaFiltro filtro);
         Task<Escola?> ObterPorCodigoAsync(int codigo, bool incluirEtapas = false, bool incluirMunicipio = false);
         EscolaEtapaEnsino AdicionarEtapaEnsino(Escola escola, EtapaEnsino etapa);

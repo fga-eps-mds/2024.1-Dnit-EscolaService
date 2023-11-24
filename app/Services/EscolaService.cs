@@ -17,7 +17,7 @@ namespace app.Services
     {
         private readonly IEscolaRepositorio escolaRepositorio;
         private readonly IMunicipioRepositorio municipioRepositorio;
-        private readonly ISuperintendenciaRepositorio superIntendenciaRepositorio;
+        private readonly IPoloRepositorio poloRepositorio;
         private readonly IRanqueService ranqueService;
         private readonly ModelConverter modelConverter;
         private readonly AppDbContext dbContext;
@@ -29,7 +29,7 @@ namespace app.Services
             IRanqueService ranqueService,
             ModelConverter modelConverter,
             AppDbContext dbContext,
-            ISuperintendenciaRepositorio superIntendenciaRepositorio
+            IPoloRepositorio poloRepositorio
         )
         {
             this.escolaRepositorio = escolaRepositorio;
@@ -37,7 +37,7 @@ namespace app.Services
             this.ranqueService = ranqueService;
             this.modelConverter = modelConverter;
             this.dbContext = dbContext;
-            this.superIntendenciaRepositorio = superIntendenciaRepositorio;
+            this.poloRepositorio = poloRepositorio;
         }
 
         public bool SuperaTamanhoMaximo(MemoryStream planilha)
@@ -53,7 +53,7 @@ namespace app.Services
             }
         }
         
-        private async Task<(Superintendencia?, double)> CalcularSuperintendenciaMaisProxima(string? lat, string? lon)
+        private async Task<(Polo?, double)> CalcularPoloMaisProximo(string? lat, string? lon)
         {
             var culture = new CultureInfo("pt-BR");
             
@@ -62,13 +62,13 @@ namespace app.Services
             if (latVazia || lonVazia)
                 return (null, 0);
             
-            return await CalcularSuperintendenciaMaisProxima(double.Parse(lat, culture), double.Parse(lon, culture));
+            return await CalcularPoloMaisProximo(double.Parse(lat, culture), double.Parse(lon, culture));
         }
         
-        private async Task<(Superintendencia, double)> CalcularSuperintendenciaMaisProxima(double lat, double lon)
+        private async Task<(Polo, double)> CalcularPoloMaisProximo(double lat, double lon)
         {
             var culture = new CultureInfo("pt-BR");
-            var superintendencias = await superIntendenciaRepositorio.ListarAsync();
+            var superintendencias = await poloRepositorio.ListarAsync();
             var superintendenciaProxima = 
                 superintendencias.Select(s => new
                 {
@@ -92,7 +92,7 @@ namespace app.Services
             var municipio = await municipioRepositorio.ObterPorIdAsync(municipioId);
             
             var (superintendenciaMaisProxima, distanciaSuperintendecia) = await 
-                    CalcularSuperintendenciaMaisProxima(cadastroEscolaData.Latitude, cadastroEscolaData.Longitude);
+                    CalcularPoloMaisProximo(cadastroEscolaData.Latitude, cadastroEscolaData.Longitude);
 
             var escola = escolaRepositorio.Criar(cadastroEscolaData, municipio, distanciaSuperintendecia, superintendenciaMaisProxima);
             cadastroEscolaData.IdEtapasDeEnsino
@@ -173,11 +173,11 @@ namespace app.Services
             escola.DataAtualizacao = DateTimeOffset.Now;
 
             var (superintendenciaMaisProxima, distanciaSuperintendecia) = await 
-                CalcularSuperintendenciaMaisProxima(escola.Latitude, escola.Longitude);
+                CalcularPoloMaisProximo(escola.Latitude, escola.Longitude);
 
-            escola.SuperintendenciaId = superintendenciaMaisProxima?.Id;
-            escola.Superintendencia = superintendenciaMaisProxima;
-            escola.DistanciaSuperintendencia = distanciaSuperintendecia;
+            escola.PoloId = superintendenciaMaisProxima?.Id;
+            escola.Polo = superintendenciaMaisProxima;
+            escola.DistanciaPolo = distanciaSuperintendecia;
             
             atualizarEtapasEnsino(escola, data.EtapasEnsino!);
             await dbContext.SaveChangesAsync();
@@ -270,11 +270,11 @@ namespace app.Services
             escola.Situacao = (Situacao?)dados.IdSituacao;
 
             var (superIntendenciaMaisProxima, distanciaSuper) = await
-                CalcularSuperintendenciaMaisProxima(escola.Latitude, escola.Longitude);
+                CalcularPoloMaisProximo(escola.Latitude, escola.Longitude);
 
-            escola.Superintendencia = superIntendenciaMaisProxima;
-            escola.SuperintendenciaId = superIntendenciaMaisProxima?.Id;
-            escola.DistanciaSuperintendencia = distanciaSuper;
+            escola.Polo = superIntendenciaMaisProxima;
+            escola.PoloId = superIntendenciaMaisProxima?.Id;
+            escola.DistanciaPolo = distanciaSuper;
             
             atualizarEtapasEnsino(escola, dados.IdEtapasDeEnsino.ConvertAll(e => (EtapaEnsino)e));
 
@@ -340,7 +340,7 @@ namespace app.Services
 
 
             var superIntendenciaProxima = 
-                await CalcularSuperintendenciaMaisProxima(escola.Latitude, escola.Longitude);
+                await CalcularPoloMaisProximo(escola.Latitude, escola.Longitude);
 
             
             var escolaNova = escolaRepositorio.Criar(escola, superIntendenciaProxima.Item2, superIntendenciaProxima.Item1);

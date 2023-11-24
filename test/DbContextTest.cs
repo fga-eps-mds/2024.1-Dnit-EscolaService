@@ -27,11 +27,11 @@ namespace test
         }
 
         [Fact]
-        public void Popula_QuandoNaoExistirSuperintendencia_DevePopular()
+        public void Popula_QuandoNaoExistirPolo_DevePopular()
         {
-            dbContext.PopulaSuperintendenciasPorArquivo(5, Path.Join("..", "..", "..", "..", "app", "Migrations", "Data", "superintendencias.csv"));
+            dbContext.PopulaPolosPorArquivo(5, Path.Join("..", "..", "..", "..", "app", "Migrations", "Data", "superintendencias.csv"));
 
-            Assert.Equal(5, dbContext.Superintendencias.Count());
+            Assert.Equal(5, dbContext.Polos.Count());
         }
 
         public new void Dispose()

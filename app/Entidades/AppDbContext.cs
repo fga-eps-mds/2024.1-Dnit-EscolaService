@@ -11,7 +11,7 @@ namespace app.Entidades
         public DbSet<EscolaEtapaEnsino> EscolaEtapaEnsino { get; set; }
         public DbSet<Ranque> Ranques { get; set; }
         public DbSet<EscolaRanque> EscolaRanques { get; set; }
-        public DbSet<Superintendencia> Superintendencias { get; set; }
+        public DbSet<Polo> Polos { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -32,7 +32,7 @@ namespace app.Entidades
         {
             PopulaMunicipiosPorArquivo(null, Path.Join(".", "Migrations", "Data", "municipios.csv"));
 
-            PopulaSuperintendenciasPorArquivo(null, Path.Join(".", "Migrations", "Data", "superintendencias.csv"));
+            PopulaPolosPorArquivo(null, Path.Join(".", "Migrations", "Data", "superintendencias.csv"));
         }
 
         public List<Municipio>? PopulaMunicipiosPorArquivo(int? limit, string caminho)
@@ -76,10 +76,10 @@ namespace app.Entidades
             return municipios;
         }
 
-        public List<Superintendencia>? PopulaSuperintendenciasPorArquivo(int? limit, string caminho)
+        public List<Polo>? PopulaPolosPorArquivo(int? limit, string caminho)
         {
-            var hasSuperintendencias = Superintendencias.Any();
-            var superintendencias = new List<Superintendencia>();
+            var hasSuperintendencias = Polos.Any();
+            var superintendencias = new List<Polo>();
 
             if (hasSuperintendencias)
                 return null;
@@ -98,7 +98,7 @@ namespace app.Entidades
                 while (!parser.EndOfData)
                 {
                     var row = parser.ReadFields()!;
-                    var superintendencia = new Superintendencia
+                    var superintendencia = new Polo
                     {
                         Id = int.Parse(row[columns["id"]]),
                         Endereco = row[columns["endereco"]],

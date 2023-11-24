@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace app.Entidades
 {
-    public class Superintendencia
+    public class Polo
     {
         [Key]
         public int Id { get; set; }

@@ -34,8 +34,8 @@ namespace api.Escolas
         public Localizacao? Localizacao { get; set; }
         public List<EtapaEnsino>? EtapasEnsino { get; set; }
         public Situacao? Situacao { get; set; }
-        public double DistanciaSuperintendencia { get; set; }
-        public int? SuperintendenciaId { get; set; }
-        public string? UfSuperintendencia { get; set; }
+        public double DistanciaPolo { get; set; }
+        public int? PoloId { get; set; }
+        public string? UfPolo { get; set; }
     }
 }

@@ -5,13 +5,13 @@ using System.Linq;
 
 namespace test.Stubs
 {
-    public static class SuperintendenciaStub
+    public static class PoloStub
     {
-        public static IEnumerable<Superintendencia> Listar(int idInicio = 1)
+        public static IEnumerable<Polo> Listar(int idInicio = 1)
         {
             while (true)
             {
-                var superintendencias = new Superintendencia
+                var superintendencias = new Polo
                 {
                     Id = idInicio++,
                     Cep = $"7215436{Random.Shared.Next() % 10}",

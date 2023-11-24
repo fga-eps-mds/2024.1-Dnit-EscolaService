@@ -59,7 +59,7 @@ namespace app.Repositorios
             return model;
         }
 
-        public Escola Criar(CadastroEscolaData escolaData, Municipio municipio, double distanciaSuperintendencia, Superintendencia? superintendencia)
+        public Escola Criar(CadastroEscolaData escolaData, Municipio municipio, double distanciaSuperintendencia, Polo? superintendencia)
         {
             var escola = new Escola
             {
@@ -80,15 +80,15 @@ namespace app.Repositorios
                 DataAtualizacao = DateTimeOffset.Now,
                 MunicipioId = municipio.Id,
                 Municipio = municipio,
-                DistanciaSuperintendencia = distanciaSuperintendencia,
-                SuperintendenciaId = superintendencia?.Id,
-                Superintendencia = superintendencia,
+                DistanciaPolo = distanciaSuperintendencia,
+                PoloId = superintendencia?.Id,
+                Polo = superintendencia,
             };
             dbContext.Add(escola);
             return escola;
         }
 
-        public Escola Criar(EscolaModel escola, double distanciaSuperintendencia = 0, Superintendencia? superintendencia = null)
+        public Escola Criar(EscolaModel escola, double distanciaSuperintendencia = 0, Polo? superintendencia = null)
         {
             var entidade = new Escola()
             {
@@ -110,9 +110,9 @@ namespace app.Repositorios
                 Situacao = escola.Situacao,
                 Observacao = escola.Observacao,
                 DataAtualizacao = DateTimeOffset.Now,
-                DistanciaSuperintendencia = distanciaSuperintendencia,
-                Superintendencia = superintendencia,
-                SuperintendenciaId = superintendencia?.Id,
+                DistanciaPolo = distanciaSuperintendencia,
+                Polo = superintendencia,
+                PoloId = superintendencia?.Id,
             };
             dbContext.Add(entidade);
             return entidade;
@@ -123,7 +123,7 @@ namespace app.Repositorios
             var query = dbContext.Escolas
                 .Include(e => e.EtapasEnsino)
                 .Include(e => e.Municipio)
-                .Include(e => e.Superintendencia)
+                .Include(e => e.Polo)
                 .AsQueryable();
 
             if (filtro.Nome != null)

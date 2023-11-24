@@ -31,7 +31,7 @@ namespace test.Stubs
                     TotalAlunos = Random.Shared.Next() % 100 + 1,
                     TotalDocentes = Random.Shared.Next() % 100 + 1,
                     Uf = Enum.GetValues<UF>().TakeRandom().FirstOrDefault(),
-                    Superintendencia = new Superintendencia
+                    Polo = new Polo
                     {
                         Id = Random.Shared.Next(),
                         Cep = $"7215436{Random.Shared.Next() % 10}",

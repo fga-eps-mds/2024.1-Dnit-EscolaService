@@ -51,12 +51,12 @@ namespace test.Stubs
             return municipiosDb;
         }
 
-        public static List<Superintendencia> PopulaSuperintendencias(this AppDbContext dbContext, int limit, int idStart = 1)
+        public static List<Polo> PopulaPolos(this AppDbContext dbContext, int limit, int idStart = 1)
         {
-            var superintendencias = SuperintendenciaStub.Listar(idStart).Take(limit).ToList();
-            dbContext.AddRange(superintendencias);
+            var polos = PoloStub.Listar(idStart).Take(limit).ToList();
+            dbContext.AddRange(polos);
             dbContext.SaveChanges();
-            return superintendencias;
+            return polos;
         }
 
         public static void Clear(this AppDbContext dbContext)
@@ -66,7 +66,7 @@ namespace test.Stubs
             dbContext.RemoveRange(dbContext.Municipios);
             dbContext.RemoveRange(dbContext.EscolaRanques);
             dbContext.RemoveRange(dbContext.Ranques);
-            dbContext.RemoveRange(dbContext.Superintendencias);
+            dbContext.RemoveRange(dbContext.Polos);
             dbContext.SaveChanges();
         }
     }
