@@ -55,5 +55,13 @@ namespace app.Controllers
             authService.Require(Usuario, Permissao.RanquePollProcessamento);
             return await ranqueService.ObterRanqueEmProcessamento();
         }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<ListaPaginada<RanqueDetalhesModel>> ListarRanques([FromQuery] PesquisaEscolaFiltro filtro)
+        {
+            authService.Require(Usuario, Permissao.RanqueVisualizar);
+            return await ranqueService.ListarRanquesAsync(filtro);
+        }
     }
 }

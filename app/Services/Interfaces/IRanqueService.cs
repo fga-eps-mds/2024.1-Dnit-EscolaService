@@ -12,5 +12,6 @@ namespace service.Interfaces
         Task<RanqueEmProcessamentoModel> ObterRanqueEmProcessamento();
         Task<DetalhesEscolaRanqueModel> ObterDetalhesEscolaRanque(Guid escolaId);
         Task ConcluirRanqueamentoAsync(Ranque ranqueEmProgresso);
+        Task<ListaPaginada<RanqueDetalhesModel>> ListarRanquesAsync(PesquisaEscolaFiltro filtro);
     }
 }

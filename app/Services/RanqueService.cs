@@ -8,6 +8,7 @@ using Hangfire;
 using api;
 using api.Ranques;
 using Microsoft.Extensions.Options;
+using app.Repositorios;
 
 namespace app.Services
 {
@@ -138,6 +139,19 @@ namespace app.Services
             {
                 escolaRanque.Posicao = i + 1;
             }
+        }
+
+        public async Task<ListaPaginada<RanqueDetalhesModel>> ListarRanquesAsync(PesquisaEscolaFiltro filtro)
+        {
+            var ranques = await ranqueRepositorio.ListarRanques(filtro);
+            // FIXME(US5): Dados mockados. Tem que buscar do banco de dados no futuro.
+            FatorModel[] fatores = {
+                new() { Nome = "UPS", Peso = 1, Valor = 0 },
+            };
+            var items = ranques.Items.Select((er, index) => mc
+                .ToModel(er, fatores))
+                .ToList();
+            return new ListaPaginada<RanqueDetalhesModel>(items, ranques.Pagina, ranques.ItemsPorPagina, ranques.Total);
         }
     }
 

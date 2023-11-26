@@ -148,5 +148,16 @@ namespace app.Services
                 Id = superintendencia.Id,
                 Uf = superintendencia.Uf,
             };
+
+        public RanqueDetalhesModel ToModel(Ranque ranque, FatorModel[] fatores)
+        {
+            return new RanqueDetalhesModel{
+                Id = ranque.Id,
+                Data = ranque.DataFim!.Value.LocalDateTime,
+                NumEscolas = ranque.EscolaRanques.Count(),
+                Descricao = ranque.Descricao,
+                Fatores = fatores
+            };
+        }
     }
 }

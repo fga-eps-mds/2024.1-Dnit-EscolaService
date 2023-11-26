@@ -32,5 +32,7 @@ namespace app.Entidades
 
         [MaxLength(100)]
         public string? Descricao { get; set; }
+
+        public List<EscolaRanque> EscolaRanques { get; set; }
     }
 }

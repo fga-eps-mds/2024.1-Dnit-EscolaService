@@ -90,5 +90,19 @@ namespace app.Repositorios
                 .FirstOrDefaultAsync();
             return escola;
         }
+
+        public async Task<ListaPaginada<Ranque>> ListarRanques( PesquisaEscolaFiltro filtro)
+        {
+            var query = dbContext.Ranques.Include(r => r.EscolaRanques).Where(r => r.DataFimUtc != null).AsQueryable();
+
+            var total = await query.CountAsync();
+            var items = await query
+                .OrderByDescending(er => er.DataFimUtc)
+                .Skip((filtro.Pagina - 1) * filtro.TamanhoPagina)
+                .Take(filtro.TamanhoPagina)
+                .ToListAsync();
+
+            return new ListaPaginada<Ranque>(items, filtro.Pagina, filtro.TamanhoPagina, total);
+        }
     }
 }
