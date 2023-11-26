@@ -13,5 +13,6 @@ namespace service.Interfaces
         Task<DetalhesEscolaRanqueModel> ObterDetalhesEscolaRanque(Guid escolaId);
         Task ConcluirRanqueamentoAsync(Ranque ranqueEmProgresso);
         Task<ListaPaginada<RanqueDetalhesModel>> ListarRanquesAsync(PesquisaEscolaFiltro filtro);
+        Task AtualizarRanqueAsync(int id, RanqueUpdateData data);
     }
 }

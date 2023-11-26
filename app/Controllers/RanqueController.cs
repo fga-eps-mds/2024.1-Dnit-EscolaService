@@ -63,5 +63,14 @@ namespace app.Controllers
             authService.Require(Usuario, Permissao.RanqueVisualizar);
             return await ranqueService.ListarRanquesAsync(filtro);
         }
+
+        [Authorize]
+        [HttpPut("{id}")]
+        public async Task AtualizarRanque(int id, [FromBody] RanqueUpdateData data)
+        {
+            authService.Require(Usuario, Permissao.EscolaEditar);
+
+            await ranqueService.AtualizarRanqueAsync(id, data);
+        }
     }
 }

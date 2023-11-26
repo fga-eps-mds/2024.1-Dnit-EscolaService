@@ -153,6 +153,14 @@ namespace app.Services
                 .ToList();
             return new ListaPaginada<RanqueDetalhesModel>(items, ranques.Pagina, ranques.ItemsPorPagina, ranques.Total);
         }
+
+        public async Task AtualizarRanqueAsync(int id, RanqueUpdateData data)
+        {
+            var ranque = await ranqueRepositorio.ObterPorIdAsync(id);
+            ranque!.Descricao = data.Descricao;
+
+            await dbContext.SaveChangesAsync();
+        }
     }
 
     public class LocalizacaoEscola
