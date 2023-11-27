@@ -2,6 +2,7 @@ using api;
 using api.Escolas;
 using api.Ranques;
 using app.Entidades;
+using Microsoft.AspNetCore.Mvc;
 
 namespace service.Interfaces
 {
@@ -14,5 +15,6 @@ namespace service.Interfaces
         Task ConcluirRanqueamentoAsync(Ranque ranqueEmProgresso);
         Task<ListaPaginada<RanqueDetalhesModel>> ListarRanquesAsync(PesquisaEscolaFiltro filtro);
         Task AtualizarRanqueAsync(int id, RanqueUpdateData data);
+        Task<FileResult> ExportarRanqueAsync(int id);
     }
 }

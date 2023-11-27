@@ -1,4 +1,6 @@
-﻿using api;
+﻿using System.Data.SqlTypes;
+using System.Text;
+using api;
 using api.Escolas;
 using api.Ranques;
 using app.Services;
@@ -68,9 +70,17 @@ namespace app.Controllers
         [HttpPut("{id}")]
         public async Task AtualizarRanque(int id, [FromBody] RanqueUpdateData data)
         {
-            authService.Require(Usuario, Permissao.EscolaEditar);
+            authService.Require(Usuario, Permissao.RanqueVisualizar);
 
             await ranqueService.AtualizarRanqueAsync(id, data);
+        }
+        [Authorize]
+        [HttpGet("{id}/exportar")]
+        public async Task<FileResult> ExportarRanque(int id)
+        {
+            authService.Require(Usuario, Permissao.RanqueVisualizar);
+
+            return await ranqueService.ExportarRanqueAsync(id);
         }
     }
 }

@@ -9,6 +9,10 @@ using api;
 using api.Ranques;
 using Microsoft.Extensions.Options;
 using app.Repositorios;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using System.Text;
+using Microsoft.AspNetCore.Authorization;
 
 namespace app.Services
 {
@@ -73,7 +77,7 @@ namespace app.Services
             if (ultimoRanque == null)
                 return new ListaPaginada<RanqueEscolaModel>(new(), filtro.Pagina, filtro.TamanhoPagina, 0);
 
-            var resultado = await ranqueRepositorio.ListarEscolasAsync(ultimoRanque.Id, filtro);
+            var resultado = await ranqueRepositorio.ListarEscolasPaginadaAsync(ultimoRanque.Id, filtro);
 
             var items = resultado.Items.Select((er, index) => mc
                 .ToModel(er))
@@ -160,6 +164,24 @@ namespace app.Services
             ranque!.Descricao = data.Descricao;
 
             await dbContext.SaveChangesAsync();
+        }
+
+        public async Task<FileResult> ExportarRanqueAsync(int id)
+        {
+            var escolas = await ranqueRepositorio.ListarEscolaRanquesAsync(id);
+            var ranque = escolas.First().Ranque;
+            var builder = new StringBuilder("");
+            builder.AppendLine("RanqueId;RanqueDescrição;NumEscolas;UPSPeso;UPSValor;EscolaId;Posição;Pontuação;EscolaNome");
+            var numEscola = escolas.Count();
+            foreach(var escola in escolas){
+                builder.AppendLine($"{ranque.Id};{ranque.Descricao};{numEscola};{1};{escola.Pontuacao};{escola.Id};{escola.Posicao};{escola.Pontuacao};{escola.Escola.Nome}");
+            }
+            
+
+            byte[] bytes = Encoding.UTF8.GetBytes(builder.ToString());
+            return new FileContentResult(bytes, "text/csv"){
+                FileDownloadName = $"ranque_{id}.csv",
+            };
         }
     }
 

@@ -38,7 +38,7 @@ namespace app.Repositorios
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<ListaPaginada<EscolaRanque>> ListarEscolasAsync(int ranqueId, PesquisaEscolaFiltro filtro)
+        public async Task<ListaPaginada<EscolaRanque>> ListarEscolasPaginadaAsync(int ranqueId, PesquisaEscolaFiltro filtro)
         {
             var query = dbContext.EscolaRanques
                 .Include(er => er.Ranque)
@@ -103,6 +103,21 @@ namespace app.Repositorios
                 .ToListAsync();
 
             return new ListaPaginada<Ranque>(items, filtro.Pagina, filtro.TamanhoPagina, total);
+        }
+        public async Task<List<EscolaRanque>> ListarEscolaRanquesAsync(int ranqueId)
+        {
+            var query = dbContext.EscolaRanques
+                .Include(er => er.Ranque)
+                .Include(er => er.Escola).ThenInclude(e => e.EtapasEnsino)
+                .Include(er => er.Escola).ThenInclude(e => e.Municipio)
+                .Include(er => er.Escola).ThenInclude(e => e.Superintendencia)
+                .Where(er => er.RanqueId == ranqueId);
+
+            var items = await query
+                .OrderBy(er => er.Posicao)
+                .ToListAsync();
+
+            return items;
         }
     }
 }
