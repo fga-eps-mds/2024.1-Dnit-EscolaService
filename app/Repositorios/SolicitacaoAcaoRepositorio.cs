@@ -49,7 +49,7 @@ namespace app.Repositorios
             //         query = query.Where(e => e.TotalAlunos <= filtro.QuantidadeAlunosMax);
             // }
 
-            var query = dbContext.Solicitacoes.Include(s => s.Escola);
+            var query = dbContext.Solicitacoes.Include(s => s.Escola).AsQueryable();
 
             var total = await query.CountAsync();
             var sols = await query.ToListAsync();

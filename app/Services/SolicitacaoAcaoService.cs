@@ -67,10 +67,7 @@ namespace app.Services
         {
             var solicitacaoExistente = await solicitacaoAcaoRepositorio.ObterPorEscolaIdAsync(solicitacao.EscolaCodigoInep);
             if (solicitacaoExistente != null)
-            {
-                Console.WriteLine(">>>> " + solicitacaoExistente.NomeSolicitante + ", " + solicitacaoExistente.EscolaCodigoInep);
                 throw new Exception("Já foi feita uma solicitação para essa escola");
-            }
 
             var escolaCadastrada = await escolaRepositorio.ObterPorCodigoAsync(solicitacao.EscolaCodigoInep);
             await solicitacaoAcaoRepositorio.Criar(solicitacao, escolaJaCadastrada: escolaCadastrada != null, escolaCadastrada);
