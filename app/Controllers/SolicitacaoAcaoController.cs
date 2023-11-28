@@ -1,4 +1,7 @@
-﻿using api.Escolas;
+﻿using api;
+using api.Escolas;
+using api.Solicitacoes;
+using app.Entidades;
 using app.Services;
 using Microsoft.AspNetCore.Mvc;
 using service.Interfaces;
@@ -30,6 +33,12 @@ namespace app.Controllers
             {
                 return StatusCode(500, "Falha no envio do email.");
             }
+        }
+
+        [HttpGet]
+        public async Task<ListaPaginada<SolicitacaoAcaoModel>> ObterSolicitacoesAsync([FromQuery] PesquisaSolicitacaoFiltro filtro)
+        {
+            return await solicitacaoAcaoService.ObterSolicitacoesAsync(filtro);
         }
 
         [HttpGet("escolas")]

@@ -1,4 +1,7 @@
-﻿using api.Escolas;
+﻿using api;
+using api.Escolas;
+using api.Solicitacoes;
+using app.Entidades;
 
 namespace service.Interfaces
 {
@@ -8,5 +11,6 @@ namespace service.Interfaces
         public void EnviarEmail(string emailDestinatario, string assunto, string corpo);
         public Task<IEnumerable<EscolaInep>> ObterEscolas(int municipio);
         public Task Criar(SolicitacaoAcaoData solicitacao);
+        public Task<ListaPaginada<SolicitacaoAcaoModel>> ObterSolicitacoesAsync(PesquisaSolicitacaoFiltro filtro);
     }
 }

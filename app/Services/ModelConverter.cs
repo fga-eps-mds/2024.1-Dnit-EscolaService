@@ -2,6 +2,7 @@
 using api.Escolas;
 using api.Municipios;
 using api.Ranques;
+using api.Solicitacoes;
 using api.Superintendencias;
 using app.Entidades;
 using EnumsNET;
@@ -147,6 +148,18 @@ namespace app.Services
             {
                 Id = superintendencia.Id,
                 Uf = superintendencia.Uf,
+            };
+
+        public SolicitacaoAcaoModel ToModel(SolicitacaoAcao solicitacao) =>
+            new()
+            {
+                Email = solicitacao.Email,
+                // FIXME: resolver escola. EscolCorretaModel é suficiente?
+                // Escola = solicitacao.Escola,
+                Observacoes = solicitacao.Observacoes,
+                NomeSolicitante = solicitacao.NomeSolicitante,
+                Telefone = solicitacao.Telefone,
+                EscolaJaCadastrada = solicitacao.EscolaJaCadastrada,
             };
     }
 }

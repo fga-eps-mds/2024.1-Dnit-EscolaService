@@ -5,6 +5,8 @@ using System.Web;
 using api.Escolas;
 using app.Repositorios.Interfaces;
 using app.Entidades;
+using api;
+using api.Solicitacoes;
 
 namespace app.Services
 {
@@ -64,7 +66,8 @@ namespace app.Services
         public async Task Criar(SolicitacaoAcaoData solicitacao)
         {
             var solicitacaoExistente = await solicitacaoAcaoRepositorio.ObterPorEscolaIdAsync(solicitacao.EscolaCodigoInep);
-            if (solicitacaoExistente != null) {
+            if (solicitacaoExistente != null)
+            {
                 Console.WriteLine(">>>> " + solicitacaoExistente.NomeSolicitante + ", " + solicitacaoExistente.EscolaCodigoInep);
                 throw new Exception("Já foi feita uma solicitação para essa escola");
             }
@@ -72,6 +75,14 @@ namespace app.Services
             var escolaCadastrada = escolaRepositorio.ObterPorCodigoAsync(solicitacao.EscolaCodigoInep);
             await solicitacaoAcaoRepositorio.Criar(solicitacao, escolaJaCadastrada: escolaCadastrada != null);
             await dbContext.SaveChangesAsync();
+        }
+
+        public async Task<ListaPaginada<SolicitacaoAcaoModel>> ObterSolicitacoesAsync(PesquisaSolicitacaoFiltro filtro)
+        {
+            var lista = await solicitacaoAcaoRepositorio.ObterSolicitacoesAsync(filtro);
+            var modelConverter = new ModelConverter();
+            var modelos = lista.Items.ConvertAll(modelConverter.ToModel);
+            return new ListaPaginada<SolicitacaoAcaoModel>(modelos, filtro.Pagina, filtro.TamanhoPagina, lista.Total);
         }
 
         public async Task<IEnumerable<EscolaInep>> ObterEscolas(int municipio)
