@@ -1,4 +1,5 @@
-﻿using api.Escolas;
+﻿using api;
+using api.Escolas;
 
 namespace test.Stubs
 {
@@ -9,7 +10,7 @@ namespace test.Stubs
             return new SolicitacaoAcaoData
             {
                 Escola = "Escola Teste",
-                UF = "DF",
+                UF = UF.DF,
                 Municipio = "Brasília",
                 NomeSolicitante = "João Testador",
                 VinculoEscola = "Professor",

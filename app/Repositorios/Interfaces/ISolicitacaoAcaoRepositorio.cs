@@ -5,7 +5,7 @@ namespace app.Repositorios.Interfaces
 {
     public interface ISolicitacaoAcaoRepositorio
     {
-        public Task<SolicitacaoAcao> Criar(SolicitacaoAcaoData solicitacao);
-        public Task<SolicitacaoAcao?> ObterPorEscolaIdAsync(Guid escolaId);
+        public Task<SolicitacaoAcao> Criar(SolicitacaoAcaoData solicitacao, bool escolaJaCadastrada);
+        public Task<SolicitacaoAcao?> ObterPorEscolaIdAsync(int escolaCodigoInep);
     }
 }

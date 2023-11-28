@@ -7,8 +7,10 @@ namespace app.Entidades
     {
         [Key]
         public Guid Id { get; set; }
-        public Guid EscolaId { get; set; }
+        public int EscolaCodigoInep { get; set; }
+        public Guid? EscolaId { get; set; }
         public Escola? Escola { get; set; }
+        public bool EscolaJaCadastrada { get; set; }
 
         [Required, MaxLength(150)]
         public string NomeSolicitante { get; set; }

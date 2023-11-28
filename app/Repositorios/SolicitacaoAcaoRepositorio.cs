@@ -14,24 +14,27 @@ namespace app.Repositorios
             this.dbContext = dbContext;
         }
 
-        public async Task<SolicitacaoAcao> Criar(SolicitacaoAcaoData s)
+        public async Task<SolicitacaoAcao> Criar(SolicitacaoAcaoData s, bool escolaJaCadastrada)
         {
-            var sol = new SolicitacaoAcao
+            var solicitacao = new SolicitacaoAcao
             {
-                EscolaId = s.EscolaId,
+                EscolaCodigoInep = s.EscolaCodigoInep,
+                EscolaJaCadastrada = escolaJaCadastrada,
                 Email = s.Email,
                 Telefone = s.Telefone,
                 NomeSolicitante = s.NomeSolicitante,
                 DataRealizada = DateTimeOffset.Now,
                 Observacoes = s.Observacoes,
             };
-            await dbContext.Solicitacoes.AddAsync(sol);
-            return sol;
+            await dbContext.Solicitacoes.AddAsync(solicitacao);
+            return solicitacao;
         }
 
-        public async Task<SolicitacaoAcao?> ObterPorEscolaIdAsync(Guid escolaId)
+        public async Task<SolicitacaoAcao?> ObterPorEscolaIdAsync(int codigoInep)
         {
-            return await dbContext.Solicitacoes.Where(e => e.EscolaId == escolaId).FirstOrDefaultAsync();
+            return await dbContext.Solicitacoes
+                .Where(e => e.EscolaCodigoInep == codigoInep)
+                .FirstOrDefaultAsync();
         }
     }
 }

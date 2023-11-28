@@ -14,15 +14,17 @@ namespace app.Services
         private readonly IHttpClientFactory httpClientFactory;
         private readonly IConfiguration configuration;
         private readonly ISolicitacaoAcaoRepositorio solicitacaoAcaoRepositorio;
+        private readonly IEscolaRepositorio escolaRepositorio;
         private readonly AppDbContext dbContext;
 
-        public SolicitacaoAcaoService(AppDbContext dbContext, ISmtpClientWrapper smtpClientWrapper, IHttpClientFactory httpClientFactory, IConfiguration configuration, ISolicitacaoAcaoRepositorio solicitacaoAcaoRepositorio)
+        public SolicitacaoAcaoService(AppDbContext dbContext, ISmtpClientWrapper smtpClientWrapper, IHttpClientFactory httpClientFactory, IConfiguration configuration, ISolicitacaoAcaoRepositorio solicitacaoAcaoRepositorio, IEscolaRepositorio escolaRepositorio)
         {
             this.dbContext = dbContext;
             _smtpClientWrapper = smtpClientWrapper;
             this.httpClientFactory = httpClientFactory;
             this.configuration = configuration;
             this.solicitacaoAcaoRepositorio = solicitacaoAcaoRepositorio;
+            this.escolaRepositorio = escolaRepositorio;
         }
 
         public void EnviarSolicitacaoAcao(SolicitacaoAcaoData solicitacaoAcaoDTO)
@@ -61,11 +63,14 @@ namespace app.Services
 
         public async Task Criar(SolicitacaoAcaoData solicitacao)
         {
-            // TODO: E se a escola não existir?
-            var solicitacaoExistente = solicitacaoAcaoRepositorio.ObterPorEscolaIdAsync(solicitacao.EscolaId)
-                ?? throw new Exception("Já foi feita uma solicitação para essa escola");
+            var solicitacaoExistente = await solicitacaoAcaoRepositorio.ObterPorEscolaIdAsync(solicitacao.EscolaCodigoInep);
+            if (solicitacaoExistente != null) {
+                Console.WriteLine(">>>> " + solicitacaoExistente.NomeSolicitante + ", " + solicitacaoExistente.EscolaCodigoInep);
+                throw new Exception("Já foi feita uma solicitação para essa escola");
+            }
 
-            await solicitacaoAcaoRepositorio.Criar(solicitacao);
+            var escolaCadastrada = escolaRepositorio.ObterPorCodigoAsync(solicitacao.EscolaCodigoInep);
+            await solicitacaoAcaoRepositorio.Criar(solicitacao, escolaJaCadastrada: escolaCadastrada != null);
             await dbContext.SaveChangesAsync();
         }
 

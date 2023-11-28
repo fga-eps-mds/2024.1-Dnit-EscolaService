@@ -2,9 +2,9 @@
 {
     public class SolicitacaoAcaoData
     {
-        public Guid EscolaId { get; set; }
+        public int EscolaCodigoInep { get; set; }
         public string Escola { get; set; }
-        public string UF { get; set; }
+        public UF UF { get; set; }
         public string Municipio { get; set; }
         public string NomeSolicitante { get; set; }
         public string VinculoEscola { get; set; }

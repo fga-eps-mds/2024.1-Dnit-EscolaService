@@ -24,6 +24,7 @@ namespace test
         private readonly Mock<IHttpClientFactory> httpClientFactoryMock;
         private readonly Mock<IConfiguration> configurationMock;
         private readonly Mock<ISolicitacaoAcaoRepositorio> solicitacaoAcaoRepositorioMock;
+        private readonly Mock<IEscolaRepositorio> escolaRepositorioMock;
         private readonly AppDbContext db;
         private SolicitacaoAcaoService service;
 
@@ -38,8 +39,9 @@ namespace test
             httpClientFactoryMock = new();
             configurationMock = new();
             solicitacaoAcaoRepositorioMock = new();
+            escolaRepositorioMock = new();
 
-            service = new SolicitacaoAcaoService(db, smtpClientWrapperMock.Object, httpClientFactoryMock.Object, configurationMock.Object, solicitacaoAcaoRepositorioMock.Object);
+            service = new SolicitacaoAcaoService(db, smtpClientWrapperMock.Object, httpClientFactoryMock.Object, configurationMock.Object, solicitacaoAcaoRepositorioMock.Object, escolaRepositorioMock.Object);
         }
 
         [Fact]
@@ -143,7 +145,7 @@ namespace test
             int primeiraPosicao = 0;
             int segundaPosicao = 1;
 
-            service = new SolicitacaoAcaoService(db, smtpClientWrapperMock.Object, httpClientFactoryMock.Object, configurationMock.Object, solicitacaoAcaoRepositorioMock.Object);
+            service = new SolicitacaoAcaoService(db, smtpClientWrapperMock.Object, httpClientFactoryMock.Object, configurationMock.Object, solicitacaoAcaoRepositorioMock.Object, escolaRepositorioMock.Object);
             var escolas = await service.ObterEscolas(municipio);
 
             Assert.Equal(codEscolaA, escolas.ElementAt(primeiraPosicao).Cod);
