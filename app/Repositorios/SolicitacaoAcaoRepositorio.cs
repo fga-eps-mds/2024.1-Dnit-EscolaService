@@ -15,17 +15,18 @@ namespace app.Repositorios
             this.dbContext = dbContext;
         }
 
-        public async Task<SolicitacaoAcao> Criar(SolicitacaoAcaoData s, bool escolaJaCadastrada)
+        public async Task<SolicitacaoAcao> Criar(SolicitacaoAcaoData s, bool escolaJaCadastrada, Escola? escola)
         {
             var solicitacao = new SolicitacaoAcao
             {
                 EscolaCodigoInep = s.EscolaCodigoInep,
-                EscolaJaCadastrada = escolaJaCadastrada,
                 Email = s.Email,
                 Telefone = s.Telefone,
                 NomeSolicitante = s.NomeSolicitante,
                 DataRealizada = DateTimeOffset.Now,
                 Observacoes = s.Observacoes,
+                EscolaJaCadastrada = escola != null,
+                EscolaId = escola?.Id,
             };
             await dbContext.Solicitacoes.AddAsync(solicitacao);
             return solicitacao;
