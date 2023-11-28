@@ -92,7 +92,7 @@ namespace app.Services
                     EtapaEnsino = escolaRanque.Escola.EtapasEnsino?.ConvertAll(e => ToModel(e.EtapaEnsino)),
                     Municipio = escolaRanque.Escola.Municipio != null ? ToModel(escolaRanque.Escola.Municipio) : null,
                     Uf = escolaRanque.Escola.Uf.HasValue ? ToModel(escolaRanque.Escola.Uf.Value) : null,
-                    Superintendencia = escolaRanque.Escola.Superintendencia != null ? ToModel(escolaRanque.Escola.Superintendencia): null,
+                    Superintendencia = escolaRanque.Escola.Superintendencia != null ? ToModel(escolaRanque.Escola.Superintendencia) : null,
                     DistanciaSuperintendencia = escolaRanque.Escola.DistanciaSuperintendencia,
                 }
             };
@@ -153,9 +153,12 @@ namespace app.Services
         public SolicitacaoAcaoModel ToModel(SolicitacaoAcao solicitacao) =>
             new()
             {
+                Id = solicitacao.Id,
                 Email = solicitacao.Email,
                 // FIXME: resolver escola. EscolCorretaModel é suficiente?
-                // Escola = solicitacao.Escola,
+                Escola = solicitacao.Escola == null
+                    ? null
+                    : new ModelConverter().ToModel(solicitacao.Escola!),
                 Observacoes = solicitacao.Observacoes,
                 NomeSolicitante = solicitacao.NomeSolicitante,
                 Telefone = solicitacao.Telefone,

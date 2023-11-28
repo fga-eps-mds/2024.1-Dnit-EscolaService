@@ -6,7 +6,7 @@ namespace api.Solicitacoes
     {
         public Guid Id { get; set; }
         public Guid? EscolaId { get; set; }
-        public EscolaModel? Escola { get; set; }
+        public EscolaCorretaModel? Escola { get; set; }
         public bool EscolaJaCadastrada { get; set; }
         public string NomeSolicitante { get; set; }
         public string Email { get; set; }
