@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using api.Escolas;
+using api.Ranques;
 using app.Entidades;
 using app.Repositorios.Interfaces;
 using app.Services;
@@ -45,14 +47,14 @@ namespace test
         }
 
         [Fact]
-        public async void ListarEscolasUltimoRanque_QuandoNaoHouverRanques_RetornaListaVazia()
+        public async Task ListarEscolasUltimoRanque_QuandoNaoHouverRanques_RetornaListaVazia()
         {
             var lista = await service.ListarEscolasUltimoRanqueAsync(FiltroVazio);
             Assert.Empty(lista.Items);
         }
 
         [Fact]
-        public async void ListarEscolasUltimoRanque_TiverUmRanque_RetornaEscolasDoRanque()
+        public async Task ListarEscolasUltimoRanque_TiverUmRanque_RetornaEscolasDoRanque()
         {
             var escolas = db.PopulaEscolas(3);
             GeraRanque(escolas);
@@ -62,7 +64,7 @@ namespace test
         }
 
         [Fact]
-        public async void CalcularNovoRanqueAsync_QuandoNumeroDePaginas10_EnqueueDeveSerChamado10vezes()
+        public async Task CalcularNovoRanqueAsync_QuandoNumeroDePaginas10_EnqueueDeveSerChamado10vezes()
         {
             db.PopulaEscolas(33);
             var chamadasEsperadas = (int)Math.Ceiling(33.0 / jobConfig.TamanhoBatelada);
@@ -77,7 +79,7 @@ namespace test
         }
 
         [Fact]
-        public async void ObterEscolaEmRanqueDetalhes_QuandoEscolaExiste_RetornaPosicaoCorreta()
+        public async Task ObterEscolaEmRanqueDetalhes_QuandoEscolaExiste_RetornaPosicaoCorreta()
         {
             var escolas = db.PopulaEscolas(3);
             GeraRanque(escolas, definirPosicao: true);
@@ -88,7 +90,7 @@ namespace test
         }
 
         [Fact]
-        public async void ObterRanqueEmProcessamento_QuandoNaoTemRanque_RetornaRanqueComEmProgressoFalso()
+        public async Task ObterRanqueEmProcessamento_QuandoNaoTemRanque_RetornaRanqueComEmProgressoFalso()
         {
             // Esse teste tem que melhorar. Deixar mais claro que é Ranque Vazio
             var ranque = await service.ObterRanqueEmProcessamento();
@@ -96,7 +98,7 @@ namespace test
         }
 
         [Fact]
-        public async void ObterRanqueEmProcessamento_QuandoTemRanque_RetornaRanque()
+        public async Task ObterRanqueEmProcessamento_QuandoTemRanque_RetornaRanque()
         {
             var ranqueId = 1;
             var dataFim = DateTimeOffset.Now;
@@ -110,7 +112,7 @@ namespace test
         }
 
         [Fact]
-        public async void ConcluirEscolaRanqueAsync_QuandoNormal_EscolasSaoPosicionadasCorretamente()
+        public async Task ConcluirEscolaRanqueAsync_QuandoNormal_EscolasSaoPosicionadasCorretamente()
         {
             var escolas = db.PopulaEscolas(5);
             var (_, ranque) = GeraRanque(escolas, definirPosicao: false);
@@ -123,6 +125,23 @@ namespace test
             Assert.Equal(3, ers[2].Posicao);
             Assert.Equal(4, ers[3].Posicao);
             Assert.Equal(5, ers[4].Posicao);
+        }
+
+        [Fact]
+        public async Task AtualizarRanqueAsync_QuandoAtualizarDescricao_DeveAtualizar()
+        {
+            var escolas = db.PopulaEscolas(1);
+            var (_, ranque) = GeraRanque(escolas, definirPosicao: false);
+
+            var data = new RanqueUpdateData
+            {
+                Descricao = "Nova descricao"
+            };
+
+            await service.AtualizarRanqueAsync(ranque.Id, data);
+
+            var ranqueDb = db.Ranques.First(r => r.Id == ranque.Id);
+            Assert.Equal(ranqueDb.Descricao, ranqueDb.Descricao);
         }
 
         private (List<EscolaRanque>, Ranque) GeraRanque(List<Escola> escolas, bool definirPosicao = true)
