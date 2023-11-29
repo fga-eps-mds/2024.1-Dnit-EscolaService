@@ -156,13 +156,13 @@ namespace app.Services
                 Id = solicitacao.Id,
                 Email = solicitacao.Email,
                 // FIXME: resolver escola. EscolCorretaModel é suficiente?
+                // resolver essa gambiarra
                 Escola = solicitacao.Escola == null
                     ? null
                     : new ModelConverter().ToModel(solicitacao.Escola!),
                 Observacoes = solicitacao.Observacoes,
                 NomeSolicitante = solicitacao.NomeSolicitante,
                 Telefone = solicitacao.Telefone,
-                EscolaJaCadastrada = solicitacao.EscolaJaCadastrada,
             };
     }
 }

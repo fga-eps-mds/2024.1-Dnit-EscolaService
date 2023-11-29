@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using api;
 
 namespace app.Entidades
 {
@@ -7,17 +8,25 @@ namespace app.Entidades
     {
         [Key]
         public Guid Id { get; set; }
+        public UF EscolaUf { get; set; }
+        public int? EscolaMunicipioId { get; set; }
+        public Municipio? EscolaMunicipio { get; set; }
+        [Required]
         public int EscolaCodigoInep { get; set; }
+        [Required, MaxLength(200)]
+        public string EscolaNome { get; set; }
         public Guid? EscolaId { get; set; }
         public Escola? Escola { get; set; }
-        public bool EscolaJaCadastrada { get; set; }
-
         [Required, MaxLength(150)]
         public string NomeSolicitante { get; set; }
+        [Required]
+        public List<EscolaEtapaEnsino>? EtapasEnsino { get; set; }
 
         [Required, MaxLength(100)]
         public string Email { get; set; }
 
+        [Required, MaxLength(20)]
+        public string Vinculo { get; set; } // Professor, gestor escolar, estudante, outro
         [Required, MaxLength(20)]
         public string Telefone { get; set; }
 

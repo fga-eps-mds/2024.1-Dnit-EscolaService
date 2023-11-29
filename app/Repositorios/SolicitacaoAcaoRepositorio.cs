@@ -15,7 +15,7 @@ namespace app.Repositorios
             this.dbContext = dbContext;
         }
 
-        public async Task<SolicitacaoAcao> Criar(SolicitacaoAcaoData s, bool escolaJaCadastrada, Escola? escola)
+        public async Task<SolicitacaoAcao> Criar(SolicitacaoAcaoData s, Escola? escolaCadastrada)
         {
             var solicitacao = new SolicitacaoAcao
             {
@@ -25,8 +25,7 @@ namespace app.Repositorios
                 NomeSolicitante = s.NomeSolicitante,
                 DataRealizada = DateTimeOffset.Now,
                 Observacoes = s.Observacoes,
-                EscolaJaCadastrada = escola != null,
-                EscolaId = escola?.Id,
+                EscolaId = escolaCadastrada?.Id,
             };
             await dbContext.Solicitacoes.AddAsync(solicitacao);
             return solicitacao;
@@ -41,18 +40,29 @@ namespace app.Repositorios
 
         public async Task<ListaPaginada<SolicitacaoAcao>> ObterSolicitacoesAsync(PesquisaSolicitacaoFiltro filtro)
         {
+            var query = dbContext.Solicitacoes
+                .Include(s => s.Escola!)
+                    .ThenInclude(e => e.Municipio)
+                .Include(s => s.EscolaMunicipio)
+                .AsQueryable();
+
+            // if (filtro.Nome != null)
+            //     query = query.Where(s=> s.Escola)
+            
             // FIXME: tem que funcionar apenas com a opção de qtd MÍNIMA de alunos (ex: acima de 1001 alunos)
             // if (filtro.QuantidadeAlunosMin != null)
             // {
-            //     query = query.Where(e => e.TotalAlunos >= filtro.QuantidadeAlunosMin);
+            //     query = query.Where(e => e.Escola.TotalAlunos >= filtro.QuantidadeAlunosMin);
             //     if (filtro.QuantidadeAlunosMax != null)
             //         query = query.Where(e => e.TotalAlunos <= filtro.QuantidadeAlunosMax);
             // }
 
-            var query = dbContext.Solicitacoes.Include(s => s.Escola).AsQueryable();
-
             var total = await query.CountAsync();
-            var sols = await query.ToListAsync();
+            var sols = await query
+                .OrderByDescending(s => s.DataRealizadaUtc)
+                .Skip((filtro.Pagina - 1) * filtro.TamanhoPagina)
+                .Take(filtro.TamanhoPagina)
+                .ToListAsync();
             return new ListaPaginada<SolicitacaoAcao>(sols, filtro.Pagina, filtro.TamanhoPagina, total);
         }
     }
