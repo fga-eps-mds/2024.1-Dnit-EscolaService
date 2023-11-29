@@ -167,17 +167,20 @@ namespace test
 
             await Assert.ThrowsAsync<InvalidOperationException>(async () => await service.ExportarRanqueAsync(0));
         }
-        
-        public async Task ListarRanquesAsync()
+
+        [Fact]
+        public async Task ListarRanquesAsync_QuandoExistirRanques_DeveListar()
         {
             var escolas = db.PopulaEscolas(1);
             var (_, ranque) = GeraRanque(escolas, definirPosicao: true);
             var (_, ranque2) = GeraRanque(escolas, definirPosicao: true);
 
-            var pagina = new PesquisaEscolaFiltro{Pagina = 1, TamanhoPagina = 10,};
+            var pagina = new PesquisaEscolaFiltro{
+                Pagina = 1,
+                TamanhoPagina = 10
+            };
 
             var ranques = await service.ListarRanquesAsync(pagina);
-
 
             Assert.Equal(2, ranques.Items.Count());
         }
