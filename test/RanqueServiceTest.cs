@@ -9,6 +9,7 @@ using app.Services;
 using Hangfire;
 using Hangfire.Common;
 using Hangfire.States;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Moq;
 using service.Interfaces;
@@ -142,6 +143,28 @@ namespace test
 
             var ranqueDb = db.Ranques.First(r => r.Id == ranque.Id);
             Assert.Equal(ranqueDb.Descricao, ranqueDb.Descricao);
+        }
+
+        [Fact]
+        public async Task ExportarRanqueAsync_QuandoExistir_DeveExportar()
+        {
+            var escolas = db.PopulaEscolas(2);
+            var (_, ranque) = GeraRanque(escolas, definirPosicao: true);
+
+            var file = await service.ExportarRanqueAsync(ranque.Id);
+
+            Assert.NotNull(file);
+            Assert.IsType<FileContentResult>(file);
+            Assert.True((file as FileContentResult).FileContents.Length > 0);
+        }
+
+        [Fact]
+        public async Task ExportarRanqueAsync_QuandoNaoExistir_DeveLancarExcecao()
+        {
+            var escolas = db.PopulaEscolas(2);
+            GeraRanque(escolas, definirPosicao: true);
+
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await service.ExportarRanqueAsync(0));
         }
 
         private (List<EscolaRanque>, Ranque) GeraRanque(List<Escola> escolas, bool definirPosicao = true)
