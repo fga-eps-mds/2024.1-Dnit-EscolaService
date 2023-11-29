@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using api.Escolas;
 using api.Ranques;
@@ -165,6 +166,20 @@ namespace test
             GeraRanque(escolas, definirPosicao: true);
 
             await Assert.ThrowsAsync<InvalidOperationException>(async () => await service.ExportarRanqueAsync(0));
+        }
+        
+        public async Task ListarRanquesAsync()
+        {
+            var escolas = db.PopulaEscolas(1);
+            var (_, ranque) = GeraRanque(escolas, definirPosicao: true);
+            var (_, ranque2) = GeraRanque(escolas, definirPosicao: true);
+
+            var pagina = new PesquisaEscolaFiltro{Pagina = 1, TamanhoPagina = 10,};
+
+            var ranques = await service.ListarRanquesAsync(pagina);
+
+
+            Assert.Equal(2, ranques.Items.Count());
         }
 
         private (List<EscolaRanque>, Ranque) GeraRanque(List<Escola> escolas, bool definirPosicao = true)
