@@ -1,4 +1,5 @@
 using api.Escolas;
+using api.Municipios;
 
 namespace api.Solicitacoes
 {
@@ -14,7 +15,7 @@ namespace api.Solicitacoes
         public string Observacoes { get; set; }
         public DateTime DataRealizadaUtc { get; set; }
         public UF Uf { get; set; }
-        public int MunicipioId { get; set; }
+        public MunicipioModel Municipio { get; set; }
         public string Vinculo { get; set; }
     }
 }

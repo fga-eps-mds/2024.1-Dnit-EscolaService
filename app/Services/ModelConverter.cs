@@ -150,8 +150,9 @@ namespace app.Services
                 Uf = superintendencia.Uf,
             };
 
-        public SolicitacaoAcaoModel ToModel(SolicitacaoAcao solicitacao) =>
-            new()
+        public SolicitacaoAcaoModel ToModel(SolicitacaoAcao solicitacao)  {
+            var mc = new ModelConverter();
+            return new()
             {
                 Id = solicitacao.Id,
                 Email = solicitacao.Email,
@@ -159,7 +160,7 @@ namespace app.Services
                 // resolver essa gambiarra
                 Escola = solicitacao.Escola == null
                     ? null
-                    : new ModelConverter().ToModel(solicitacao.Escola!),
+                    : mc.ToModel(solicitacao.Escola!),
                 Observacoes = solicitacao.Observacoes,
                 Nome = solicitacao.EscolaNome,
                 NomeSolicitante = solicitacao.NomeSolicitante,
@@ -167,7 +168,8 @@ namespace app.Services
                 Telefone = solicitacao.Telefone,
                 QuantidadeAlunos = solicitacao.TotalAlunos,
                 Uf = solicitacao.EscolaUf,
-                MunicipioId = solicitacao.EscolaMunicipioId,
+                Municipio = mc.ToModel(solicitacao.EscolaMunicipio!),
             };
+        }
     }
 }
