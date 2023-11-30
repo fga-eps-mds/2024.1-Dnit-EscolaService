@@ -13,6 +13,7 @@ namespace app.Entidades
         public DbSet<EscolaRanque> EscolaRanques { get; set; }
         public DbSet<Superintendencia> Superintendencias { get; set; }
         public DbSet<FatorPriorizacao> FatorPriorizacoes { get; set; }
+        public DbSet<FatorCondicao> FatorCondicoes { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
