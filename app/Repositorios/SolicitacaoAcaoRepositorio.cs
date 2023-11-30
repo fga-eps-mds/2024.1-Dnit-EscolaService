@@ -21,10 +21,13 @@ namespace app.Repositorios
             {
                 EscolaCodigoInep = s.EscolaCodigoInep,
                 Email = s.Email,
+                EscolaNome = s.Escola,
                 Telefone = s.Telefone,
                 NomeSolicitante = s.NomeSolicitante,
                 DataRealizada = DateTimeOffset.Now,
                 Observacoes = s.Observacoes,
+                TotalAlunos = s.QuantidadeAlunos,
+                Vinculo = s.VinculoEscola,
                 EscolaId = escolaCadastrada?.Id,
             };
             await dbContext.Solicitacoes.AddAsync(solicitacao);
@@ -41,21 +44,26 @@ namespace app.Repositorios
         public async Task<ListaPaginada<SolicitacaoAcao>> ObterSolicitacoesAsync(PesquisaSolicitacaoFiltro filtro)
         {
             var query = dbContext.Solicitacoes
-                .Include(s => s.Escola!)
-                    .ThenInclude(e => e.Municipio)
+                .Include(s => s.Escola!).ThenInclude(e => e.Municipio)
+                .Include(s => s.Escola!).ThenInclude(e => e.EtapasEnsino)
                 .Include(s => s.EscolaMunicipio)
                 .AsQueryable();
 
-            // if (filtro.Nome != null)
-            //     query = query.Where(s=> s.Escola)
-            
-            // FIXME: tem que funcionar apenas com a opção de qtd MÍNIMA de alunos (ex: acima de 1001 alunos)
-            // if (filtro.QuantidadeAlunosMin != null)
-            // {
-            //     query = query.Where(e => e.Escola.TotalAlunos >= filtro.QuantidadeAlunosMin);
-            //     if (filtro.QuantidadeAlunosMax != null)
-            //         query = query.Where(e => e.TotalAlunos <= filtro.QuantidadeAlunosMax);
-            // }
+            if (filtro.Nome != null)
+                query = query.Where(s => s.EscolaNome.ToLower().Contains(filtro.Nome.ToLower()));
+
+            if (filtro.QuantidadeAlunosMin != null)
+            {
+                query = query.Where(s => s.TotalAlunos >= filtro.QuantidadeAlunosMin);
+                if (filtro.QuantidadeAlunosMax != null)
+                    query = query.Where(s => s.TotalAlunos <= filtro.QuantidadeAlunosMax);
+            }
+
+            if (filtro.Uf != null)
+                query = query.Where(s => s.EscolaUf == filtro.Uf);
+
+            if (filtro.IdMunicipio != null)
+                query = query.Where(s => s.EscolaMunicipioId == filtro.IdMunicipio);
 
             var total = await query.CountAsync();
             var sols = await query

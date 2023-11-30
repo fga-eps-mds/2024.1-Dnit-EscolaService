@@ -163,6 +163,7 @@ namespace app.Services
                 Observacoes = solicitacao.Observacoes,
                 NomeSolicitante = solicitacao.NomeSolicitante,
                 Telefone = solicitacao.Telefone,
+                QuantidadeAlunos = solicitacao.TotalAlunos,
             };
     }
 }

@@ -9,6 +9,7 @@ namespace api.Solicitacoes
         public EscolaCorretaModel? Escola { get; set; }
         public bool EscolaJaCadastrada { get; set; }
         public string NomeSolicitante { get; set; }
+        public int QuantidadeAlunos { get; set; }
         public string Email { get; set; }
         public string Telefone { get; set; }
         public string Observacoes { get; set; }

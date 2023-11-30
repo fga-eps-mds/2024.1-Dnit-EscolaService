@@ -15,6 +15,8 @@ namespace app.Entidades
         public int EscolaCodigoInep { get; set; }
         [Required, MaxLength(200)]
         public string EscolaNome { get; set; }
+        [Required]
+        public int TotalAlunos { get; set; }
         public Guid? EscolaId { get; set; }
         public Escola? Escola { get; set; }
         [Required, MaxLength(150)]
