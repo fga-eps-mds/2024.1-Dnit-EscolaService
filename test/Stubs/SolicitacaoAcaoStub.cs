@@ -10,7 +10,7 @@ namespace test.Stubs
             return new SolicitacaoAcaoData
             {
                 Escola = "Escola Teste",
-                UF = UF.DF,
+                Uf = UF.DF,
                 Municipio = "Brasília",
                 NomeSolicitante = "João Testador",
                 VinculoEscola = "Professor",
