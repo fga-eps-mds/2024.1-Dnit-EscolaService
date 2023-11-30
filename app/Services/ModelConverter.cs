@@ -48,6 +48,9 @@ namespace app.Services
                 NomeMunicipio = value.Municipio?.Nome,
                 EtapasEnsino = value.EtapasEnsino?.ConvertAll(e => e.EtapaEnsino),
                 EtapaEnsino = value.EtapasEnsino?.ToDictionary(e => (int)e.EtapaEnsino, e => e.EtapaEnsino.AsString(EnumFormat.Description) ?? ""),
+                Solicitacao = value.Solicitacao == null
+                    ? null 
+                    : ToModel(value.Solicitacao),
             };
 
         public UfModel ToModel(UF uf) =>
@@ -150,17 +153,15 @@ namespace app.Services
                 Uf = superintendencia.Uf,
             };
 
-        public SolicitacaoAcaoModel ToModel(SolicitacaoAcao solicitacao)  {
-            var mc = new ModelConverter();
+        public SolicitacaoAcaoModel ToModel(SolicitacaoAcao solicitacao)
+        {
             return new()
             {
                 Id = solicitacao.Id,
                 Email = solicitacao.Email,
-                // FIXME: resolver escola. EscolCorretaModel é suficiente?
-                // resolver essa gambiarra
                 Escola = solicitacao.Escola == null
                     ? null
-                    : mc.ToModel(solicitacao.Escola!),
+                    : ToModel(solicitacao.Escola!),
                 Observacoes = solicitacao.Observacoes,
                 Nome = solicitacao.EscolaNome,
                 NomeSolicitante = solicitacao.NomeSolicitante,
@@ -168,7 +169,7 @@ namespace app.Services
                 Telefone = solicitacao.Telefone,
                 QuantidadeAlunos = solicitacao.TotalAlunos,
                 Uf = solicitacao.EscolaUf,
-                Municipio = mc.ToModel(solicitacao.EscolaMunicipio!),
+                Municipio = ToModel(solicitacao.EscolaMunicipio!),
             };
         }
     }

@@ -41,10 +41,10 @@ namespace app.Entidades
 
         [Required]
         public Rede Rede { get; set; }
-        
+
         [Required]
         public double DistanciaSuperintendencia { get; set; }
-        
+
         public int? SuperintendenciaId { get; set; }
         public Superintendencia? Superintendencia { get; set; }
         public UF? Uf { get; set; }
@@ -70,5 +70,6 @@ namespace app.Entidades
             get => DataAtualizacao?.UtcDateTime;
             set => DataAtualizacao = value != null ? new DateTimeOffset(value.Value, TimeSpan.Zero) : null;
         }
+        public SolicitacaoAcao? Solicitacao { get; set; }
     }
 }
