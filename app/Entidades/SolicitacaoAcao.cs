@@ -21,9 +21,6 @@ namespace app.Entidades
         public Escola? Escola { get; set; }
         [Required, MaxLength(150)]
         public string NomeSolicitante { get; set; }
-        [Required]
-        public List<EscolaEtapaEnsino>? EtapasEnsino { get; set; }
-
         [Required, MaxLength(100)]
         public string Email { get; set; }
 

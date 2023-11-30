@@ -122,14 +122,9 @@ namespace app.Migrations
                     b.Property<int>("EtapaEnsino")
                         .HasColumnType("integer");
 
-                    b.Property<Guid?>("SolicitacaoAcaoId")
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
 
                     b.HasIndex("EscolaId");
-
-                    b.HasIndex("SolicitacaoAcaoId");
 
                     b.ToTable("EscolaEtapaEnsino");
                 });
@@ -325,10 +320,6 @@ namespace app.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("app.Entidades.SolicitacaoAcao", null)
-                        .WithMany("EtapasEnsino")
-                        .HasForeignKey("SolicitacaoAcaoId");
-
                     b.Navigation("Escola");
                 });
 
@@ -369,11 +360,6 @@ namespace app.Migrations
                 });
 
             modelBuilder.Entity("app.Entidades.Escola", b =>
-                {
-                    b.Navigation("EtapasEnsino");
-                });
-
-            modelBuilder.Entity("app.Entidades.SolicitacaoAcao", b =>
                 {
                     b.Navigation("EtapasEnsino");
                 });
