@@ -1,4 +1,5 @@
-﻿using app.Services;
+﻿using api.CustoLogistico;
+using app.Services;
 using app.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,6 +17,12 @@ namespace app.Controllers
         {
             this.priorizacaoService = priorizacaoService;
             this.authService = authService;
+        }
+
+        [HttpGet("custologistico")]
+        public async Task<List<CustoLogisticoItem>> ListarCustosLogisticos()
+        {
+            return await priorizacaoService.ListarCustosLogisticos();
         }
     }
 }

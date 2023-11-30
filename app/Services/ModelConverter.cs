@@ -1,4 +1,5 @@
 ﻿using api;
+using api.CustoLogistico;
 using api.Escolas;
 using api.Municipios;
 using api.Ranques;
@@ -147,6 +148,15 @@ namespace app.Services
             {
                 Id = superintendencia.Id,
                 Uf = superintendencia.Uf,
+            };
+
+        public CustoLogisticoItem ToModel(CustoLogistico custoLogistico) =>
+            new CustoLogisticoItem
+            {
+                Custo = custoLogistico.Custo,
+                RaioMin = custoLogistico.RaioMin,
+                RaioMax = custoLogistico.RaioMax,
+                Valor = custoLogistico.Valor,
             };
     }
 }
