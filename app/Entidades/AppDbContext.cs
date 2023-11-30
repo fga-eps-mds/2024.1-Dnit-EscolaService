@@ -14,6 +14,7 @@ namespace app.Entidades
         public DbSet<Superintendencia> Superintendencias { get; set; }
         public DbSet<FatorPriorizacao> FatorPriorizacoes { get; set; }
         public DbSet<FatorCondicao> FatorCondicoes { get; set; }
+        public DbSet<FatorEscola> FatorEscolas { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -28,6 +29,9 @@ namespace app.Entidades
                 .Property(r => r.Id).ValueGeneratedOnAdd();
             modelBuilder.Entity<EscolaRanque>()
                 .Property(r => r.Id).ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<FatorEscola>()
+                .HasKey(r => new { r.FatorPriorizacaoId, r.EscolaId });
         }
 
         public void Popula()
