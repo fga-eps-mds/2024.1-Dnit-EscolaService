@@ -161,9 +161,13 @@ namespace app.Services
                     ? null
                     : new ModelConverter().ToModel(solicitacao.Escola!),
                 Observacoes = solicitacao.Observacoes,
+                Nome = solicitacao.EscolaNome,
                 NomeSolicitante = solicitacao.NomeSolicitante,
+                Vinculo = solicitacao.Vinculo,
                 Telefone = solicitacao.Telefone,
                 QuantidadeAlunos = solicitacao.TotalAlunos,
+                Uf = solicitacao.EscolaUf,
+                MunicipioId = solicitacao.EscolaMunicipioId,
             };
     }
 }

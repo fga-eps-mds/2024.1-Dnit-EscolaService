@@ -9,7 +9,7 @@ namespace app.Entidades
         [Key]
         public Guid Id { get; set; }
         public UF EscolaUf { get; set; }
-        public int? EscolaMunicipioId { get; set; }
+        public int EscolaMunicipioId { get; set; }
         public Municipio? EscolaMunicipio { get; set; }
         [Required]
         public int EscolaCodigoInep { get; set; }

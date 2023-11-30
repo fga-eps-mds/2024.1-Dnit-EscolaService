@@ -7,6 +7,7 @@ using app.Repositorios.Interfaces;
 using app.Entidades;
 using api;
 using api.Solicitacoes;
+using EnumsNET;
 
 namespace app.Services
 {
@@ -35,7 +36,7 @@ namespace app.Services
 
             string mensagem = $"Nova solicitação de ação em escola.\n\n" +
                             $"Escola: {solicitacaoAcaoDTO.Escola}\n" +
-                            $"UF: {solicitacaoAcaoDTO.UF}\n" +
+                            $"UF: {solicitacaoAcaoDTO.Uf.AsString()}\n" +
                             $"Municipio: {solicitacaoAcaoDTO.Municipio}\n" +
                             $"Nome do Solicitante: {solicitacaoAcaoDTO.NomeSolicitante}\n" +
                             $"Vínculo com a escola: {solicitacaoAcaoDTO.VinculoEscola}\n" +

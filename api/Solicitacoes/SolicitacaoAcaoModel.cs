@@ -5,14 +5,16 @@ namespace api.Solicitacoes
     public class SolicitacaoAcaoModel
     {
         public Guid Id { get; set; }
-        public Guid? EscolaId { get; set; }
         public EscolaCorretaModel? Escola { get; set; }
-        public bool EscolaJaCadastrada { get; set; }
+        public string Nome { get; set; }
         public string NomeSolicitante { get; set; }
         public int QuantidadeAlunos { get; set; }
         public string Email { get; set; }
         public string Telefone { get; set; }
         public string Observacoes { get; set; }
         public DateTime DataRealizadaUtc { get; set; }
+        public UF Uf { get; set; }
+        public int MunicipioId { get; set; }
+        public string Vinculo { get; set; }
     }
 }

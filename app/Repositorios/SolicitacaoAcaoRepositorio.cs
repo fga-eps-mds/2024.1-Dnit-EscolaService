@@ -20,6 +20,9 @@ namespace app.Repositorios
             var solicitacao = new SolicitacaoAcao
             {
                 EscolaCodigoInep = s.EscolaCodigoInep,
+                EscolaId = escolaCadastrada?.Id,
+                EscolaUf = s.Uf,
+                EscolaMunicipioId = s.MunicipioId,
                 Email = s.Email,
                 EscolaNome = s.Escola,
                 Telefone = s.Telefone,
@@ -28,7 +31,6 @@ namespace app.Repositorios
                 Observacoes = s.Observacoes,
                 TotalAlunos = s.QuantidadeAlunos,
                 Vinculo = s.VinculoEscola,
-                EscolaId = escolaCadastrada?.Id,
             };
             await dbContext.Solicitacoes.AddAsync(solicitacao);
             return solicitacao;
