@@ -9,6 +9,5 @@
         public int? IdMunicipio { get; set; }
         public int? QuantidadeAlunosMin {get; set;}
         public int? QuantidadeAlunosMax {get; set;}
-        // Custo logistico
     }
 }
