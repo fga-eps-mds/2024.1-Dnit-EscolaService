@@ -15,6 +15,7 @@ namespace app.Entidades
         public DbSet<FatorPriorizacao> FatorPriorizacoes { get; set; }
         public DbSet<FatorCondicao> FatorCondicoes { get; set; }
         public DbSet<FatorEscola> FatorEscolas { get; set; }
+        public DbSet<CustoLogistico> CustosLogisticos { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -39,6 +40,54 @@ namespace app.Entidades
             PopulaMunicipiosPorArquivo(null, Path.Join(".", "Migrations", "Data", "municipios.csv"));
 
             PopulaSuperintendenciasPorArquivo(null, Path.Join(".", "Migrations", "Data", "superintendencias.csv"));
+
+            PopulaCustosLogisticosPorArquivo(null, Path.Join(".", "Migrations", "Data", "custoslogisticos.csv"));
+        }
+
+        public void PopulaCustosLogisticosPorArquivo(int? limit, string caminho)
+        {
+            var hasCustosLogisticos = CustosLogisticos.Any();
+            var custosLogisticos = new List<CustoLogistico>();
+
+            if (hasCustosLogisticos)
+            {
+                return;
+            }
+
+            using (var fs = File.OpenRead(caminho))
+            using (var parser = new TextFieldParser(fs))
+            {
+                parser.TextFieldType = FieldType.Delimited;
+                parser.SetDelimiters(",");
+
+                var columns = new Dictionary<string, int> { { "custo", 0 }, { "raioMin", 1 }, 
+                    { "raioMax", 2 }, { "valor", 3 } };
+
+                while (!parser.EndOfData)
+                {
+                    var row = parser.ReadFields()!;
+                    var custoLogistico = new CustoLogistico
+                    {
+                        Custo = int.Parse(row[columns["custo"]]),
+                        RaioMin = int.Parse(row[columns["raioMin"]]),
+                        Valor = int.Parse(row[columns["valor"]])
+                    };
+
+                    if (!string.IsNullOrEmpty(row[columns["raioMax"]]))
+                    {
+                        custoLogistico.RaioMax = int.Parse(row[columns["raioMax"]]);
+                    }
+
+                    custosLogisticos.Add(custoLogistico);
+                    if (limit.HasValue && custosLogisticos.Count >= limit.Value)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            AddRange(custosLogisticos);
+            SaveChanges();
         }
 
         public List<Municipio>? PopulaMunicipiosPorArquivo(int? limit, string caminho)
