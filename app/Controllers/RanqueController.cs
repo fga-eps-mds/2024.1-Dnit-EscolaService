@@ -78,7 +78,7 @@ namespace app.Controllers
         [HttpGet("{id}/exportar")]
         public async Task<FileResult> ExportarRanque(int id)
         {
-            authService.Require(Usuario, Permissao.RanqueVisualizar);
+            authService.Require(Usuario, Permissao.RanqueExportar);
 
             return await ranqueService.ExportarRanqueAsync(id);
         }

@@ -172,8 +172,8 @@ namespace test
         public async Task ListarRanquesAsync_QuandoExistirRanques_DeveListar()
         {
             var escolas = db.PopulaEscolas(1);
-            var (_, ranque) = GeraRanque(escolas, definirPosicao: true);
-            var (_, ranque2) = GeraRanque(escolas, definirPosicao: true);
+            GeraRanque(escolas, definirPosicao: true);
+            GeraRanque(escolas, definirPosicao: true);
 
             var pagina = new PesquisaEscolaFiltro{
                 Pagina = 1,

@@ -153,5 +153,6 @@ namespace api
         RanqueCalcular = 5003,
         [Description("Calcular Ranking de Escolas")]
         RanquePollProcessamento = 5004,
+        RanqueExportar = 5005,
     }
 }

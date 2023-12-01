@@ -171,14 +171,16 @@ namespace app.Services
             var escolas = await ranqueRepositorio.ListarEscolaRanquesAsync(id);
             var ranque = escolas.First().Ranque;
             var builder = new StringBuilder("");
-            builder.AppendLine("RanqueId;RanqueDescrição;NumEscolas;UPSPeso;UPSValor;EscolaId;Posição;Pontuação;EscolaNome");
+            var escolaHeaders = string.Join(";", Escola.SerializeHeaders());
+            builder.AppendLine($"RanqueId;RanqueDescrição;NumEscolas;UPSPeso;UPSValor;Posição;Pontuação;{escolaHeaders}");
             var numEscola = escolas.Count();
-            foreach(var escola in escolas){
-                builder.AppendLine($"{ranque.Id};{ranque.Descricao};{numEscola};{1};{escola.Pontuacao};{escola.Id};{escola.Posicao};{escola.Pontuacao};{escola.Escola.Nome}");
-            }
-            
 
-            byte[] bytes = Encoding.UTF8.GetBytes(builder.ToString());
+            foreach(var escola in escolas) {
+                var escolaCsv = CsvSerializer.Serialize(escola.Escola, ";");
+                builder.AppendLine($"{ranque.Id};{ranque.Descricao};{numEscola};{1};{escola.Pontuacao};{escola.Posicao};{escola.Pontuacao};{escolaCsv}");
+            }
+
+            var bytes = Encoding.UTF8.GetBytes(builder.ToString());
             return new FileContentResult(bytes, "text/csv"){
                 FileDownloadName = $"ranque_{id}.csv",
             };
