@@ -62,7 +62,7 @@ public class PoloRepositorio : IPoloRepositorio
         {
             var cep = filtro.Cep.Trim();
             query = query.Where(p => p.Cep == cep 
-                                     || p.Nome.Contains(cep));
+                                     || p.Cep.Contains(cep));
         }
 
         if (filtro.idMunicipio != null)
