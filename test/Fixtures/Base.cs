@@ -30,6 +30,7 @@ namespace test.Fixtures
             services.AddScoped<IMunicipioRepositorio, MunicipioRepositorio>();
             services.AddScoped<IRanqueRepositorio, RanqueRepositorio>();
             services.AddScoped<ISuperintendenciaRepositorio, SuperIntendenciaRepositorio>();
+            services.AddScoped<ISolicitacaoAcaoRepositorio, SolicitacaoAcaoRepositorio>();
 
             // Services
             services.AddScoped<IEscolaService, EscolaService>();
