@@ -113,6 +113,9 @@ namespace app.Services
                     Uf = escolaRanque.Escola.Uf.HasValue ? ToModel(escolaRanque.Escola.Uf.Value) : null,
                     Superintendencia = escolaRanque.Escola.Superintendencia != null ? ToModel(escolaRanque.Escola.Superintendencia) : null,
                     DistanciaSuperintendencia = escolaRanque.Escola.DistanciaSuperintendencia,
+                    Solicitacao = escolaRanque.Escola.Solicitacao == null   
+                        ? null
+                        : _ToModel(escolaRanque.Escola.Solicitacao)
                 }
             };
 

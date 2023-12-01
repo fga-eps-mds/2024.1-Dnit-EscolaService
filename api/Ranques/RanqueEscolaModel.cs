@@ -1,4 +1,5 @@
 using api.Municipios;
+using api.Solicitacoes;
 using api.Superintendencias;
 
 namespace api.Ranques
@@ -20,5 +21,6 @@ namespace api.Ranques
         public MunicipioModel? Municipio { get; set; }
         public double DistanciaSuperintendencia { get; set; }
         public SuperintendenciaModel Superintendencia { get; set; }
+        public SolicitacaoAcaoModel? Solicitacao { get; set; }
     }
 }

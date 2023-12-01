@@ -45,6 +45,7 @@ namespace app.Repositorios
                 .Include(er => er.Escola).ThenInclude(e => e.EtapasEnsino)
                 .Include(er => er.Escola).ThenInclude(e => e.Municipio)
                 .Include(er => er.Escola).ThenInclude(e => e.Superintendencia)
+                .Include(er => er.Escola).ThenInclude(e => e.Solicitacao)
                 .Where(er => er.RanqueId == ranqueId);
 
             if (filtro.Nome != null)
