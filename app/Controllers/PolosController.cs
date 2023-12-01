@@ -29,6 +29,12 @@ public class PolosController : AppController
         return await _poloService.ObterPorIdAsync(id);
     }
 
+    [HttpGet("paginado")]
+    public async Task<ListaPoloPaginada<PoloModel>> ObterPolosAsync([FromQuery] PesquisaPoloFiltro filtro)
+    {
+        return await _poloService.ListarPaginadaAsync(filtro);
+    }
+    
     [HttpPost]
     public async Task CriarPolo(CadastroPoloDTO poloDto)
     {
