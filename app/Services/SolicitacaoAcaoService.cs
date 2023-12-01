@@ -71,10 +71,10 @@ namespace app.Services
                 throw new Exception("Já foi feita uma solicitação para essa escola");
 
             var escolaCadastrada = await escolaRepositorio.ObterPorCodigoAsync(solicitacao.EscolaCodigoInep);
-
             var sol = await solicitacaoAcaoRepositorio.Criar(solicitacao, escolaCadastrada);
-            
-            escolaCadastrada!.Solicitacao = sol;
+            if (escolaCadastrada != null)
+                escolaCadastrada.Solicitacao = sol;
+
             await dbContext.SaveChangesAsync();
         }
 

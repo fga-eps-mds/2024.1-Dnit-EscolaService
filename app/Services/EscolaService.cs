@@ -98,8 +98,10 @@ namespace app.Services
             var escola = escolaRepositorio.Criar(cadastroEscolaData, municipio, distanciaSuperintendecia, superintendenciaMaisProxima);
 
             var solicitacao = await solicitacaoAcaoRepositorio.ObterPorEscolaIdAsync(escola.Codigo);
-            if (solicitacao != null)
+            if (solicitacao != null) {
+                solicitacao.EscolaId = escola.Id;
                 escola.Solicitacao = solicitacao;
+            }
 
             cadastroEscolaData.IdEtapasDeEnsino
                 ?.Select(e => escolaRepositorio.AdicionarEtapaEnsino(escola, (EtapaEnsino)e))
