@@ -138,6 +138,7 @@ namespace app.Services
                 EtapasEnsino = escola.EtapasEnsino?.ConvertAll(e => ToModel(e.EtapaEnsino)),
                 Superintendencia = ToModel(escola.Superintendencia),
                 DistanciaSuperintendencia = escola.DistanciaSuperintendencia,
+                TemSolicitacao = escola.Solicitacao != null,
             };
 
         public PorteModel ToModel(Porte porte) =>
