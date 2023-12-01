@@ -8,8 +8,6 @@ using app.Repositorios.Interfaces;
 using api.Escolas;
 using System.Globalization;
 using System.Data;
-using System.Text.RegularExpressions;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace app.Services
 {

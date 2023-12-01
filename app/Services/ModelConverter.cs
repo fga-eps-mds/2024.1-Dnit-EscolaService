@@ -49,9 +49,25 @@ namespace app.Services
                 EtapasEnsino = value.EtapasEnsino?.ConvertAll(e => e.EtapaEnsino),
                 EtapaEnsino = value.EtapasEnsino?.ToDictionary(e => (int)e.EtapaEnsino, e => e.EtapaEnsino.AsString(EnumFormat.Description) ?? ""),
                 Solicitacao = value.Solicitacao == null
-                    ? null 
-                    : ToModel(value.Solicitacao),
+                    ? null
+                    : _ToModel(value.Solicitacao),
             };
+
+        private SolicitacaoAcaoModel _ToModel(SolicitacaoAcao solicitacao)
+        {
+            return new()
+            {
+                Id = solicitacao.Id,
+                Email = solicitacao.Email,
+                Observacoes = solicitacao.Observacoes,
+                Nome = solicitacao.EscolaNome,
+                NomeSolicitante = solicitacao.NomeSolicitante,
+                Vinculo = solicitacao.Vinculo,
+                Telefone = solicitacao.Telefone,
+                QuantidadeAlunos = solicitacao.TotalAlunos,
+                Uf = solicitacao.EscolaUf,
+            };
+        }
 
         public UfModel ToModel(UF uf) =>
             new UfModel
@@ -159,9 +175,6 @@ namespace app.Services
             {
                 Id = solicitacao.Id,
                 Email = solicitacao.Email,
-                Escola = solicitacao.Escola == null
-                    ? null
-                    : ToModel(solicitacao.Escola!),
                 Observacoes = solicitacao.Observacoes,
                 Nome = solicitacao.EscolaNome,
                 NomeSolicitante = solicitacao.NomeSolicitante,
@@ -170,7 +183,49 @@ namespace app.Services
                 QuantidadeAlunos = solicitacao.TotalAlunos,
                 Uf = solicitacao.EscolaUf,
                 Municipio = ToModel(solicitacao.EscolaMunicipio!),
+                Escola = solicitacao.Escola == null
+                    ? null
+                    : _ToModel(solicitacao.Escola!),
             };
         }
+
+        private static EscolaCorretaModel _ToModel(Escola value) =>
+            new()
+            {
+                IdEscola = value.Id,
+                CodigoEscola = value.Codigo,
+                NomeEscola = value.Nome,
+                Telefone = value.Telefone,
+                UltimaAtualizacao = value.DataAtualizacao?.LocalDateTime,
+                Cep = value.Cep,
+                Endereco = value.Endereco,
+                Uf = value.Uf,
+                IdUf = (int?)value.Uf,
+                SiglaUf = value.Uf?.ToString(),
+                DescricaoUf = value.Uf?.AsString(EnumFormat.Description),
+                IdSituacao = (int?)value.Situacao,
+                Situacao = value.Situacao,
+                DescricaoSituacao = value.Situacao?.AsString(EnumFormat.Description),
+                IdRede = (int?)value.Rede,
+                Rede = value.Rede,
+                DescricaoRede = value.Rede.AsString(EnumFormat.Description),
+                IdPorte = (int?)value.Porte,
+                Porte = value.Porte,
+                Observacao = value.Observacao,
+                IdLocalizacao = (int?)value.Localizacao,
+                Localizacao = value.Localizacao,
+                DescricaoLocalizacao = value.Localizacao?.ToString(),
+                Latitude = value.Latitude,
+                Longitude = value.Longitude,
+                NumeroTotalDeDocentes = value.TotalDocentes,
+                NumeroTotalDeAlunos = value.TotalAlunos,
+                IdMunicipio = value.MunicipioId,
+                SuperintendenciaId = value.SuperintendenciaId,
+                DistanciaSuperintendencia = value.DistanciaSuperintendencia,
+                UfSuperintendencia = value.Superintendencia?.Uf.ToString(),
+                NomeMunicipio = value.Municipio?.Nome,
+                EtapasEnsino = value.EtapasEnsino?.ConvertAll(e => e.EtapaEnsino),
+                EtapaEnsino = value.EtapasEnsino?.ToDictionary(e => (int)e.EtapaEnsino, e => e.EtapaEnsino.AsString(EnumFormat.Description) ?? ""),
+            };
     }
 }
