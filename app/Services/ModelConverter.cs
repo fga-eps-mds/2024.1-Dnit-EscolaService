@@ -147,6 +147,12 @@ namespace app.Services
             {
                 Id = polo.Id,
                 Uf = polo.Uf,
+                Nome = polo.Nome,
+                NomeMunicipio = polo.Municipio.Nome,
+                Cep = polo.Cep,
+                Endereco = polo.Endereco,
+                Latitude = polo.Latitude,
+                Longitude = polo.Longitude,
             };
     }
 }
