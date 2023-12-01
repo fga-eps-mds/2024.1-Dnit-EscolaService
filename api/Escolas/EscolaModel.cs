@@ -39,6 +39,6 @@ namespace api.Escolas
         public double DistanciaSuperintendencia { get; set; }
         public int? SuperintendenciaId { get; set; }
         public string? UfSuperintendencia { get; set; }
-        public SolicitacaoAcaoModel? Solicitacao { get; set; }
+        public bool TemSolicitacao { get; set; } = false;
     }
 }

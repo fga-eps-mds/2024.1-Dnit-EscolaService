@@ -48,9 +48,7 @@ namespace app.Services
                 NomeMunicipio = value.Municipio?.Nome,
                 EtapasEnsino = value.EtapasEnsino?.ConvertAll(e => e.EtapaEnsino),
                 EtapaEnsino = value.EtapasEnsino?.ToDictionary(e => (int)e.EtapaEnsino, e => e.EtapaEnsino.AsString(EnumFormat.Description) ?? ""),
-                Solicitacao = value.Solicitacao == null
-                    ? null
-                    : _ToModel(value.Solicitacao),
+                TemSolicitacao = value.Solicitacao == null,
             };
 
         private SolicitacaoAcaoModel _ToModel(SolicitacaoAcao solicitacao)
@@ -113,9 +111,7 @@ namespace app.Services
                     Uf = escolaRanque.Escola.Uf.HasValue ? ToModel(escolaRanque.Escola.Uf.Value) : null,
                     Superintendencia = escolaRanque.Escola.Superintendencia != null ? ToModel(escolaRanque.Escola.Superintendencia) : null,
                     DistanciaSuperintendencia = escolaRanque.Escola.DistanciaSuperintendencia,
-                    Solicitacao = escolaRanque.Escola.Solicitacao == null   
-                        ? null
-                        : _ToModel(escolaRanque.Escola.Solicitacao)
+                    TemSolicitacao = escolaRanque.Escola.Solicitacao != null,
                 }
             };
 
