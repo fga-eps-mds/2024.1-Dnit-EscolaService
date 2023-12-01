@@ -92,7 +92,8 @@ namespace app.Entidades
 
                 var columns = new Dictionary<string, int>
                 {
-                    { "id", 0 }, { "endereco", 1 }, { "cep", 2 }, { "latitude", 3 }, { "longitude" , 4}, { "uf" , 5}
+                    { "id", 0 }, { "endereco", 1 }, { "cep", 2 }, { "latitude", 3 }, { "longitude" , 4}, { "uf" , 5},
+                    { "nome", 6 }, {"Idmunicipio", 7},
                 };
 
                 while (!parser.EndOfData)
@@ -106,6 +107,8 @@ namespace app.Entidades
                         Latitude = row[columns["latitude"]],
                         Longitude = row[columns["longitude"]],
                         Uf = (UF)int.Parse(row[columns["uf"]]),
+                        Nome = row[columns["nome"]],
+                        Municipio = Municipios.First(m => m.Id == int.Parse(row[columns["Idmunicipio"]])),
                     };
 
                     superintendencias.Add(superintendencia);
