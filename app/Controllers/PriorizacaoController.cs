@@ -24,5 +24,19 @@ namespace app.Controllers
         {
             return await priorizacaoService.ListarCustosLogisticos();
         }
+
+        [HttpPut("custologistico")]
+        public async Task<IActionResult> EditarCustosLogisticos([FromBody] CustoLogisticoItem[] items)
+        {
+            try
+            {
+                var listaAtualizada = await priorizacaoService.EditarCustosLogisticos(items);
+                return Ok(listaAtualizada);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
     }
 }

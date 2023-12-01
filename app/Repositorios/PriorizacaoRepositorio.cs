@@ -18,7 +18,28 @@ namespace app.Repositorios
 
         public async Task<List<CustoLogistico>> ListarCustosLogisticosAsync()
         {
-            return await dbContext.CustosLogisticos.ToListAsync();
+            return await dbContext.CustosLogisticos
+                .OrderBy(c => c.Custo)
+                .ToListAsync();
+        }
+        public async Task<List<CustoLogistico>> EditarCustosLogisticos(CustoLogisticoItem[] custoItems)
+        {
+            var custosAtualizados = new List<CustoLogistico>();
+
+            foreach (var item in custoItems)
+            {
+                var custoLogistico = await dbContext.CustosLogisticos.FirstOrDefaultAsync(c => c.Custo == item.Custo);
+
+                if (custoLogistico != null)
+                {
+                    custoLogistico.RaioMax = item.RaioMax;
+                    custoLogistico.RaioMin = item.RaioMin;
+                    custoLogistico.Valor = item.Valor;
+                    custosAtualizados.Add(custoLogistico);
+                }
+            }
+
+            return custosAtualizados;
         }
     }
 }
