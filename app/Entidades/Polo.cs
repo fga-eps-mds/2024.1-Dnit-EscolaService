@@ -17,6 +17,15 @@ namespace app.Entidades
         public string Latitude { get; set; }
         
         [Required]
+        public string Nome { get; set; }
+        
+        [Required]
+        public int MunicipioId { get; set; }
+        
+        [Required]
+        public Municipio Municipio { get; set; }
+        
+        [Required]
         public string Longitude { get; set; }
         
         [Required]
