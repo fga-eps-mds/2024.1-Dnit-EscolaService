@@ -11,12 +11,14 @@ public class PoloService : IPoloService
     private readonly IPoloRepositorio _poloRepositorio;
     private readonly IMunicipioRepositorio _municipioRepositorio;
     private readonly AppDbContext _dbContext;
+    private readonly ModelConverter _modelConverter;
 
-    public PoloService(IPoloRepositorio poloRepositorio, IMunicipioRepositorio municipioRepositorio, AppDbContext dbContext)
+    public PoloService(IPoloRepositorio poloRepositorio, IMunicipioRepositorio municipioRepositorio, AppDbContext dbContext, ModelConverter modelConverter)
     {
         this._poloRepositorio = poloRepositorio;
         _municipioRepositorio = municipioRepositorio;
         _dbContext = dbContext;
+        _modelConverter = modelConverter;
     }
 
     public async Task<Polo> ObterPorIdAsync(int id)
@@ -32,5 +34,12 @@ public class PoloService : IPoloService
         _poloRepositorio.Criar(poloDto, municipio);
 
         await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task<ListaPoloPaginada<PoloModel>> ListarPaginadaAsync(PesquisaPoloFiltro filtro)
+    {
+        var polos = await _poloRepositorio.ListarPaginadaAsync(filtro);
+        var poloModels = polos.Items.ConvertAll(_modelConverter.ToModel);
+        return new ListaPoloPaginada<PoloModel>(poloModels, polos.Pagina, polos.ItemsPorPagina, polos.Total);
     }
 }
