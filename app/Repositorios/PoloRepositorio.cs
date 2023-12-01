@@ -1,4 +1,5 @@
 using api;
+using api.Polos;
 using app.Entidades;
 using app.Repositorios.Interfaces;
 using app.Services;
@@ -25,5 +26,22 @@ public class PoloRepositorio : IPoloRepositorio
     public async Task<List<Polo>> ListarAsync()
     {
         return await dbContext.Polos.ToListAsync();
+    }
+
+    public Polo Criar(CadastroPoloDTO poloDto, Municipio municipio)
+    {
+        var polo = new Polo
+        {
+            Id = poloDto.Id,
+            Nome = poloDto.Nome,
+            Municipio = municipio,
+            Longitude = poloDto.Longitude,
+            Latitude = poloDto.Latitude,
+            Uf = (UF)poloDto.IdUf,
+            Endereco = poloDto.Endereco,
+            Cep = poloDto.Cep,
+        };
+        dbContext.Add(polo);
+        return polo;
     }
 }
