@@ -9,8 +9,8 @@ namespace app.Services
     public class PriorizacaoService : IPriorizacaoService
     {
         private readonly AppDbContext dbContext;
-        IPriorizacaoRepositorio priorizacaoRepositorio;
-        ModelConverter modelConverter;
+        private readonly IPriorizacaoRepositorio priorizacaoRepositorio;
+        private readonly ModelConverter modelConverter;
         
         public PriorizacaoService(
             AppDbContext dbContext,
@@ -28,25 +28,43 @@ namespace app.Services
             var items = await priorizacaoRepositorio.ListarCustosLogisticosAsync();
             return items.ConvertAll(modelConverter.ToModel);
         }
-        public async Task<List<CustoLogisticoItem>> EditarCustosLogisticos(CustoLogisticoItem[] custoItems)
+
+        public async Task<List<CustoLogisticoItem>> EditarCustosLogisticos(List<CustoLogisticoItem> custoItems)
         {
-            for (int i = 1; i < custoItems.Length; i++)
+            if (custoItems.Count != 4)
             {
-                if (custoItems[i].RaioMin != custoItems[i - 1].RaioMax)
+                throw new InvalidOperationException("Operação Inválida: Deve conter as 4 categorias de custo logístico");
+            }
+
+            var sortedCustoItems = custoItems.OrderBy(item => item.Custo).ToList();
+            int[] custosPermitidos = { 1, 2, 3, 4 };
+
+            if (sortedCustoItems.Distinct().Count() == custoItems.Count)
+            {
+                if (sortedCustoItems.Select(item => item.Custo).All(c => custosPermitidos.Contains(c)))
+                {
+                    throw new InvalidOperationException("Operação Inválida: Deve conter categorias de 1 a 4");
+                }
+            }
+            else
+            {
+                throw new InvalidOperationException("Operação Inválida: Categorias de custo logístico repetidas");
+            }
+
+            for (int i = 1; i < custoItems.Count; i++)
+            {
+                if (sortedCustoItems[i].RaioMin != sortedCustoItems[i - 1].RaioMax)
                 {
                     throw new InvalidOperationException("Operação Inválida: O RaioMin deve ser igual ao RaioMax anterior");
                 }
             }
 
-            for (int i = 0; i < custoItems.Length; i++)
+            if (sortedCustoItems.Any(item => item.RaioMax != null && item.RaioMin >= item.RaioMax))
             {
-                if (custoItems[i].RaioMax != null && custoItems[i].RaioMin >= custoItems[i].RaioMax)
-                {
-                    throw new InvalidOperationException("Operação Inválida: O RaioMin deve ser menor que o RaioMax");
-                }
+                throw new InvalidOperationException("Operação Inválida: O RaioMin deve ser menor que o RaioMax");
             }
 
-            var custosAtualizados = await priorizacaoRepositorio.EditarCustosLogisticos(custoItems);
+            var custosAtualizados = await priorizacaoRepositorio.EditarCustosLogisticos(sortedCustoItems);
             await dbContext.SaveChangesAsync();
 
             return custosAtualizados.ConvertAll(modelConverter.ToModel);

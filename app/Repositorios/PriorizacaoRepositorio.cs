@@ -22,7 +22,7 @@ namespace app.Repositorios
                 .OrderBy(c => c.Custo)
                 .ToListAsync();
         }
-        public async Task<List<CustoLogistico>> EditarCustosLogisticos(CustoLogisticoItem[] custoItems)
+        public async Task<List<CustoLogistico>> EditarCustosLogisticos(List<CustoLogisticoItem> custoItems)
         {
             var custosAtualizados = new List<CustoLogistico>();
 

@@ -5,6 +5,6 @@ namespace app.Services.Interfaces
     public interface IPriorizacaoService
     {
         Task<List<CustoLogisticoItem>> ListarCustosLogisticos();
-        Task<List<CustoLogisticoItem>> EditarCustosLogisticos(CustoLogisticoItem[] custoItems);
+        Task<List<CustoLogisticoItem>> EditarCustosLogisticos(List<CustoLogisticoItem> custoItems);
     }
 }

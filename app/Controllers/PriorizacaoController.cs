@@ -26,7 +26,7 @@ namespace app.Controllers
         }
 
         [HttpPut("custologistico")]
-        public async Task<IActionResult> EditarCustosLogisticos([FromBody] CustoLogisticoItem[] items)
+        public async Task<IActionResult> EditarCustosLogisticos([FromBody] List<CustoLogisticoItem> items)
         {
             try
             {
