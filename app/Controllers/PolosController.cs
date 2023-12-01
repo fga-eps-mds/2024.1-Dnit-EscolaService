@@ -1,4 +1,5 @@
 using api;
+using api.Polos;
 using app.Entidades;
 using app.Services;
 using app.Services.Interfaces;
@@ -27,4 +28,11 @@ public class PolosController : AppController
         authService.Require(Usuario, Permissao.EscolaVisualizar);
         return await _poloService.ObterPorIdAsync(id);
     }
+
+    [HttpPost]
+    public async Task CriarPolo(CadastroPoloDTO poloDto)
+    {
+        await _poloService.CadastrarAsync(poloDto);
+    }
+    
 }
