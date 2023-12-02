@@ -6,6 +6,6 @@ public class PesquisaPoloFiltro
     public int TamanhoPagina { get; set; } = 10;
     public string? Nome { get; set; }
     public string? Cep { get; set; }
-    public int? idUf { get; set; }
-    public int? idMunicipio { get; set; }
+    public int? IdUf { get; set; }
+    public int? IdMunicipio { get; set; }
 }

@@ -65,14 +65,14 @@ public class PoloRepositorio : IPoloRepositorio
                                      || p.Cep.Contains(cep));
         }
 
-        if (filtro.idMunicipio != null)
+        if (filtro.IdMunicipio != null)
         {
-            query = query.Where(p => p.MunicipioId == filtro.idMunicipio);
+            query = query.Where(p => p.MunicipioId == filtro.IdMunicipio);
         }
 
-        if (filtro.idUf != null)
+        if (filtro.IdUf != null)
         {
-            query = query.Where(p => p.Uf == (UF)filtro.idUf);
+            query = query.Where(p => p.Uf == (UF)filtro.IdUf);
         }
 
         var total = await query.CountAsync();
