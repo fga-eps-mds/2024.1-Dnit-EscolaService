@@ -60,7 +60,7 @@ namespace app.Services
 
             if (sortedCustoItems.Distinct().Count() == custoItems.Count)
             {
-                if (sortedCustoItems.Select(item => item.Custo).All(c => custosPermitidos.Contains(c)))
+                if (!sortedCustoItems.Select(item => item.Custo).All(c => custosPermitidos.Contains(c)))
                 {
                     throw new InvalidOperationException("Operação Inválida: Deve conter categorias de 1 a 4");
                 }
