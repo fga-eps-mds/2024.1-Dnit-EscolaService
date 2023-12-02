@@ -1,6 +1,7 @@
 ﻿using api;
 using api.CustoLogistico;
 using api.Escolas;
+using api.Fatores;
 using api.Municipios;
 using api.Ranques;
 using api.Superintendencias;
@@ -157,6 +158,16 @@ namespace app.Services
                 RaioMin = custoLogistico.RaioMin,
                 RaioMax = custoLogistico.RaioMax,
                 Valor = custoLogistico.Valor,
+            };
+        
+        public FatorPrioriModel ToModel(FatorPriorizacao fatorPriorizacao) =>
+            new FatorPrioriModel
+            {
+                Id = fatorPriorizacao.Id,
+                Nome = fatorPriorizacao.Nome,
+                Peso = fatorPriorizacao.Peso,
+                Ativo = fatorPriorizacao.Ativo,
+                Primario = fatorPriorizacao.Primario,
             };
     }
 }

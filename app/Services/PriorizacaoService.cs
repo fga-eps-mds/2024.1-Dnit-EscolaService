@@ -3,6 +3,7 @@ using app.Services.Interfaces;
 using app.Repositorios;
 using app.Repositorios.Interfaces;
 using app.Entidades;
+using api.Fatores;
 
 namespace app.Services
 {
@@ -29,6 +30,11 @@ namespace app.Services
             return items.ConvertAll(modelConverter.ToModel);
         }
 
+        public async Task<List<FatorPrioriModel>> ListarFatores()
+        {
+            var items = await priorizacaoRepositorio.ListarFatoresAsync();
+            return items.ConvertAll(modelConverter.ToModel);
+        }
         public async Task<List<CustoLogisticoItem>> EditarCustosLogisticos(List<CustoLogisticoItem> custoItems)
         {
             if (custoItems.Count != 4)

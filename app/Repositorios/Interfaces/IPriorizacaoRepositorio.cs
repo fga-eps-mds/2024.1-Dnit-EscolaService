@@ -5,6 +5,7 @@ namespace app.Repositorios.Interfaces
 {
     public interface IPriorizacaoRepositorio
     {
+        Task<List<FatorPriorizacao>> ListarFatoresAsync();
         Task<FatorPriorizacao> ObterFatorPrioriPorIdAsync(Guid prioriId);
         Task<FatorCondicao> ObterFatorCondiPorIdAsync(Guid condicaoId);
         Task<FatorEscola> ObterFatorEscolaPorIdAsync(Guid escolaId);

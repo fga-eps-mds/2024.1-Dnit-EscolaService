@@ -1,4 +1,5 @@
 ﻿using api.CustoLogistico;
+using api.Fatores;
 using app.Services;
 using app.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -17,6 +18,12 @@ namespace app.Controllers
         {
             this.priorizacaoService = priorizacaoService;
             this.authService = authService;
+        }
+
+        [HttpGet("fatores")]
+        public async Task<List<FatorPrioriModel>> ListarFatores()
+        {
+            return await priorizacaoService.ListarFatores();
         }
 
         [HttpGet("custologistico")]
