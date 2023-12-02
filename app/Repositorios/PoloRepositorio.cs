@@ -84,4 +84,11 @@ public class PoloRepositorio : IPoloRepositorio
 
         return new ListaPaginada<Polo>(items, filtro.Pagina, filtro.TamanhoPagina, total);
     }
+
+    public void Excluir(Polo polo)
+    {
+        dbContext.Remove(polo);
+
+        dbContext.SaveChanges();
+    }
 }
