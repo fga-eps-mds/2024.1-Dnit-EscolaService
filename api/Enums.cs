@@ -144,7 +144,7 @@ namespace api
         [Description("Visualizar Escola")]
         EscolaVisualizar = 1003,
         [Description("Exportar Escola")]
-        EscolaExportar = 1005,
+        EscolaExportar = 1004,
 
         [Description("Visualizar Ranking de Escolas")]
         RanqueVisualizar = 5002,
