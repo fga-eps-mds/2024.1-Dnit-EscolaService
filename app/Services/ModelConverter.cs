@@ -146,9 +146,9 @@ namespace app.Services
             new PoloModel
             {
                 Id = polo.Id,
-                Uf = polo.Uf,
+                Uf = polo.Uf.HasValue ? ToModel(polo.Uf.Value) : null,
                 Nome = polo.Nome,
-                NomeMunicipio = polo.Municipio.Nome,
+                Municipio = ToModel(polo.Municipio),
                 Cep = polo.Cep,
                 Endereco = polo.Endereco,
                 Latitude = polo.Latitude,

@@ -1,3 +1,5 @@
+using api.Municipios;
+
 namespace api.Polos
 {
     public class PoloModel
@@ -13,9 +15,9 @@ namespace api.Polos
     
         public string Nome { get; set; }
     
-        public string NomeMunicipio { get; set; }
+        public MunicipioModel Municipio { get; set; }
     
         public string Longitude { get; set; }
-        public UF? Uf { get; set; }
+        public UfModel? Uf { get; set; }
     }
 }
