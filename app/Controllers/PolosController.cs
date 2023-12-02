@@ -40,5 +40,41 @@ public class PolosController : AppController
     {
         await _poloService.CadastrarAsync(poloDto);
     }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> AtualizarPolo(int id, CadastroPoloDTO poloDto)
+    {
+        authService.Require(Usuario, Permissao.EscolaEditar);
+
+        var poloExistente = await _poloService.ObterPorIdAsync(id);
+
+        if (poloExistente == null)
+        {
+            return NotFound();
+        }
+
+        await _poloService.AtualizarAsync(poloExistente, poloDto);
+
+        return NoContent();
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> ExcluirPolo(int id)
+    {
+        authService.Require(Usuario, Permissao.EscolaExcluir);
+
+        var poloExistente = await _poloService.ObterPorIdAsync(id);
+
+        if (poloExistente == null)
+        {
+            return NotFound();
+        }
+
+        await _poloService.ExcluirAsync(poloExistente);
+
+        return NoContent();
+    }
+
+
     
 }
