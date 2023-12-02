@@ -118,7 +118,16 @@ namespace app.Repositorios
             return entidade;
         }
 
-        public async Task<ListaPaginada<Escola>> ListarPaginadaAsync(PesquisaEscolaFiltro filtro)
+        public async Task<List<Escola>> ListarAsync()
+        {
+            return await dbContext.Escolas
+                .Include(e => e.EtapasEnsino)
+                .Include(e => e.Municipio)
+                .Include(e => e.Superintendencia)
+                .ToListAsync();
+        }
+
+            public async Task<ListaPaginada<Escola>> ListarPaginadaAsync(PesquisaEscolaFiltro filtro)
         {
             var query = dbContext.Escolas
                 .Include(e => e.EtapasEnsino)

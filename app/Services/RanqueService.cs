@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-
 using api.Escolas;
 using app.Entidades;
 using app.Repositorios.Interfaces;
@@ -8,11 +7,8 @@ using Hangfire;
 using api;
 using api.Ranques;
 using Microsoft.Extensions.Options;
-using app.Repositorios;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
-using Microsoft.AspNetCore.Authorization;
 
 namespace app.Services
 {

@@ -137,15 +137,14 @@ namespace api
     {
         [Description("Cadastrar Escola")]
         EscolaCadastrar = 1000,
-
         [Description("Editar Escola")]
         EscolaEditar = 1001,
-
         [Description("Remover Escola")]
         EscolaRemover = 1002,
-
         [Description("Visualizar Escola")]
         EscolaVisualizar = 1003,
+        [Description("Exportar Escola")]
+        EscolaExportar = 1005,
 
         [Description("Visualizar Ranking de Escolas")]
         RanqueVisualizar = 5002,
@@ -153,6 +152,7 @@ namespace api
         RanqueCalcular = 5003,
         [Description("Calcular Ranking de Escolas")]
         RanquePollProcessamento = 5004,
+        [Description("Exportar Ranking de Escolas")]
         RanqueExportar = 5005,
     }
 }
