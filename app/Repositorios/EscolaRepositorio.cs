@@ -42,6 +42,11 @@ namespace app.Repositorios
                 ?? throw new ApiException(ErrorCodes.EscolaNaoEncontrada);
         }
 
+        public async Task<List<Escola>> ListarAsync()
+        {
+            return await dbContext.Escolas.ToListAsync();
+        }
+
         public async Task<Escola?> ObterPorCodigoAsync(int codigo, bool incluirEtapas = false, bool incluirMunicipio = false)
         {
             return await SelecaoEscola(incluirEtapas, incluirMunicipio).FirstOrDefaultAsync(e => e.Codigo == codigo);

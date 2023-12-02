@@ -53,52 +53,37 @@ namespace app.Services
             }
         }
         
-        private async Task<(Polo?, double)> CalcularPoloMaisProximo(string? lat, string? lon)
+        private async Task SetarPoloMaisProximo(Escola escola)
         {
-            var culture = new CultureInfo("pt-BR");
-            
-            var latVazia = lat == null || lat == "";
-            var lonVazia = lon == null || lon == "";
-            if (latVazia || lonVazia)
-                return (null, 0);
-            
-            return await CalcularPoloMaisProximo(double.Parse(lat, culture), double.Parse(lon, culture));
+            (Polo? poloMaisProximo, double distanciaPolo) = await CalcularPoloMaisProximo(escola);
+            escola.Polo = poloMaisProximo;
+            escola.DistanciaPolo = distanciaPolo;
         }
         
-        private async Task<(Polo, double)> CalcularPoloMaisProximo(double lat, double lon)
+        private async Task<(Polo?, double)> CalcularPoloMaisProximo(Escola escola)
         {
-            var culture = new CultureInfo("pt-BR");
-            var superintendencias = await poloRepositorio.ListarAsync();
-            var superintendenciaProxima = 
-                superintendencias.Select(s => new
-                {
-                    Superintendencia = s,
-                    lat = double.Parse(s.Latitude, culture),
-                    lon = double.Parse(s.Longitude, culture),
-                })
-                .Select(s => new
-                {
-                    s.Superintendencia,
-                    Distancia = GeoCalc.CalcularDistancia(lat, lon, s.lat, s.lon)
-                })
-                .MinBy(s => s.Distancia);
+            var polos = await poloRepositorio.ListarAsync();
+            var poloMaisProximo = polos.Select(p => new
+            {
+                Polo = p,
+                Distancia = escola.CalcularDistanciaParaPolo(p),
+            }).Where(o => o.Distancia.HasValue)
+                .MinBy(o => o.Distancia.GetValueOrDefault(double.MaxValue));
 
-            return (superintendenciaProxima.Superintendencia, superintendenciaProxima.Distancia);
+            return (poloMaisProximo?.Polo, poloMaisProximo == null ? 0 : poloMaisProximo.Distancia.GetValueOrDefault());
         }
         
         public async Task CadastrarAsync(CadastroEscolaData cadastroEscolaData)
         {
             var municipioId = cadastroEscolaData.IdMunicipio ?? throw new ApiException(ErrorCodes.MunicipioNaoEncontrado);
             var municipio = await municipioRepositorio.ObterPorIdAsync(municipioId);
-            
-            var (superintendenciaMaisProxima, distanciaSuperintendecia) = await 
-                    CalcularPoloMaisProximo(cadastroEscolaData.Latitude, cadastroEscolaData.Longitude);
 
-            var escola = escolaRepositorio.Criar(cadastroEscolaData, municipio, distanciaSuperintendecia, superintendenciaMaisProxima);
+            var escola = escolaRepositorio.Criar(cadastroEscolaData, municipio);
             cadastroEscolaData.IdEtapasDeEnsino
                 ?.Select(e => escolaRepositorio.AdicionarEtapaEnsino(escola, (EtapaEnsino)e))
                 ?.ToList();
 
+            await SetarPoloMaisProximo(escola);
             // FIXME: seria melhor que fosse pedido apenas para calcular apenas
             // os UPSs das escolas recém adicionadas.
             await ranqueService.CalcularNovoRanqueAsync();
@@ -171,13 +156,7 @@ namespace app.Services
             escola.MunicipioId = data.IdMunicipio;
             escola.Porte = data.Porte;
             escola.DataAtualizacao = DateTimeOffset.Now;
-
-            var (superintendenciaMaisProxima, distanciaSuperintendecia) = await 
-                CalcularPoloMaisProximo(escola.Latitude, escola.Longitude);
-
-            escola.PoloId = superintendenciaMaisProxima?.Id;
-            escola.Polo = superintendenciaMaisProxima;
-            escola.DistanciaPolo = distanciaSuperintendecia;
+            await SetarPoloMaisProximo(escola);
             
             atualizarEtapasEnsino(escola, data.EtapasEnsino!);
             await dbContext.SaveChangesAsync();
@@ -270,7 +249,7 @@ namespace app.Services
             escola.Situacao = (Situacao?)dados.IdSituacao;
 
             var (superIntendenciaMaisProxima, distanciaSuper) = await
-                CalcularPoloMaisProximo(escola.Latitude, escola.Longitude);
+                CalcularPoloMaisProximo(escola);
 
             escola.Polo = superIntendenciaMaisProxima;
             escola.PoloId = superIntendenciaMaisProxima?.Id;
@@ -337,13 +316,9 @@ namespace app.Services
                 await AtualizarAsync(escolaExistente, escola);
                 return null;
             }
-
-
-            var superIntendenciaProxima = 
-                await CalcularPoloMaisProximo(escola.Latitude, escola.Longitude);
-
             
-            var escolaNova = escolaRepositorio.Criar(escola, superIntendenciaProxima.Item2, superIntendenciaProxima.Item1);
+            var escolaNova = escolaRepositorio.Criar(escola);
+            await SetarPoloMaisProximo(escolaNova);
             foreach (var etapa in escola.EtapasEnsino)
             {
                 escolaRepositorio.AdicionarEtapaEnsino(escolaNova, etapa);
