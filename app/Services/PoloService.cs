@@ -73,6 +73,17 @@ public class PoloService : IPoloService
         poloExistente.Longitude = poloDto.Longitude;
         poloExistente.Nome = poloDto.Nome;
 
+        var escolas = await _escolaRepositorio.ListarAsync();
+
+        foreach (var escola in escolas)
+        {
+            var d = escola.CalcularDistanciaParaPolo(poloExistente);
+            if (!d.HasValue) continue;
+            var novoMaisPerto = d < escola.DistanciaPolo;
+            escola.Polo = novoMaisPerto ? poloExistente : escola.Polo;
+            escola.DistanciaPolo = novoMaisPerto ? d.Value : escola.DistanciaPolo;
+        }
+
         await _dbContext.SaveChangesAsync();
     }
 
