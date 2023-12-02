@@ -61,7 +61,7 @@ public class PolosController : AppController
     [HttpDelete("{id}")]
     public async Task<IActionResult> ExcluirPolo(int id)
     {
-        authService.Require(Usuario, Permissao.EscolaExcluir);
+        authService.Require(Usuario, Permissao.EscolaRemover);
 
         var poloExistente = await _poloService.ObterPorIdAsync(id);
 
