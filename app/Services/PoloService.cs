@@ -50,10 +50,9 @@ public class PoloService : IPoloService
         foreach (var escola in escolas)
         {
             var d = escola.CalcularDistanciaParaPolo(poloNovo);
-            if (!d.HasValue) continue;
-            var novoMaisPerto = d < escola.DistanciaPolo;
-            escola.Polo = novoMaisPerto ? poloNovo : escola.Polo;
-            escola.DistanciaPolo = novoMaisPerto ? d.Value : escola.DistanciaPolo;
+            if (!d.HasValue || d >= escola.DistanciaPolo) continue;
+            escola.Polo = poloNovo;
+            escola.DistanciaPolo = d.Value;
         }
         await _dbContext.SaveChangesAsync();
     }
