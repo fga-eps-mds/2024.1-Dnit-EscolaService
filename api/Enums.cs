@@ -131,6 +131,8 @@ namespace api
         RanqueJaSendoCalculado,
         [Description("Formato JSON não reconhecido")]
         FormatoJsonNaoReconhecido,
+        [Description("Fator de Priorização não encontrado")]
+        FatorNaoEncontrado,
     }
 
     public enum Permissao
