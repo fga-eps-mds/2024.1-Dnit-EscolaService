@@ -30,6 +30,19 @@ namespace app.Services
             return items.ConvertAll(modelConverter.ToModel);
         }
 
+        public async Task<FatorPrioriModel> VisualizarFatorId(Guid Id)
+        {
+            FatorPriorizacao item = await priorizacaoRepositorio.ObterFatorPrioriPorIdAsync(Id);
+
+            return new FatorPrioriModel{
+                Id = item.Id,
+                Nome = item.Nome,
+                Peso = item.Peso,
+                Ativo = item.Ativo,
+                Primario = item.Primario
+            };
+        }
+
         public async Task<List<FatorPrioriModel>> ListarFatores()
         {
             var items = await priorizacaoRepositorio.ListarFatoresAsync();

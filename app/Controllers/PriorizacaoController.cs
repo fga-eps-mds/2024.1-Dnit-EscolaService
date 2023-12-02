@@ -26,6 +26,12 @@ namespace app.Controllers
             return await priorizacaoService.ListarFatores();
         }
 
+        [HttpGet("fatores/{Id}")]
+        public async Task<FatorPrioriModel> VisualizarFatorId([FromRoute] Guid Id)
+        {
+            return await priorizacaoService.VisualizarFatorId(Id);
+        }
+
         [HttpGet("custologistico")]
         public async Task<List<CustoLogisticoItem>> ListarCustosLogisticos()
         {
