@@ -36,10 +36,10 @@ public class PoloService : IPoloService
         await _dbContext.SaveChangesAsync();
     }
 
-    public async Task<ListaPoloPaginada<PoloModel>> ListarPaginadaAsync(PesquisaPoloFiltro filtro)
+    public async Task<ListaPaginada<PoloModel>> ListarPaginadaAsync(PesquisaPoloFiltro filtro)
     {
         var polos = await _poloRepositorio.ListarPaginadaAsync(filtro);
         var poloModels = polos.Items.ConvertAll(_modelConverter.ToModel);
-        return new ListaPoloPaginada<PoloModel>(poloModels, polos.Pagina, polos.ItemsPorPagina, polos.Total);
+        return new ListaPaginada<PoloModel>(poloModels, polos.Pagina, polos.ItemsPorPagina, polos.Total);
     }
 }

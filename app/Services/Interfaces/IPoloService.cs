@@ -8,5 +8,5 @@ public interface IPoloService
 {
     Task<Polo> ObterPorIdAsync(int id);
     Task CadastrarAsync(CadastroPoloDTO poloDto);
-    Task<ListaPoloPaginada<PoloModel>> ListarPaginadaAsync(PesquisaPoloFiltro filtro);
+    Task<ListaPaginada<PoloModel>> ListarPaginadaAsync(PesquisaPoloFiltro filtro);
 }

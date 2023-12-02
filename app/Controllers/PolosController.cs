@@ -30,7 +30,7 @@ public class PolosController : AppController
     }
 
     [HttpGet("paginado")]
-    public async Task<ListaPoloPaginada<PoloModel>> ObterPolosAsync([FromQuery] PesquisaPoloFiltro filtro)
+    public async Task<ListaPaginada<PoloModel>> ObterPolosAsync([FromQuery] PesquisaPoloFiltro filtro)
     {
         return await _poloService.ListarPaginadaAsync(filtro);
     }
