@@ -10,4 +10,5 @@ public interface IPoloRepositorio
     Task<List<Polo>> ListarAsync();
     Polo Criar(CadastroPoloDTO poloDto, Municipio municipio);
     Task<ListaPaginada<Polo>> ListarPaginadaAsync(PesquisaPoloFiltro filtro);
+    void Excluir(Polo polo);
 }
