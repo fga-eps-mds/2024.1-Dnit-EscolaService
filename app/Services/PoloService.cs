@@ -42,4 +42,22 @@ public class PoloService : IPoloService
         var poloModels = polos.Items.ConvertAll(_modelConverter.ToModel);
         return new ListaPaginada<PoloModel>(poloModels, polos.Pagina, polos.ItemsPorPagina, polos.Total);
     }
+
+    public async Task AtualizarAsync(Polo poloExistente, CadastroPoloDTO poloDto)
+    {
+        poloExistente.Endereco = poloDto.Endereco;
+        poloExistente.Cep = poloDto.Cep;
+        poloExistente.Latitude = poloDto.Latitude;
+        poloExistente.Longitude = poloDto.Longitude;
+        poloExistente.Nome = poloDto.Nome;
+
+        await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task ExcluirAsync(Polo poloExistente)
+    {
+        _poloRepositorio.Excluir(poloExistente);
+
+        await _dbContext.SaveChangesAsync();
+    }
 }
