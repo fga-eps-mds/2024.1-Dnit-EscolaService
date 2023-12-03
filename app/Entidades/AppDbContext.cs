@@ -12,6 +12,8 @@ namespace app.Entidades
         public DbSet<Ranque> Ranques { get; set; }
         public DbSet<EscolaRanque> EscolaRanques { get; set; }
         public DbSet<Superintendencia> Superintendencias { get; set; }
+        public DbSet<PlanejamentoMacro> PlanejamentoMacro { get; set; }
+        public DbSet<PlanejamentoMacroEscola> PlanejamentoMacroEscola {get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -21,11 +23,21 @@ namespace app.Entidades
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Escola>().HasMany(escola => escola.EtapasEnsino).WithOne(e => e.Escola);
+            modelBuilder.Entity<Escola>()
+                .HasMany(escola => escola.EtapasEnsino)
+                .WithOne(e => e.Escola);
             modelBuilder.Entity<Ranque>()
-                .Property(r => r.Id).ValueGeneratedOnAdd();
+                .Property(r => r.Id)
+                .ValueGeneratedOnAdd();
             modelBuilder.Entity<EscolaRanque>()
-                .Property(r => r.Id).ValueGeneratedOnAdd();
+                .Property(r => r.Id)
+                .ValueGeneratedOnAdd();
+            modelBuilder.Entity<PlanejamentoMacro>()
+                .HasMany(planejamentoMacro => planejamentoMacro.Escolas)
+                .WithOne(escolas => escolas.PlanejamentoMacro);
+            modelBuilder.Entity<PlanejamentoMacroEscola>()
+                .HasOne(PlanejamentoMacroEscola => PlanejamentoMacroEscola.Escola)
+                .WithMany();
         }
 
         public void Popula()
