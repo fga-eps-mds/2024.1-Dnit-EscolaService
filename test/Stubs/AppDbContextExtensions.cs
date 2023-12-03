@@ -53,7 +53,13 @@ namespace test.Stubs
 
         public static List<Polo> PopulaPolos(this AppDbContext dbContext, int limit, int idStart = 1)
         {
-            var polos = PoloStub.Listar(idStart).Take(limit).ToList();
+            if (!dbContext.Municipios.Any())
+            {
+                dbContext.PopulaMunicipios(limit);
+            }
+
+            var listaMunicipios = dbContext.Municipios.Take(1).ToList();
+            var polos = PoloStub.Listar(listaMunicipios, idStart).Take(limit).ToList();
             dbContext.AddRange(polos);
             dbContext.SaveChanges();
             return polos;
