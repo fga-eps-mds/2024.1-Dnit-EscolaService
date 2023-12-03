@@ -59,6 +59,15 @@ namespace test.Stubs
             return superintendencias;
         }
 
+        public static List<CustoLogistico> PopulaCustosLogisticos(this AppDbContext dbContext, int limit)
+        {
+            dbContext.Clear();
+            var custoLogisticos = CustoLogisticoStub.ObterCustoLogisticos();
+            dbContext.AddRange(custoLogisticos);
+            dbContext.SaveChanges();
+            return custoLogisticos;
+        }
+
         public static void Clear(this AppDbContext dbContext)
         {
             dbContext.RemoveRange(dbContext.Escolas);
@@ -67,6 +76,7 @@ namespace test.Stubs
             dbContext.RemoveRange(dbContext.EscolaRanques);
             dbContext.RemoveRange(dbContext.Ranques);
             dbContext.RemoveRange(dbContext.Superintendencias);
+            dbContext.RemoveRange(dbContext.CustosLogisticos);
             dbContext.SaveChanges();
         }
     }
