@@ -23,7 +23,7 @@ public class PoloService : IPoloService
         IMunicipioRepositorio municipioRepositorio, 
         AppDbContext dbContext, 
         ModelConverter modelConverter, 
-        EscolaRepositorio escolaRepositorio)
+        IEscolaRepositorio escolaRepositorio)
     {
         this._poloRepositorio = poloRepositorio;
         _municipioRepositorio = municipioRepositorio;
