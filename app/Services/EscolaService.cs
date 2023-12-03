@@ -63,14 +63,9 @@ namespace app.Services
         private async Task<(Polo?, double)> CalcularPoloMaisProximo(Escola escola)
         {
             var polos = await poloRepositorio.ListarAsync();
-            var poloMaisProximo = polos.Select(p => new
-            {
-                Polo = p,
-                Distancia = escola.CalcularDistanciaParaPolo(p),
-            }).Where(o => o.Distancia.HasValue)
-                .MinBy(o => o.Distancia.GetValueOrDefault(double.MaxValue));
-
-            return (poloMaisProximo?.Polo, poloMaisProximo == null ? 0 : poloMaisProximo.Distancia.GetValueOrDefault());
+            var (poloMaisProximo, distancia) = escola.CalcularPoloMaisProximo(polos);
+            
+            return (poloMaisProximo, distancia == null ? 0 : distancia.GetValueOrDefault());
         }
         
         public async Task CadastrarAsync(CadastroEscolaData cadastroEscolaData)
