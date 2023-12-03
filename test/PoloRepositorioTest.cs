@@ -3,6 +3,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using app.Entidades;
 using app.Repositorios.Interfaces;
+using app.Services;
 using app.Services.Interfaces;
 using test.Fixtures;
 using test.Stubs;
@@ -21,6 +22,28 @@ public class PoloRepositorioTest: TestBed<Base>, IDisposable
         dbContext = fixture.GetService<AppDbContext>(testOutputHelper)!;
         poloRepositorio = fixture.GetService<IPoloRepositorio>(testOutputHelper)!;
     }
+    
+    [Fact]
+    public async Task ObterPorIdAsync_QuandoExistir_DeveRetornar()
+    {
+        var polo = await poloRepositorio.ObterPorIdAsync(1);
+        
+        Assert.NotNull(polo);
+        Assert.Equal(1, polo.Id);
+        Assert.NotNull(polo.Nome);
+        Assert.NotNull(polo.Municipio);
+        Assert.NotNull(polo.Cep);
+        Assert.NotNull(polo.Longitude);
+        Assert.NotNull(polo.Latitude);
+        Assert.NotNull(polo.Endereco);
+    }
+
+    [Fact]
+    public async Task ObterPorIdAsync_QuandoNaoExistir_DeveLancarExcecao()
+    {
+        await Assert.ThrowsAsync<ApiException>(() => poloRepositorio.ObterPorIdAsync(-9999));
+    }
+
     
     [Fact]
     public async Task ListarAsync_QuandoVazio_DeveRetornarListaVazia()
