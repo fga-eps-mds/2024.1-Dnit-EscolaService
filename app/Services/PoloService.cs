@@ -14,7 +14,7 @@ public class PoloService : IPoloService
 {
     private readonly IPoloRepositorio _poloRepositorio;
     private readonly IMunicipioRepositorio _municipioRepositorio;
-    private readonly EscolaRepositorio _escolaRepositorio;
+    private readonly IEscolaRepositorio _escolaRepositorio;
     private readonly AppDbContext _dbContext;
     private readonly ModelConverter _modelConverter;
 
@@ -94,13 +94,13 @@ public class PoloService : IPoloService
     public async Task ExcluirAsync(Polo poloExistente)
     {
 
-        var escolas = await _escolaRepositorio.ListarAsync();
-
+        var escolas = _escolaRepositorio.ListarAsync();
         foreach (var escola in escolas)
         {
             if (escola.Polo != null && escola.Polo.Id == poloExistente.Id)
             {
-                var polosRestantes = await _poloRepositorio.ListarAsync();
+                List<Polo> polos; 
+                await _poloRepositorio.ListarAsync().ContinueWith(l => l);
                 Polo novoPoloMaisProximo = escola.Polo;
                 double menorDistancia = escola.DistanciaPolo;
 
