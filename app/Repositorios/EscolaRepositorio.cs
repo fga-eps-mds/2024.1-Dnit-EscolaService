@@ -5,6 +5,7 @@ using app.Repositorios.Interfaces;
 using app.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
+using System.Linq.Expressions;
 
 namespace app.Repositorios
 {
@@ -42,7 +43,7 @@ namespace app.Repositorios
                 ?? throw new ApiException(ErrorCodes.EscolaNaoEncontrada);
         }
 
-        public async Task<List<Escola>> ListarAsync(Func<Escola, bool>? filter = null)
+        public async Task<List<Escola>> ListarAsync(Expression<Func<Escola, bool>>? filter = null)
         {
             return await dbContext.Escolas.Where(filter ?? (e => true)).AsQueryable().ToListAsync();
         }

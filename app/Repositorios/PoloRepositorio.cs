@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using api;
 using api.Polos;
 using app.Entidades;
@@ -24,7 +25,7 @@ public class PoloRepositorio : IPoloRepositorio
             ?? throw new ApiException(ErrorCodes.PoloNaoEncontrado);
     }
 
-    public async Task<List<Polo>> ListarAsync(Func<Polo, bool>? filter = null)
+    public async Task<List<Polo>> ListarAsync(Expression<Func<Polo, bool>>? filter = null)
     {
         return await dbContext.Polos.Where(filter ?? (p => true)).AsQueryable().ToListAsync();
     }
