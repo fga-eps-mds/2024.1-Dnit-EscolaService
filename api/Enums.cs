@@ -153,5 +153,18 @@ namespace api
         RanqueCalcular = 5003,
         [Description("Calcular Ranking de Escolas")]
         RanquePollProcessamento = 5004,
+        
+        [Description("Cadastrar Polo")]
+        PoloCadastrar = 10000,
+
+        [Description("Editar Polo")]
+        PoloEditar = 10001,
+
+        [Description("Remover Polo")]
+        PoloRemover = 10002,
+
+        [Description("Visualizar Polo")]
+        PoloVisualizar = 10003,
+
     }
 }
