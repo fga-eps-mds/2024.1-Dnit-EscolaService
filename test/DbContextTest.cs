@@ -29,6 +29,7 @@ namespace test
         [Fact]
         public void Popula_QuandoNaoExistirPolo_DevePopular()
         {
+            dbContext.PopulaMunicipiosPorArquivo(null, Path.Join("..", "..", "..", "..", "app", "Migrations", "Data", "municipios.csv"));
             dbContext.PopulaPolosPorArquivo(5, Path.Join("..", "..", "..", "..", "app", "Migrations", "Data", "superintendencias.csv"));
 
             Assert.Equal(5, dbContext.Polos.Count());
