@@ -54,12 +54,6 @@ public class PolosController : AppController
         authService.Require(Usuario, Permissao.PoloEditar);
 
         var poloExistente = await _poloService.ObterPorIdAsync(id);
-
-        if (poloExistente == null)
-        {
-            return NotFound();
-        }
-
         await _poloService.AtualizarAsync(poloExistente, poloDto);
 
         return NoContent();
@@ -72,12 +66,6 @@ public class PolosController : AppController
         authService.Require(Usuario, Permissao.PoloRemover);
 
         var poloExistente = await _poloService.ObterPorIdAsync(id);
-
-        if (poloExistente == null)
-        {
-            return NotFound();
-        }
-
         await _poloService.ExcluirAsync(poloExistente);
 
         return NoContent();
