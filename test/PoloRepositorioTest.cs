@@ -1,3 +1,5 @@
+using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using app.Entidades;
 using app.Repositorios.Interfaces;
@@ -23,7 +25,41 @@ public class PoloRepositorioTest: TestBed<Base>, IDisposable
     [Fact]
     public async Task ListarAsync_QuandoVazio_DeveRetornarListaVazia()
     {
-        var municipios = await poloRepositorio.ListarAsync();
-        Assert.Empty(municipios);
+        var polos = await poloRepositorio.ListarAsync();
+        Assert.Empty(polos);
+    }
+
+    
+    [Fact]
+    public async Task ListarAsync_QuandoPreenchido_DeveRetornarListaCompleta()
+    {
+        var polosDb = dbContext.PopulaPolos(5)!;
+        var polos = await poloRepositorio.ListarAsync(null);
+        Assert.Equal(polosDb.Count, polos.Count);
+        Assert.True(polosDb.All(mdb => polos.Exists(m => m.Id == mdb.Id)));
+    }
+
+    [Fact]
+    public async Task ListarAsync_QuandoFiltro_DeveRetornarListaFiltrada()
+    {
+        var polosDb = dbContext.PopulaPolos(5);
+        var filtroUF = polosDb.First().Uf;
+        var polos = await poloRepositorio.ListarAsync(p => p.Uf == filtroUF);
+        Assert.Equal(polosDb.Where(p => p.Uf == filtroUF).Count(), polos.Count);
+    }
+
+    [Fact]
+    public async Task ListarAsync_QuandoNaoExistir_DeveRetornarListaVazia()
+    {
+        var polosDb = dbContext.PopulaPolos(5);
+        Expression<Func<Polo, bool>> filtroUf =  p => p.Id == -99;
+
+        var Polos = await poloRepositorio.ListarAsync(filtroUf);
+        Assert.Empty(Polos);
+    }
+
+    public new void Dispose()
+    {
+        dbContext.Clear();
     }
 }
