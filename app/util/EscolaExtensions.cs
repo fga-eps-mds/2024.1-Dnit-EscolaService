@@ -20,4 +20,16 @@ public static class EscolaExtensions
 
         return GeoCalc.CalcularDistancia(elat, elon, plat, plon);
     }
+
+    public static (Polo?, double?) CalcularPoloMaisProximo(this Escola escola, IEnumerable<Polo> polos)
+    {
+        var poloMaisProximo = polos.Select(p => new
+            {
+                Polo = p,
+                Distancia = escola.CalcularDistanciaParaPolo(p),
+            }).Where(o => o.Distancia.HasValue)
+            .MinBy(o => o.Distancia.GetValueOrDefault(double.MaxValue));
+
+        return (poloMaisProximo?.Polo, poloMaisProximo?.Distancia);
+    }
 }
