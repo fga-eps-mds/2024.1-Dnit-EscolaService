@@ -93,6 +93,31 @@ public class PoloService : IPoloService
 
     public async Task ExcluirAsync(Polo poloExistente)
     {
+
+        var escolas = await _escolaRepositorio.ListarAsync();
+
+        foreach (var escola in escolas)
+        {
+            if (escola.Polo != null && escola.Polo.Id == poloExistente.Id)
+            {
+                var polosRestantes = await _poloRepositorio.ListarAsync();
+                Polo novoPoloMaisProximo = escola.Polo;
+                double menorDistancia = escola.DistanciaPolo;
+
+                foreach (var polo in polosRestantes)
+                {
+                    var distancia = escola.CalcularDistanciaParaPolo(polo);
+                    if (distancia.HasValue && distancia.Value < menorDistancia)
+                    {
+                        novoPoloMaisProximo = polo;
+                        menorDistancia = distancia.Value;
+                    }
+                }
+
+                escola.Polo = novoPoloMaisProximo;
+                escola.DistanciaPolo = menorDistancia;
+            }
+        }
         _poloRepositorio.Excluir(poloExistente);
 
         await _dbContext.SaveChangesAsync();
