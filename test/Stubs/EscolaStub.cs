@@ -34,6 +34,8 @@ namespace test.Stubs
                     Polo = new Polo
                     {
                         Id = Random.Shared.Next(),
+                        Nome = $"Polo DNIT {Random.Shared.Next()}",
+                        Municipio = municipios.TakeRandom().First(),
                         Cep = $"7215436{Random.Shared.Next() % 10}",
                         Endereco = $"Endereço Teste {Random.Shared.Next()}",
                         Uf = Enum.GetValues<UF>().TakeRandom().FirstOrDefault(),
