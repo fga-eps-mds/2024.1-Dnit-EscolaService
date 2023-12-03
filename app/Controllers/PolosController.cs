@@ -3,6 +3,7 @@ using api.Polos;
 using app.Entidades;
 using app.Services;
 using app.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace app.Controllers;
@@ -21,12 +22,11 @@ public class PolosController : AppController
         this._poloService = poloService;
         this.authService = authService;
     }
-
+    
     [HttpGet("{id}")]
-    public async Task<Polo> Obter(int id)
+    public async Task<PoloModel> Obter(int id)
     {
-        authService.Require(Usuario, Permissao.EscolaVisualizar);
-        return await _poloService.ObterPorIdAsync(id);
+        return await _poloService.ObterModelPorIdAsync(id);
     }
 
     [HttpGet("paginado")]
