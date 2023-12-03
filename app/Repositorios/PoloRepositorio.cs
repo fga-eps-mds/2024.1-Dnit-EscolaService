@@ -19,7 +19,8 @@ public class PoloRepositorio : IPoloRepositorio
 
     public async Task<Polo> ObterPorIdAsync(int id)
     {
-        return await dbContext.Polos.FirstOrDefaultAsync(x => x.Id == id)
+        return await dbContext.Polos.Include(p => p.Municipio)
+                   .FirstOrDefaultAsync(x => x.Id == id)
             ?? throw new ApiException(ErrorCodes.PoloNaoEncontrado);
     }
 
