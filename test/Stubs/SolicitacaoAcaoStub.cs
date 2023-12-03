@@ -7,7 +7,7 @@ namespace test.Stubs
     {
         public SolicitacaoAcaoData ObterSolicitacaoAcaoDTO()
         {
-            return new SolicitacaoAcaoData
+            return new()
             {
                 Escola = "Escola Teste",
                 Uf = UF.DF,

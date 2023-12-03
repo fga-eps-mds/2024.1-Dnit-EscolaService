@@ -62,6 +62,7 @@ namespace test.Stubs
         public static void Clear(this AppDbContext dbContext)
         {
             dbContext.RemoveRange(dbContext.Escolas);
+            dbContext.RemoveRange(dbContext.Solicitacoes);
             dbContext.RemoveRange(dbContext.EscolaEtapaEnsino);
             dbContext.RemoveRange(dbContext.Municipios);
             dbContext.RemoveRange(dbContext.EscolaRanques);
