@@ -51,14 +51,8 @@ public class PoloService : IPoloService
         var poloNovo = _poloRepositorio.Criar(poloDto, municipio);
 
         var escolas = await _escolaRepositorio.ListarAsync();
+        escolas.ForEach(e => e.SubstituirSeMaisProximo(poloNovo));
 
-        foreach (var escola in escolas)
-        {
-            var d = escola.CalcularDistanciaParaPolo(poloNovo);
-            if (!d.HasValue || d >= escola.DistanciaPolo) continue;
-            escola.Polo = poloNovo;
-            escola.DistanciaPolo = d.Value;
-        }
         await _dbContext.SaveChangesAsync();
     }
 
@@ -78,15 +72,7 @@ public class PoloService : IPoloService
         poloExistente.Nome = poloDto.Nome;
 
         var escolas = await _escolaRepositorio.ListarAsync();
-
-        foreach (var escola in escolas)
-        {
-            var d = escola.CalcularDistanciaParaPolo(poloExistente);
-            if (!d.HasValue) continue;
-            var novoMaisPerto = d < escola.DistanciaPolo;
-            escola.Polo = novoMaisPerto ? poloExistente : escola.Polo;
-            escola.DistanciaPolo = novoMaisPerto ? d.Value : escola.DistanciaPolo;
-        }
+        escolas.ForEach(e => e.SubstituirSeMaisProximo(poloExistente));
 
         await _dbContext.SaveChangesAsync();
     }
