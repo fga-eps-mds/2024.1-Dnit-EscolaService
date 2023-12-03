@@ -203,7 +203,7 @@ namespace test
             Assert.True(etapas.All(e => escola.EtapasEnsino?.Exists(ee => ee.EtapaEnsino == e) ?? false));
         }
 
-        protected new void Dispose()
+        public new void Dispose()
         {
             dbContext.Clear();
         }

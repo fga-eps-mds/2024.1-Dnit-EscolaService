@@ -6,9 +6,7 @@ using service.Interfaces;
 using System.Collections.Generic;
 using System.Net.Mail;
 using System.Threading.Tasks;
-using test.Fixtures;
 using test.Stubs;
-using Xunit.Microsoft.DependencyInjection.Abstracts;
 
 namespace test
 {
@@ -17,7 +15,7 @@ namespace test
         const int INTERNAL_SERVER_ERROR = 500;
 
         [Fact]
-        public async void EnviarSolicitacaoAcao_QuandoSolicitacaoForEnviada_DeveRetornarOk()
+        public async Task EnviarSolicitacaoAcao_QuandoSolicitacaoForEnviada_DeveRetornarOk()
         {
             SolicitacaoAcaoStub solicitacaoAcaoStub = new SolicitacaoAcaoStub();
             var solicitacaoAcaoDTO = solicitacaoAcaoStub.ObterSolicitacaoAcaoDTO();
@@ -33,7 +31,7 @@ namespace test
         }
 
         [Fact]
-        public async void EnviarSolicitacaoAcao_QuandoEnvioDoEmailFalhar_DeveRetornarErro()
+        public async Task EnviarSolicitacaoAcao_QuandoEnvioDoEmailFalhar_DeveRetornarErro()
         {
             SolicitacaoAcaoStub solicitacaoAcaoStub = new SolicitacaoAcaoStub();
             var solicitacaoAcaoDTO = solicitacaoAcaoStub.ObterSolicitacaoAcaoDTO();
