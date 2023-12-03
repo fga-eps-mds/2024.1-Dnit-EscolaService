@@ -37,6 +37,11 @@ public class PoloService : IPoloService
         return await _poloRepositorio.ObterPorIdAsync(id);
     }
     
+    public async Task<PoloModel> ObterModelPorIdAsync(int id)
+    {
+        var polo = await _poloRepositorio.ObterPorIdAsync(id);
+        return _modelConverter.ToModel(polo);
+    }
     
     public async Task CadastrarAsync(CadastroPoloDTO poloDto)
     {
