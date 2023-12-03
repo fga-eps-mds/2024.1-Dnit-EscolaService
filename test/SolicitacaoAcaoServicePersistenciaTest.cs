@@ -26,10 +26,6 @@ namespace test
 
         public SolicitacaoAcaoServicePersistenciaTest(ITestOutputHelper testOutputHelper, Base fixture) : base(testOutputHelper, fixture)
         {
-            // Environment.SetEnvironmentVariable("EMAIL_SERVICE_ADDRESS", "teste_email@exemplo.com");
-            // Environment.SetEnvironmentVariable("EMAIL_SERVICE_PASSWORD", "teste");
-            // Environment.SetEnvironmentVariable("EMAIL_DNIT", "teste_email@exemplo.com");
-
             db = fixture.GetService<AppDbContext>(testOutputHelper)!;
             db.Clear();
             smtpClientWrapperMock = new();
@@ -43,7 +39,7 @@ namespace test
         }
 
         [Fact]
-        public async Task Criar_QuandoEscolaSemSolicitacao_DeveCriarSolicitacao()
+        public async Task Criar_QuandoEscolaNaoCadastrada_DeveCriarSolicitacaoSemEscolaRelacionada()
         {
             Assert.Empty(db.Solicitacoes);
 
@@ -51,6 +47,26 @@ namespace test
             await service.Criar(sol);
 
             Assert.Single(db.Solicitacoes.ToList());
+
+            var solicitacao = db.Solicitacoes.First();
+            Assert.Null(solicitacao.Escola);
+            Assert.Null(solicitacao.EscolaId);
+        }
+
+        [Fact]
+        public async Task Criar_QuandoEscolaJaCadastrada_DeveRelacionarSolicitacaoComEscola()
+        {
+            var escola = db.PopulaEscolas(1).First();
+            var sol = new SolicitacaoAcaoStub().ObterSolicitacaoAcaoDTO();
+            escola.Codigo = 123;
+            sol.EscolaCodigoInep = 123;
+            db.SaveChanges();
+
+            await service.Criar(sol);
+
+            var solicitacao = db.Solicitacoes.First();
+            Assert.Equal(escola.Id, solicitacao.EscolaId);
+            Assert.Single(db.Solicitacoes);
         }
 
         // FIXME: vai mudar para usar solicitacaoAcaoRepositorio.CriarOuAtualizar()
@@ -61,7 +77,7 @@ namespace test
             var solicitacao = new SolicitacaoAcaoStub().ObterSolicitacaoAcaoDTO();
             escola.Codigo = 1234;
             solicitacao.EscolaCodigoInep = 1234;
-            
+
             await service.Criar(solicitacao);
             // FIXME: vai apenas atualizar a data de realização da solicitação
             var e = await Assert.ThrowsAsync<Exception>(async () => await service.Criar(solicitacao));
@@ -69,6 +85,12 @@ namespace test
             Assert.Equal("Já foi feita uma solicitação para essa escola", e.Message);
             Assert.Single(db.Solicitacoes);
         }
+
+        // [Fact]
+        // public async Task Listar_QuandoSolicitacoesParaEscolasNaoCadastradas_RetornaSolicitacoesSemEscola()
+        // {
+        //     await Task.Run(() => { });
+        // }
 
         public new void Dispose()
         {
