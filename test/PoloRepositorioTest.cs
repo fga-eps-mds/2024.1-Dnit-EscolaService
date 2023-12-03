@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using api.Polos;
 using app.Entidades;
 using app.Repositorios.Interfaces;
 using app.Services;
@@ -26,6 +27,7 @@ public class PoloRepositorioTest: TestBed<Base>, IDisposable
     [Fact]
     public async Task ObterPorIdAsync_QuandoExistir_DeveRetornar()
     {
+        dbContext.PopulaPolos(5);
         var polo = await poloRepositorio.ObterPorIdAsync(1);
         
         Assert.NotNull(polo);
@@ -81,6 +83,56 @@ public class PoloRepositorioTest: TestBed<Base>, IDisposable
         Assert.Empty(Polos);
     }
 
+    [Fact]
+    public async void ListarPaginadaAsync_QuandoFiltroForPassado_DeveRetornarListaDePolosFiltradas()
+    {
+        var polosDb = dbContext.PopulaPolos(5);
+
+        var poloPesquisa = polosDb.First();
+
+        var filtro = new PesquisaPoloFiltro()
+        {
+            Pagina = 1,
+            TamanhoPagina = 2,
+            Nome = poloPesquisa.Nome,
+            IdUf = (int?)poloPesquisa.Uf,
+            IdMunicipio = poloPesquisa.MunicipioId,
+            Cep = poloPesquisa.Cep,
+        };
+
+        var listaPaginada = await poloRepositorio.ListarPaginadaAsync(filtro);
+
+        Assert.Contains(poloPesquisa, listaPaginada.Items);
+    }
+    
+    [Fact]
+    public async Task ListarPaginadaAsync_QuandoMetodoForChamado_DeveRetornarListaDePolos()
+    {
+        var polos = dbContext.Polos.ToList();
+        var filtro = new PesquisaPoloFiltro {
+            Pagina = 1,
+            TamanhoPagina = polos.Count()
+        };
+        var result = await poloRepositorio.ListarPaginadaAsync(filtro);
+
+        Assert.Equal(polos.Count(), result.Total);
+        Assert.Equal(filtro.Pagina, result.Pagina);
+        Assert.Equal(filtro.TamanhoPagina, result.ItemsPorPagina);
+        Assert.True(polos.All(e => result.Items.Exists(ee => ee.Id == e.Id)));
+    }
+    
+    [Fact]
+    public async Task ListarPaginadaAsync_QuandoFiltroNaoExistir_DeveRetornarListaVazia()
+    {
+        var polos = dbContext.Polos.ToList();
+        var filtro = new PesquisaPoloFiltro {
+            Pagina = 999999,
+            TamanhoPagina = 9999999
+        };
+        var result = await poloRepositorio.ListarPaginadaAsync(filtro);
+        
+        Assert.Empty(result.Items);
+    }
     public new void Dispose()
     {
         dbContext.Clear();
