@@ -32,4 +32,12 @@ public static class EscolaExtensions
 
         return (poloMaisProximo?.Polo, poloMaisProximo?.Distancia);
     }
+
+    public static void SubstituirSeMaisProximo(this Escola escola, Polo polo)
+    {
+        var d = escola.CalcularDistanciaParaPolo(polo);
+        if (!d.HasValue || d >= escola.DistanciaPolo) return;
+        escola.Polo = polo;
+        escola.DistanciaPolo = d.Value;
+    }
 }
