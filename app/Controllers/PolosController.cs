@@ -23,28 +23,35 @@ public class PolosController : AppController
         this.authService = authService;
     }
     
+    [Authorize]
     [HttpGet("{id}")]
     public async Task<PoloModel> Obter(int id)
     {
+        authService.Require(Usuario, Permissao.PoloVisualizar);
         return await _poloService.ObterModelPorIdAsync(id);
     }
 
+    [Authorize]
     [HttpGet("paginado")]
     public async Task<ListaPaginada<PoloModel>> ObterPolosAsync([FromQuery] PesquisaPoloFiltro filtro)
     {
+        authService.Require(Usuario, Permissao.PoloVisualizar);
         return await _poloService.ListarPaginadaAsync(filtro);
     }
     
+    [Authorize]
     [HttpPost]
     public async Task CriarPolo(CadastroPoloDTO poloDto)
     {
+        authService.Require(Usuario, Permissao.PoloCadastrar);
         await _poloService.CadastrarAsync(poloDto);
     }
 
+    [Authorize]
     [HttpPut("{id}")]
     public async Task<IActionResult> AtualizarPolo(int id, CadastroPoloDTO poloDto)
     {
-        authService.Require(Usuario, Permissao.EscolaEditar);
+        authService.Require(Usuario, Permissao.PoloEditar);
 
         var poloExistente = await _poloService.ObterPorIdAsync(id);
 
@@ -58,10 +65,11 @@ public class PolosController : AppController
         return NoContent();
     }
 
+    [Authorize]
     [HttpDelete("{id}")]
     public async Task<IActionResult> ExcluirPolo(int id)
     {
-        authService.Require(Usuario, Permissao.EscolaRemover);
+        authService.Require(Usuario, Permissao.PoloRemover);
 
         var poloExistente = await _poloService.ObterPorIdAsync(id);
 
