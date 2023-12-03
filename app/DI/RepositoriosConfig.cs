@@ -11,6 +11,8 @@ namespace app.DI
             services.AddScoped<IEscolaRepositorio, EscolaRepositorio>();
             services.AddScoped<IMunicipioRepositorio, MunicipioRepositorio>();
             services.AddScoped<ISuperintendenciaRepositorio, SuperIntendenciaRepositorio>();
+            services.AddScoped<IRanqueRepositorio, RanqueRepositorio>();
+            services.AddScoped<IPlanejamentoRepositorio, PlanejamentoRepositorio>();
         }
     }
 }
