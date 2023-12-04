@@ -169,5 +169,15 @@ namespace app.Services
                 Ativo = fatorPriorizacao.Ativo,
                 Primario = fatorPriorizacao.Primario,
             };
+        public RanqueDetalhesModel ToModel(Ranque ranque, FatorModel[] fatores)
+        {
+            return new RanqueDetalhesModel{
+                Id = ranque.Id,
+                Data = ranque.DataFim!.Value.LocalDateTime,
+                NumEscolas = ranque.EscolaRanques.Count(),
+                Descricao = ranque.Descricao,
+                Fatores = fatores
+            };
+        }
     }
 }
