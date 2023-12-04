@@ -80,13 +80,10 @@ public class PoloService : IPoloService
 
     public async Task ExcluirAsync(Polo poloExistente)
     {
-        var listarEscolasTask = _escolaRepositorio.ListarAsync(e => e.Polo == poloExistente);
-        var listarPolosTask = _poloRepositorio.ListarAsync(p => p != poloExistente);
-        await Task.WhenAll(listarEscolasTask, listarPolosTask);
-        var escolasComEssePolo = await listarEscolasTask;
-        var polosRestantes = await listarPolosTask;
+        var escolasComPoloExcluido = await _escolaRepositorio.ListarAsync(e => e.Polo == poloExistente);
+        var polosRestantes = await _poloRepositorio.ListarAsync(p => p != poloExistente);
         
-        foreach (var escola in escolasComEssePolo)
+        foreach (var escola in escolasComPoloExcluido)
         {
             var (poloMaisProximo, distancia) = escola.CalcularPoloMaisProximo(polosRestantes);
             escola.Polo = poloMaisProximo;

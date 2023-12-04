@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace app.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/polos")]
 public class PolosController : AppController
 {
     private readonly IPoloService _poloService;
