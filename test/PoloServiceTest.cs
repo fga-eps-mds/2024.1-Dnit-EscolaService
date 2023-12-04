@@ -1,3 +1,4 @@
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using api;
@@ -128,11 +129,12 @@ public class PoloServiceTest : TestBed<Base>, IDisposable
     [Fact]
     public async Task CadastrarAsync_QuandoChamadoDeveCadastrarPoloEmBanco()
     {
+        dbContext.Clear();
+        dbContext.PopulaMunicipiosPorArquivo(null, Path.Join("..", "..", "..", "..", "app", "Migrations", "Data", "municipios.csv"));
         var cadastro = new CadastroPoloDTO()
         {
             Cep = "1",
             Endereco = "avenida",
-            Id = -1,
             Latitude = "1,2",
             Longitude = "1,2",
             Nome = "polo",
@@ -142,7 +144,7 @@ public class PoloServiceTest : TestBed<Base>, IDisposable
 
         await poloService.CadastrarAsync(cadastro);
 
-        var meuPolo = dbContext.Polos.Where(p => p.Id == -1).First();
+        var meuPolo = dbContext.Polos.Where(p => p.Id == 1).First();
 
         Assert.NotNull(meuPolo);
     }
@@ -190,7 +192,6 @@ public class PoloServiceTest : TestBed<Base>, IDisposable
         // Distância entre (1,2; 1,2) e (1,3; 1,3) é por volta de 20 km, substituir
         var poloCadastro = new CadastroPoloDTO()
         {
-            Id = 1,
             Nome = $"Polo Novo",
             Cep = $"Cep Novo",
             Endereco = $"Endereço Novo",
@@ -248,7 +249,6 @@ public class PoloServiceTest : TestBed<Base>, IDisposable
         // Distância entre (1,2; 1,2) e (1,3; 1,3) é por volta de 20 km, substituir
         var poloCadastro = new CadastroPoloDTO()
         {
-            Id = 1,
             Nome = $"Polo Novo",
             Cep = $"Cep Novo",
             Endereco = $"Endereço Novo",
