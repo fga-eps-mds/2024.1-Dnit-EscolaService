@@ -7,6 +7,7 @@ namespace api.Solicitacoes
     {
         public Guid Id { get; set; }
         public EscolaCorretaModel? Escola { get; set; }
+        public int CodigoEscola { get; set; }
         public string Nome { get; set; }
         public string NomeSolicitante { get; set; }
         public int QuantidadeAlunos { get; set; }

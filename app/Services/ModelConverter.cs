@@ -183,6 +183,7 @@ namespace app.Services
                 QuantidadeAlunos = solicitacao.TotalAlunos,
                 Uf = solicitacao.EscolaUf,
                 Municipio = ToModel(solicitacao.EscolaMunicipio!),
+                CodigoEscola = solicitacao.EscolaCodigoInep,
                 Escola = solicitacao.Escola == null
                     ? null
                     : _ToModel(solicitacao.Escola!),
