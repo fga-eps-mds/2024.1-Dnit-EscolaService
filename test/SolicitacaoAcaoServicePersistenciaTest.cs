@@ -11,6 +11,7 @@ using app.Entidades;
 using Xunit.Microsoft.DependencyInjection.Abstracts;
 using test.Fixtures;
 using Xunit.Abstractions;
+using api.Escolas;
 
 namespace test
 {
@@ -86,11 +87,46 @@ namespace test
             Assert.Single(db.Solicitacoes);
         }
 
-        // [Fact]
-        // public async Task Listar_QuandoSolicitacoesParaEscolasNaoCadastradas_RetornaSolicitacoesSemEscola()
-        // {
-        //     await Task.Run(() => { });
-        // }
+
+        // FIXME: trocar "QuandoNormal" por algo mais expressivo
+        // [Fact(Skip = "")]
+        [Fact]
+        public async Task ObterSolicitacoesAsync_QuandoNormal_RetornaSolicitacoes()
+        {
+            db.PopulaSolicitacoes(4);
+
+            var filtro = new PesquisaSolicitacaoFiltro();
+            var models = await service.ObterSolicitacoesAsync(filtro);
+
+            Assert.Equal(4, models.Items.Count);
+        }
+
+        [Fact]
+        public async Task ObterSolicitacoesAsync_AlgumasSolicitacoesTemEscola_OutrasNao()
+        {
+            var escolas = db.PopulaEscolas(4);
+            var sols = db.PopulaSolicitacoes(8);
+
+            sols[0].EscolaId = escolas[0].Id;
+            sols[1].EscolaId = escolas[1].Id;
+            sols[2].EscolaId = escolas[2].Id;
+            sols[3].EscolaId = escolas[3].Id;
+            db.SaveChanges();
+
+            var filtro = new PesquisaSolicitacaoFiltro();
+            var modelos = await service.ObterSolicitacoesAsync(filtro);
+
+            var solicitacoesRelacionadasComEscolas = 0;
+            var solicitacoesSemEscolas = 0;
+            foreach (var m in modelos.Items)
+                if (m.Escola != null)
+                    solicitacoesRelacionadasComEscolas++;
+                else
+                    solicitacoesSemEscolas++;
+
+            Assert.Equal(4, solicitacoesRelacionadasComEscolas);
+            Assert.Equal(4, solicitacoesSemEscolas);
+        }
 
         public new void Dispose()
         {
