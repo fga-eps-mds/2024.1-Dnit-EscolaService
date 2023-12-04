@@ -31,7 +31,7 @@ namespace test
         [Fact]
         public async Task EditarCustosLogisticos_QuandoMetodoForChamado_RetornaParametrosDeCustoAtualizados()
         {
-            var custoLogisticoAtualizado = CustoLogisticoStub.CustoLogisticoAtualizado();
+            var custoLogisticoAtualizado = CustoLogisticoStub.ObterCustoLogisticoAtualizado();
             await controller.EditarCustosLogisticos(custoLogisticoAtualizado);
             var custoLogisticoDb = db.CustosLogisticos.ToList();
 

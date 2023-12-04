@@ -62,7 +62,7 @@ namespace test.Stubs
         public static List<CustoLogistico> PopulaCustosLogisticos(this AppDbContext dbContext, int limit)
         {
             dbContext.Clear();
-            var custoLogisticos = CustoLogisticoStub.ObterCustoLogisticos();
+            var custoLogisticos = CustoLogisticoStub.ObterCustoLogisticosValidos();
             dbContext.AddRange(custoLogisticos);
             dbContext.SaveChanges();
             return custoLogisticos;
