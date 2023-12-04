@@ -8,6 +8,8 @@ using app.Repositorios.Interfaces;
 using api.Escolas;
 using System.Globalization;
 using System.Data;
+using Microsoft.AspNetCore.Mvc;
+using System.Text;
 
 namespace app.Services
 {
@@ -412,6 +414,25 @@ namespace app.Services
             var distance = raioTerraEmKm * resultadoFormula;
 
             return distance;
+        }
+
+        public async Task<FileResult> ExportarEscolasAsync()
+        {
+            var escolas = await escolaRepositorio.ListarAsync();
+            var builder = new StringBuilder("");
+            var delimiter = ";";
+            builder.AppendLine(string.Join(delimiter, Escola.SerializeHeaders()));
+
+            foreach (var escola in escolas)
+            {
+                builder.AppendLine(CsvSerializer.Serialize(escola, delimiter));
+            }
+
+            var bytes = Encoding.UTF8.GetBytes(builder.ToString());
+            return new FileContentResult(bytes, "text/csv")
+            {
+                FileDownloadName = $"escolas.csv",
+            };
         }
     }
 
