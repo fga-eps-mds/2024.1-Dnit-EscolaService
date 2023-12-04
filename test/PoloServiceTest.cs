@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
+using api;
 using api.Polos;
 using app.Entidades;
 using app.Repositorios.Interfaces;
@@ -145,7 +146,123 @@ public class PoloServiceTest : TestBed<Base>, IDisposable
 
         Assert.NotNull(meuPolo);
     }
+
+    [Fact]
+    public async Task CadastrarAsync_QuandoChamado_DeveSubstituirPoloAntigoCasoSejaMaisProximo()
+    {
+        var municipios = dbContext.PopulaMunicipios(5);
+        var escola = new Escola
+        {
+            Id = Guid.NewGuid(),
+            DataAtualizacao = DateTime.Now,
+            Cep = $"7215436{Random.Shared.Next() % 10}",
+            Endereco = $"Endereço Teste {Random.Shared.Next()}",
+            Codigo = Random.Shared.Next() % 1000,
+            Latitude = "1,2",
+            Longitude = "1,2",
+            Localizacao = Enum.GetValues<Localizacao>().TakeRandom(true).FirstOrDefault(),
+            Municipio = municipios.TakeRandom().First(),
+            Nome = $"Escola DNIT {Random.Shared.Next()}",
+            Porte = Enum.GetValues<Porte>().TakeRandom(true).FirstOrDefault(),
+            Rede = Enum.GetValues<Rede>().TakeRandom(true).FirstOrDefault(),
+            Situacao = Enum.GetValues<Situacao>().TakeRandom(true).FirstOrDefault(),
+            Telefone = "52426252",
+            TotalAlunos = Random.Shared.Next() % 100 + 1,
+            TotalDocentes = Random.Shared.Next() % 100 + 1,
+            Uf = Enum.GetValues<UF>().TakeRandom().FirstOrDefault(),
+            Polo = new Polo
+            {
+                Id = Random.Shared.Next(),
+                Nome = $"Polo Antigo",
+                Municipio = municipios.TakeRandom().First(),
+                Cep = $"Cep Antigo",
+                Endereco = $"Endereço Antigo",
+                Uf = Enum.GetValues<UF>().TakeRandom().FirstOrDefault(),
+                Latitude = Random.Shared.NextDouble().ToString().Truncate(12),
+                Longitude = Random.Shared.NextDouble().ToString().Truncate(12),
+            },
+            DistanciaPolo = 30,
+        };
+        
+        dbContext.Escolas.Add(escola);
+        await dbContext.SaveChangesAsync();
+        
+        // Distância entre (1,2; 1,2) e (1,3; 1,3) é por volta de 20 km, substituir
+        var poloCadastro = new CadastroPoloDTO()
+        {
+            Id = 1,
+            Nome = $"Polo Novo",
+            Cep = $"Cep Novo",
+            Endereco = $"Endereço Novo",
+            MunicipioId = municipios.TakeRandom().First().Id,
+            Latitude = "1,3",
+            Longitude = "1,3",
+            IdUf = (int)Enum.GetValues<UF>().TakeRandom().FirstOrDefault(),
+        };
+
+        var poloCadastrado = await poloService.CadastrarAsync(poloCadastro);
+        
+        Assert.Equal(escola.Polo, poloCadastrado);
+    }
     
+    [Fact]
+    public async Task CadastrarAsync_QuandoChamado_NaoDeveSubstituirPoloAntigoCasoSejaMaisLonge()
+    {
+        var municipios = dbContext.PopulaMunicipios(5);
+        var escola = new Escola
+        {
+            Id = Guid.NewGuid(),
+            DataAtualizacao = DateTime.Now,
+            Cep = $"7215436{Random.Shared.Next() % 10}",
+            Endereco = $"Endereço Teste {Random.Shared.Next()}",
+            Codigo = Random.Shared.Next() % 1000,
+            Latitude = "1,2",
+            Longitude = "1,2",
+            Localizacao = Enum.GetValues<Localizacao>().TakeRandom(true).FirstOrDefault(),
+            Municipio = municipios.TakeRandom().First(),
+            Nome = $"Escola DNIT {Random.Shared.Next()}",
+            Porte = Enum.GetValues<Porte>().TakeRandom(true).FirstOrDefault(),
+            Rede = Enum.GetValues<Rede>().TakeRandom(true).FirstOrDefault(),
+            Situacao = Enum.GetValues<Situacao>().TakeRandom(true).FirstOrDefault(),
+            Telefone = "52426252",
+            TotalAlunos = Random.Shared.Next() % 100 + 1,
+            TotalDocentes = Random.Shared.Next() % 100 + 1,
+            Uf = Enum.GetValues<UF>().TakeRandom().FirstOrDefault(),
+            Polo = new Polo
+            {
+                Id = Random.Shared.Next(),
+                Nome = $"Polo Antigo",
+                Municipio = municipios.TakeRandom().First(),
+                Cep = $"Cep Antigo",
+                Endereco = $"Endereço Antigo",
+                Uf = Enum.GetValues<UF>().TakeRandom().FirstOrDefault(),
+                Latitude = Random.Shared.NextDouble().ToString().Truncate(12),
+                Longitude = Random.Shared.NextDouble().ToString().Truncate(12),
+            },
+            DistanciaPolo = 10,
+        };
+        
+        dbContext.Escolas.Add(escola);
+        await dbContext.SaveChangesAsync();
+        
+        // Distância entre (1,2; 1,2) e (1,3; 1,3) é por volta de 20 km, substituir
+        var poloCadastro = new CadastroPoloDTO()
+        {
+            Id = 1,
+            Nome = $"Polo Novo",
+            Cep = $"Cep Novo",
+            Endereco = $"Endereço Novo",
+            MunicipioId = municipios.TakeRandom().First().Id,
+            Latitude = "1,3",
+            Longitude = "1,3",
+            IdUf = (int)Enum.GetValues<UF>().TakeRandom().FirstOrDefault(),
+        };
+
+        var poloCadastrado = await poloService.CadastrarAsync(poloCadastro);
+        
+        Assert.NotEqual(escola.Polo, poloCadastrado);
+    }
+    // TODO: testes de recálculo
     public new void Dispose()
     {
         dbContext.Clear();
