@@ -1,28 +1,39 @@
-﻿using api.Escolas;
+﻿using api;
+using api.Escolas;
 using app.Controllers;
+using app.Services;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using service.Interfaces;
 using System.Collections.Generic;
 using System.Net.Mail;
 using System.Threading.Tasks;
+using test.Fixtures;
 using test.Stubs;
+using Xunit.Abstractions;
 
 namespace test
 {
-    public class SolicitacaoAcaoControllerTest
+    public class SolicitacaoAcaoControllerTest : AuthTest
     {
         const int INTERNAL_SERVER_ERROR = 500;
+        private readonly AuthService authService;
+        private readonly SolicitacaoAcaoController controller;
+        private readonly Mock<ISolicitacaoAcaoService> solicitacaoAcaoServiceMock;
+
+        public SolicitacaoAcaoControllerTest(ITestOutputHelper testOutputHelper, Base fixture) : base(testOutputHelper, fixture)
+        {
+            solicitacaoAcaoServiceMock = new Mock<ISolicitacaoAcaoService>();
+            var authService = fixture.GetService<AuthService>(testOutputHelper)!;
+            controller = new SolicitacaoAcaoController(authService, solicitacaoAcaoServiceMock.Object);
+            AutenticarUsuario(controller, permissoes: new() { Permissao.SolicitacaoVisualizar });
+        }
 
         [Fact]
         public async Task EnviarSolicitacaoAcao_QuandoSolicitacaoForEnviada_DeveRetornarOk()
         {
-            SolicitacaoAcaoStub solicitacaoAcaoStub = new SolicitacaoAcaoStub();
+            SolicitacaoAcaoStub solicitacaoAcaoStub = new();
             var solicitacaoAcaoDTO = solicitacaoAcaoStub.ObterSolicitacaoAcaoDTO();
-
-            var solicitacaoAcaoServiceMock = new Mock<ISolicitacaoAcaoService>();
-
-            var controller = new SolicitacaoAcaoController(solicitacaoAcaoServiceMock.Object);
 
             var result = await controller.EnviarSolicitacaoAcao(solicitacaoAcaoDTO);
 
@@ -33,13 +44,10 @@ namespace test
         [Fact]
         public async Task EnviarSolicitacaoAcao_QuandoEnvioDoEmailFalhar_DeveRetornarErro()
         {
-            SolicitacaoAcaoStub solicitacaoAcaoStub = new SolicitacaoAcaoStub();
+            SolicitacaoAcaoStub solicitacaoAcaoStub = new();
             var solicitacaoAcaoDTO = solicitacaoAcaoStub.ObterSolicitacaoAcaoDTO();
 
-            var solicitacaoAcaoServiceMock = new Mock<ISolicitacaoAcaoService>();
             solicitacaoAcaoServiceMock.Setup(x => x.EnviarSolicitacaoAcao(solicitacaoAcaoDTO)).Throws<SmtpException>();
-
-            var controller = new SolicitacaoAcaoController(solicitacaoAcaoServiceMock.Object);
 
             var result = await controller.EnviarSolicitacaoAcao(solicitacaoAcaoDTO);
 
@@ -51,11 +59,10 @@ namespace test
         [Fact]
         public async Task ObterEscolas_QuandoEscolasForemObtidas_DeveRetornarListaEscolas()
         {
-            var solicitacaoAcaoServiceMock = new Mock<ISolicitacaoAcaoService>();
+            // var solicitacaoAcaoServiceMock = new Mock<ISolicitacaoAcaoService>();
+            // var controller = new SolicitacaoAcaoController(solicitacaoAcaoServiceMock.Object);
 
-            var controller = new SolicitacaoAcaoController(solicitacaoAcaoServiceMock.Object);
-
-            List<EscolaInep> listaEscolas = new List<EscolaInep>
+            List<EscolaInep> listaEscolas = new()
             {
                 new EscolaInep { Cod = 1, Estado = "SP", Nome = "Escola A" },
                 new EscolaInep { Cod = 2, Estado = "SP", Nome = "Escola B" },

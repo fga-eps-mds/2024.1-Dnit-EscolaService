@@ -1,8 +1,8 @@
 ﻿using api;
 using api.Escolas;
 using api.Solicitacoes;
-using app.Entidades;
 using app.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using service.Interfaces;
 using System.Net.Mail;
@@ -14,13 +14,16 @@ namespace app.Controllers
     public class SolicitacaoAcaoController : AppController
     {
         private readonly ISolicitacaoAcaoService solicitacaoAcaoService;
+        private readonly AuthService authService;
 
-        public SolicitacaoAcaoController(ISolicitacaoAcaoService solicitacaoAcaoService)
+        public SolicitacaoAcaoController(AuthService authService, ISolicitacaoAcaoService solicitacaoAcaoService)
         {
+            this.authService = authService;
             this.solicitacaoAcaoService = solicitacaoAcaoService;
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> EnviarSolicitacaoAcao([FromBody] SolicitacaoAcaoData solicitacaoAcaoDTO)
         {
             try
@@ -36,8 +39,10 @@ namespace app.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<ListaPaginada<SolicitacaoAcaoModel>> ObterSolicitacoesAsync([FromQuery] PesquisaSolicitacaoFiltro filtro)
         {
+            authService.Require(Usuario, Permissao.SolicitacaoVisualizar);
             return await solicitacaoAcaoService.ObterSolicitacoesAsync(filtro);
         }
 
