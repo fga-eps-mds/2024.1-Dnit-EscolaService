@@ -157,4 +157,23 @@ namespace api
         [Description("Exportar Ranking de Escolas")]
         RanqueExportar = 5005,
     }
+
+    public enum PropriedadeCondicao
+    {
+        Porte = 1,
+        Situacao,
+        Municipio,
+        UF,
+        Localizacao,
+        TotalAlunos,
+        EtapaEnsino,
+        Rede
+    }
+
+    public enum OperacaoCondicao
+    {
+        Equals = 1,
+        GTE,
+        LTE
+    }
 }

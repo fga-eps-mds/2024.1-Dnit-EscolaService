@@ -9,5 +9,8 @@ namespace app.Services.Interfaces
         Task<List<FatorPrioriModel>> ListarFatores();
         Task<List<CustoLogisticoItem>> ListarCustosLogisticos();
         Task<List<CustoLogisticoItem>> EditarCustosLogisticos(List<CustoLogisticoItem> custoItems);
+        void CalcularFatorUps();
+        void CalcularFatorCustoLogistico();
+        void CalcularFatorOutro(Guid fatorId);
     }
 }

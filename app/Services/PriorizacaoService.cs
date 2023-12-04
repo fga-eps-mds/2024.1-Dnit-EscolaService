@@ -1,6 +1,5 @@
 ﻿using api.CustoLogistico;
 using app.Services.Interfaces;
-using app.Repositorios;
 using app.Repositorios.Interfaces;
 using app.Entidades;
 using api.Fatores;
@@ -87,6 +86,70 @@ namespace app.Services
             await dbContext.SaveChangesAsync();
 
             return custosAtualizados.ConvertAll(modelConverter.ToModel);
+        }
+
+        public void CalcularFatorUps()
+        {
+            var fatorUps = dbContext.FatorPriorizacoes.Where(
+                f => f.Primario == true && 
+                f.Nome.Equals("UPS") &&
+                f.Ativo
+            ).First();
+
+            if (fatorUps == null) return;
+
+            var escolas = dbContext.Escolas.ToList();
+            var UpsMax = dbContext.Escolas.MaxBy(e => e.Ups)?.Ups;
+            if (UpsMax == null) return;
+
+            foreach (var e in escolas)
+            {
+                // valor_normalizado = (valor - min) / (max - min)
+                // Como min será sempre zero, então 
+                // valor_normalizado = valor / max
+                var upsNormalizado = e.Ups / (double)UpsMax * 100;
+            
+
+                if (dbContext.FatorEscolas.Any(ef => ef.EscolaId == e.Id && ef.FatorPriorizacaoId == fatorUps.Id))
+                {
+                    var fatorEscola = dbContext.FatorEscolas.Where(ef => ef.EscolaId == e.Id && ef.FatorPriorizacaoId == fatorUps.Id).First();
+                    fatorEscola.Valor = (int)upsNormalizado;
+                    dbContext.Update(fatorEscola);
+                } 
+                else
+                {
+                    var fatorEscola = new FatorEscola
+                    {
+                        EscolaId = e.Id, 
+                        FatorPriorizacaoId = fatorUps.Id,
+                        Valor = (int)upsNormalizado
+                    };
+                    dbContext.Add(fatorEscola);
+                }
+            }
+
+            dbContext.SaveChanges();
+        }
+
+        public void CalcularFatorCustoLogistico()
+        {
+            // TODO
+            throw new NotImplementedException();
+        }
+
+        public void CalcularFatorOutro(Guid fatorId)
+        {
+            // var fator = dbContext.FatorPriorizacoes.Where(f => f.Id == fatorId && !f.Primario && f.Ativo).First();
+            // if (fator == null) return;
+            
+            // var condicoes = dbContext.FatorCondicoes.Where(fc => fc.FatorPriorizacaoId == fatorId);
+
+            // foreach (var condicao in condicoes)
+            // {
+            //     // TODO
+            // }
+
+            throw new NotImplementedException();
         }
     }
 }
