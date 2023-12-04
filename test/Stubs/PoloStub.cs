@@ -11,7 +11,7 @@ namespace test.Stubs
         {
             while (true)
             {
-                var superintendencias = new Polo
+                var polos = new Polo
                 {
                     Id = idInicio++,
                     Nome = $"Polo DNIT {Random.Shared.Next()}",
@@ -22,7 +22,7 @@ namespace test.Stubs
                     Longitude = Random.Shared.NextDouble().ToString().Truncate(12),
                     Uf = Enum.GetValues<UF>().TakeRandom().FirstOrDefault(),
                 };
-                yield return superintendencias;
+                yield return polos;
             }
         }
     }
