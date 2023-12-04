@@ -99,9 +99,8 @@ namespace app.Entidades
                 while (!parser.EndOfData)
                 {
                     var row = parser.ReadFields()!;
-                    var superintendencia = new Polo
+                    var polo = new Polo
                     {
-                        Id = int.Parse(row[columns["id"]]),
                         Endereco = row[columns["endereco"]],
                         Cep = row[columns["cep"]],
                         Latitude = row[columns["latitude"]],
@@ -111,7 +110,7 @@ namespace app.Entidades
                         Municipio = Municipios.First(m => m.Id == int.Parse(row[columns["Idmunicipio"]])),
                     };
 
-                    superintendencias.Add(superintendencia);
+                    superintendencias.Add(polo);
                     limit--;
 
                     if (limit == 0)

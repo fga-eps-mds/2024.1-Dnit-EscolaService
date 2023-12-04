@@ -34,7 +34,6 @@ public class PoloRepositorio : IPoloRepositorio
     {
         var polo = new Polo
         {
-            Id = poloDto.Id,
             Nome = poloDto.Nome,
             Municipio = municipio,
             Longitude = poloDto.Longitude,
