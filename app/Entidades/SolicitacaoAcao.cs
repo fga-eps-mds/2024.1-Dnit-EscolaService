@@ -13,8 +13,9 @@ namespace app.Entidades
         public Municipio? EscolaMunicipio { get; set; }
 
         /// <summary>
-        /// Essa coluna não deve ser chave estrangeira porque não nem toda
-        /// solicitação é pra uma escola cadastrada no sistema. 
+        /// Essa coluna sempre deve ser preenchida, mas não deve ser chave 
+        /// estrangeira porque nem toda solicitação vai apontar para um escola
+        /// cadastrada no sistema.
         /// </summary>
         [Required]
         public int EscolaCodigoInep { get; set; }
