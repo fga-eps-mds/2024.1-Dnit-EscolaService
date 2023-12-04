@@ -156,6 +156,6 @@ namespace api
         RanqueExportar = 5005,
 
         [Description("Visualizar solicitação")]
-        SolicitacaoVisualizar = 6002,
+        SolicitacaoVisualizar = 9000,
     }
 }

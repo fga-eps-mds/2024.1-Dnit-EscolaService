@@ -17,7 +17,6 @@ namespace test
     public class SolicitacaoAcaoControllerTest : AuthTest
     {
         const int INTERNAL_SERVER_ERROR = 500;
-        private readonly AuthService authService;
         private readonly SolicitacaoAcaoController controller;
         private readonly Mock<ISolicitacaoAcaoService> solicitacaoAcaoServiceMock;
 
