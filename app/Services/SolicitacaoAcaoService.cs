@@ -67,8 +67,6 @@ namespace app.Services
         public async Task CriarOuAtualizar(SolicitacaoAcaoData solicitacao)
         {
             var solicitacaoExistente = await solicitacaoAcaoRepositorio.ObterPorEscolaIdAsync(solicitacao.EscolaCodigoInep);
-            // if (solicitacaoExistente != null)
-            //     throw new Exception("Já foi feita uma solicitação para essa escola");
 
             var escolaCadastrada = await escolaRepositorio.ObterPorCodigoAsync(solicitacao.EscolaCodigoInep);
             var sol = await solicitacaoAcaoRepositorio.CriarOuAtualizar(solicitacao, escolaCadastrada, solicitacaoExistente);

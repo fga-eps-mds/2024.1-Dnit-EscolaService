@@ -77,15 +77,20 @@ namespace test
             var sol = db.PopulaSolicitacoes(1).First();
             var dataRealizada = DateTimeOffset.Now.AddDays(-3);
             sol.DataRealizada = dataRealizada;
-            var solicitacaoDto = new SolicitacaoAcaoStub().ObterSolicitacaoAcaoDTO();
             sol.EscolaCodigoInep = escola.Codigo;
+            sol.EscolaId = escola.Id;
             db.SaveChanges();
 
+            var solicitacaoDto = new SolicitacaoAcaoStub().ObterSolicitacaoAcaoDTO();
+            solicitacaoDto.EscolaCodigoInep = escola.Codigo;
             await service.CriarOuAtualizar(solicitacaoDto);
 
             var hoje = DateTimeOffset.Now;
             sol = db.Solicitacoes.First();
             Assert.Single(db.Solicitacoes);
+            // FIXME: Essas três asserções poderiam ser resumidas 
+            // em uma só se fosse possível controlar e acessar o DateTimeOffset
+            // retornado em SolicitacaoAcaoRepositorio.CriarOuAtualizar().
             Assert.Equal(hoje.Year, sol.DataRealizada!.Value.Year);
             Assert.Equal(hoje.Month, sol.DataRealizada.Value.Month);
             Assert.Equal(hoje.Day, sol.DataRealizada.Value.Day);
