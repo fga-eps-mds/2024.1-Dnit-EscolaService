@@ -58,9 +58,6 @@ namespace test
         [Fact]
         public async Task ObterEscolas_QuandoEscolasForemObtidas_DeveRetornarListaEscolas()
         {
-            // var solicitacaoAcaoServiceMock = new Mock<ISolicitacaoAcaoService>();
-            // var controller = new SolicitacaoAcaoController(solicitacaoAcaoServiceMock.Object);
-
             List<EscolaInep> listaEscolas = new()
             {
                 new EscolaInep { Cod = 1, Estado = "SP", Nome = "Escola A" },
@@ -73,15 +70,14 @@ namespace test
             solicitacaoAcaoServiceMock.Setup(service => service.ObterEscolas(It.IsAny<int>())).Returns(task);
 
             int municipio = 1;
-            var result = await controller.ObterEscolas(municipio);
+            var resultado = await controller.ObterEscolas(municipio);
 
             solicitacaoAcaoServiceMock.Verify(service => service.ObterEscolas(municipio), Times.Once);
 
-            Assert.NotNull(result);
-            Assert.IsAssignableFrom<IEnumerable<EscolaInep>>(result);
+            Assert.NotNull(resultado);
+            Assert.IsAssignableFrom<IEnumerable<EscolaInep>>(resultado);
 
-            var listaRetornada = result as IEnumerable<EscolaInep>;
-            Assert.Equal(listaEscolas, listaRetornada);
+            Assert.Equal(listaEscolas, resultado);
         }
     }
 }
