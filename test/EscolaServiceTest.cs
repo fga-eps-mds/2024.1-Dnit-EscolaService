@@ -207,7 +207,7 @@ namespace test
         }
 
         [Fact]
-        public async Task CadastrarAsync_QuandoEscolaPossuiSolicitacao_EscolaÉRelacionadaASolicitacao()
+        public async Task CadastrarAsync_QuandoEscolaASerCriadaPossuiSolicitacao_EscolaEhRelacionadaASolicitacao()
         {
             var escola = EscolaStub.ListarEscolasDto(dbContext.Municipios.ToList(), false).First();
             escola.CodigoEscola = 1234;
@@ -220,7 +220,6 @@ namespace test
                 Vinculo = "190",
                 NomeSolicitante = "Fulano",
                 EscolaNome = "Escola Educação",
-                
             };
             var sol = dbContext.Solicitacoes.Add(solInfo).Entity;
             dbContext.SaveChanges();
