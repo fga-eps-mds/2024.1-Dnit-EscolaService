@@ -15,25 +15,33 @@ namespace app.Repositorios
             this.dbContext = dbContext;
         }
 
-        public async Task<SolicitacaoAcao> Criar(SolicitacaoAcaoData s, Escola? escolaCadastrada)
+        public async Task<SolicitacaoAcao> CriarOuAtualizar(SolicitacaoAcaoData s, Escola? escolaCadastrada, SolicitacaoAcao? solicitacaoAcaoExistente)
         {
-            var solicitacao = new SolicitacaoAcao
+            if (solicitacaoAcaoExistente == null)
             {
-                EscolaCodigoInep = s.EscolaCodigoInep,
-                EscolaId = escolaCadastrada?.Id,
-                EscolaUf = s.Uf,
-                EscolaMunicipioId = s.MunicipioId,
-                Email = s.Email,
-                EscolaNome = s.Escola,
-                Telefone = s.Telefone,
-                NomeSolicitante = s.NomeSolicitante,
-                DataRealizada = DateTimeOffset.Now,
-                Observacoes = s.Observacoes,
-                TotalAlunos = s.QuantidadeAlunos,
-                Vinculo = s.VinculoEscola,
-            };
-            await dbContext.Solicitacoes.AddAsync(solicitacao);
-            return solicitacao;
+                var solicitacao = new SolicitacaoAcao
+                {
+                    EscolaCodigoInep = s.EscolaCodigoInep,
+                    EscolaId = escolaCadastrada?.Id,
+                    EscolaUf = s.Uf,
+                    EscolaMunicipioId = s.MunicipioId,
+                    Email = s.Email,
+                    EscolaNome = s.Escola,
+                    Telefone = s.Telefone,
+                    NomeSolicitante = s.NomeSolicitante,
+                    DataRealizada = DateTimeOffset.Now,
+                    Observacoes = s.Observacoes,
+                    TotalAlunos = s.QuantidadeAlunos,
+                    Vinculo = s.VinculoEscola,
+                };
+                await dbContext.Solicitacoes.AddAsync(solicitacao);
+                return solicitacao;
+            }
+            else
+            {
+                solicitacaoAcaoExistente.DataRealizada = DateTimeOffset.Now;
+            }
+            return solicitacaoAcaoExistente;
         }
 
         public async Task<SolicitacaoAcao?> ObterPorEscolaIdAsync(int codigoInep)

@@ -11,6 +11,11 @@ namespace app.Entidades
         public UF EscolaUf { get; set; }
         public int EscolaMunicipioId { get; set; }
         public Municipio? EscolaMunicipio { get; set; }
+
+        /// <summary>
+        /// Essa coluna não deve ser chave estrangeira porque não nem toda
+        /// solicitação é pra uma escola cadastrada no sistema. 
+        /// </summary>
         [Required]
         public int EscolaCodigoInep { get; set; }
         [Required, MaxLength(200)]
@@ -25,7 +30,7 @@ namespace app.Entidades
         public string Email { get; set; }
 
         [Required, MaxLength(20)]
-        public string Vinculo { get; set; } // Professor, gestor escolar, estudante, outro
+        public string Vinculo { get; set; }
         [Required, MaxLength(20)]
         public string Telefone { get; set; }
 

@@ -64,16 +64,17 @@ namespace app.Services
             _smtpClientWrapper.Send(mensagem);
         }
 
-        public async Task Criar(SolicitacaoAcaoData solicitacao)
+        public async Task CriarOuAtualizar(SolicitacaoAcaoData solicitacao)
         {
             var solicitacaoExistente = await solicitacaoAcaoRepositorio.ObterPorEscolaIdAsync(solicitacao.EscolaCodigoInep);
-            if (solicitacaoExistente != null)
-                throw new Exception("Já foi feita uma solicitação para essa escola");
+            // if (solicitacaoExistente != null)
+            //     throw new Exception("Já foi feita uma solicitação para essa escola");
 
             var escolaCadastrada = await escolaRepositorio.ObterPorCodigoAsync(solicitacao.EscolaCodigoInep);
-            var sol = await solicitacaoAcaoRepositorio.Criar(solicitacao, escolaCadastrada);
-            if (escolaCadastrada != null)
+            var sol = await solicitacaoAcaoRepositorio.CriarOuAtualizar(solicitacao, escolaCadastrada, solicitacaoExistente);
+            if (escolaCadastrada != null) {
                 escolaCadastrada.Solicitacao = sol;
+            }
 
             await dbContext.SaveChangesAsync();
         }

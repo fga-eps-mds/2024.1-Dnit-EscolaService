@@ -45,7 +45,7 @@ namespace test
             Assert.Empty(db.Solicitacoes);
 
             var sol = new SolicitacaoAcaoStub().ObterSolicitacaoAcaoDTO();
-            await service.Criar(sol);
+            await service.CriarOuAtualizar(sol);
 
             Assert.Single(db.Solicitacoes.ToList());
 
@@ -63,33 +63,34 @@ namespace test
             sol.EscolaCodigoInep = 123;
             db.SaveChanges();
 
-            await service.Criar(sol);
+            await service.CriarOuAtualizar(sol);
 
             var solicitacao = db.Solicitacoes.First();
             Assert.Equal(escola.Id, solicitacao.EscolaId);
             Assert.Single(db.Solicitacoes);
         }
 
-        // FIXME: vai mudar para usar solicitacaoAcaoRepositorio.CriarOuAtualizar()
         [Fact]
-        public async Task Criar_QuandoEscolaJaTemSolicitacao_DeveRetornarExececao()
+        public async Task Criar_QuandoEscolaJaTemSolicitacao_DeveAtualizarData()
         {
-            var escola = db.PopulaEscolas(1)[0];
-            var solicitacao = new SolicitacaoAcaoStub().ObterSolicitacaoAcaoDTO();
-            escola.Codigo = 1234;
-            solicitacao.EscolaCodigoInep = 1234;
+            var escola = db.PopulaEscolas(1).First();
+            var sol = db.PopulaSolicitacoes(1).First();
+            var dataRealizada = DateTimeOffset.Now.AddDays(-3);
+            sol.DataRealizada = dataRealizada;
+            var solicitacaoDto = new SolicitacaoAcaoStub().ObterSolicitacaoAcaoDTO();
+            sol.EscolaCodigoInep = escola.Codigo;
+            db.SaveChanges();
 
-            await service.Criar(solicitacao);
-            // FIXME: vai apenas atualizar a data de realização da solicitação
-            var e = await Assert.ThrowsAsync<Exception>(async () => await service.Criar(solicitacao));
+            await service.CriarOuAtualizar(solicitacaoDto);
 
-            Assert.Equal("Já foi feita uma solicitação para essa escola", e.Message);
+            var hoje = DateTimeOffset.Now;
+            sol = db.Solicitacoes.First();
             Assert.Single(db.Solicitacoes);
+            Assert.Equal(hoje.Year, sol.DataRealizada!.Value.Year);
+            Assert.Equal(hoje.Month, sol.DataRealizada.Value.Month);
+            Assert.Equal(hoje.Day, sol.DataRealizada.Value.Day);
         }
 
-
-        // FIXME: trocar "QuandoNormal" por algo mais expressivo
-        // [Fact(Skip = "")]
         [Fact]
         public async Task ObterSolicitacoesAsync_QuandoNormal_RetornaSolicitacoes()
         {

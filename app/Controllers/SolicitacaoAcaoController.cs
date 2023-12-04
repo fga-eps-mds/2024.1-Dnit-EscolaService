@@ -29,7 +29,7 @@ namespace app.Controllers
             try
             {
                 solicitacaoAcaoService.EnviarSolicitacaoAcao(solicitacaoAcaoDTO);
-                await solicitacaoAcaoService.Criar(solicitacaoAcaoDTO);
+                await solicitacaoAcaoService.CriarOuAtualizar(solicitacaoAcaoDTO);
                 return Ok();
             }
             catch (SmtpException)

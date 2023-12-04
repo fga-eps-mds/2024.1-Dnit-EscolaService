@@ -6,7 +6,7 @@ namespace app.Repositorios.Interfaces
 {
     public interface ISolicitacaoAcaoRepositorio
     {
-        public Task<SolicitacaoAcao> Criar(SolicitacaoAcaoData solicitacao, Escola? escolaCadastrada);
+        public Task<SolicitacaoAcao> CriarOuAtualizar(SolicitacaoAcaoData solicitacao, Escola? escolaCadastrada, SolicitacaoAcao? solicitacaoAcaoExistente);
         public Task<ListaPaginada<SolicitacaoAcao>> ObterSolicitacoesAsync(PesquisaSolicitacaoFiltro filtro);
         public Task<SolicitacaoAcao?> ObterPorEscolaIdAsync(int escolaCodigoInep);
     }
