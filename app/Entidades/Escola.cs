@@ -72,6 +72,7 @@ namespace app.Entidades
             get => DataAtualizacao?.UtcDateTime;
             set => DataAtualizacao = value != null ? new DateTimeOffset(value.Value, TimeSpan.Zero) : null;
         }
+        public SolicitacaoAcao? Solicitacao { get; set; }
 
         public List<object?> Serialize()
         {

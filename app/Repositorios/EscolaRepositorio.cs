@@ -22,7 +22,9 @@ namespace app.Repositorios
 
         private IQueryable<Escola> SelecaoEscola(bool incluirEtapas = false, bool incluirMunicipio = false)
         {
-            var query = dbContext.Escolas.AsQueryable();
+            var query = dbContext.Escolas
+                .Include(e => e.Solicitacao)
+                .AsQueryable();
 
             if (incluirEtapas)
             {
@@ -132,6 +134,7 @@ namespace app.Repositorios
             var query = dbContext.Escolas
                 .Include(e => e.EtapasEnsino)
                 .Include(e => e.Municipio)
+                .Include(e => e.Solicitacao)
                 .Include(e => e.Superintendencia)
                 .AsQueryable();
 

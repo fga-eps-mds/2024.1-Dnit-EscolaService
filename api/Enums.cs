@@ -154,5 +154,8 @@ namespace api
         RanquePollProcessamento = 5004,
         [Description("Exportar Ranking de Escolas")]
         RanqueExportar = 5005,
+
+        [Description("Visualizar solicitação")]
+        SolicitacaoVisualizar = 9000,
     }
 }
