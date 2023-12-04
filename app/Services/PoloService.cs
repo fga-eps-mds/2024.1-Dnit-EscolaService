@@ -43,7 +43,7 @@ public class PoloService : IPoloService
         return _modelConverter.ToModel(polo);
     }
     
-    public async Task CadastrarAsync(CadastroPoloDTO poloDto)
+    public async Task<Polo> CadastrarAsync(CadastroPoloDTO poloDto)
     {
         var municipioId = poloDto.MunicipioId;
         var municipio = await _municipioRepositorio.ObterPorIdAsync(municipioId);
@@ -52,8 +52,9 @@ public class PoloService : IPoloService
 
         var escolas = await _escolaRepositorio.ListarAsync();
         escolas.ForEach(e => e.SubstituirSeMaisProximo(poloNovo));
-
+        
         await _dbContext.SaveChangesAsync();
+        return poloNovo;
     }
 
     public async Task<ListaPaginada<PoloModel>> ListarPaginadaAsync(PesquisaPoloFiltro filtro)
