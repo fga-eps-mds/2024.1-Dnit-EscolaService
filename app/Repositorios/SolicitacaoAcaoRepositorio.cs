@@ -44,7 +44,7 @@ namespace app.Repositorios
             return solicitacaoAcaoExistente;
         }
 
-        public async Task<SolicitacaoAcao?> ObterPorEscolaIdAsync(int codigoInep)
+        public async Task<SolicitacaoAcao?> ObterPorCodigoInepdAsync(int codigoInep)
         {
             return await dbContext.Solicitacoes
                 .Where(e => e.EscolaCodigoInep == codigoInep)

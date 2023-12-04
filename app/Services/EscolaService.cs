@@ -99,7 +99,7 @@ namespace app.Services
 
             var escola = escolaRepositorio.Criar(cadastroEscolaData, municipio, distanciaSuperintendecia, superintendenciaMaisProxima);
 
-            var solicitacao = await solicitacaoAcaoRepositorio.ObterPorEscolaIdAsync(escola.Codigo);
+            var solicitacao = await solicitacaoAcaoRepositorio.ObterPorCodigoInepdAsync(escola.Codigo);
             if (solicitacao != null) {
                 solicitacao.EscolaId = escola.Id;
                 escola.Solicitacao = solicitacao;

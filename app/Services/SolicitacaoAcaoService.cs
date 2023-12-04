@@ -66,7 +66,7 @@ namespace app.Services
 
         public async Task CriarOuAtualizar(SolicitacaoAcaoData solicitacao)
         {
-            var solicitacaoExistente = await solicitacaoAcaoRepositorio.ObterPorEscolaIdAsync(solicitacao.EscolaCodigoInep);
+            var solicitacaoExistente = await solicitacaoAcaoRepositorio.ObterPorCodigoInepdAsync(solicitacao.EscolaCodigoInep);
 
             var escolaCadastrada = await escolaRepositorio.ObterPorCodigoAsync(solicitacao.EscolaCodigoInep);
             var sol = await solicitacaoAcaoRepositorio.CriarOuAtualizar(solicitacao, escolaCadastrada, solicitacaoExistente);
