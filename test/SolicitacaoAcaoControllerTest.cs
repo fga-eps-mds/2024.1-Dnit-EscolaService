@@ -2,6 +2,7 @@
 using api.Escolas;
 using app.Controllers;
 using app.Services;
+using auth;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using service.Interfaces;
@@ -25,7 +26,6 @@ namespace test
             solicitacaoAcaoServiceMock = new Mock<ISolicitacaoAcaoService>();
             var authService = fixture.GetService<AuthService>(testOutputHelper)!;
             controller = new SolicitacaoAcaoController(authService, solicitacaoAcaoServiceMock.Object);
-            AutenticarUsuario(controller, permissoes: new() { Permissao.SolicitacaoVisualizar });
         }
 
         [Fact]
@@ -76,8 +76,25 @@ namespace test
 
             Assert.NotNull(resultado);
             Assert.IsAssignableFrom<IEnumerable<EscolaInep>>(resultado);
-
             Assert.Equal(listaEscolas, resultado);
+        }
+
+        [Fact]
+        public async Task ObterSolicitacoesAsync_QuandoNaoTemPermissao_LancaExcessao()
+        {
+            AutenticarUsuario(controller, permissoes: new());
+            await Assert.ThrowsAsync<AuthForbiddenException>(async () =>
+                await controller.ObterSolicitacoesAsync(new PesquisaSolicitacaoFiltro()));
+        }
+
+        [Fact]
+        public async Task ObterSolicitacoesAsync_QuandoTemPermissao_ServicoDeveSerChamadoUmaVez()
+        {
+            AutenticarUsuario(controller, permissoes: new() { Permissao.SolicitacaoVisualizar });
+
+            await controller.ObterSolicitacoesAsync(new PesquisaSolicitacaoFiltro());
+
+            solicitacaoAcaoServiceMock.Verify(service => service.ObterSolicitacoesAsync(It.IsAny<PesquisaSolicitacaoFiltro>()), Times.Once);
         }
     }
 }
