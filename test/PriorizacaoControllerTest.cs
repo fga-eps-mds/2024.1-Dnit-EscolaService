@@ -34,10 +34,15 @@ namespace test
             var custoLogisticoAtualizado = CustoLogisticoStub.CustoLogisticoAtualizado();
             await controller.EditarCustosLogisticos(custoLogisticoAtualizado);
             var custoLogisticoDb = db.CustosLogisticos.ToList();
-            Assert.Equal(custoLogisticoAtualizado[0].RaioMax, custoLogisticoDb[0].RaioMax);
-            Assert.Equal(custoLogisticoAtualizado[0].Valor, custoLogisticoDb[0].Valor);
-            Assert.Equal(custoLogisticoAtualizado[0].RaioMin, custoLogisticoDb[0].RaioMin);
-            Assert.Equal(custoLogisticoAtualizado[0].Custo, custoLogisticoDb[0].Custo);
+
+            var item = custoLogisticoAtualizado.First();
+            var itemDb = custoLogisticoDb.FirstOrDefault(c => c.Custo == item.Custo);
+
+            Assert.NotNull(itemDb);
+            Assert.Equal(item.Custo, itemDb.Custo);
+            Assert.Equal(item.RaioMin, itemDb.RaioMin);
+            Assert.Equal(item.RaioMax, itemDb.RaioMax);
+            Assert.Equal(item.Valor, itemDb.Valor);
         }
     }
 }
