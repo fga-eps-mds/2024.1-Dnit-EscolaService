@@ -15,8 +15,8 @@ public static class EscolaExtensions
             return null;
         
         CultureInfo c = new CultureInfo("pt-BR"); 
-        (double elat, double elon) = (double.Parse(escola.Latitude), double.Parse(escola.Longitude));
-        (double plat, double plon) = (double.Parse(polo.Latitude), double.Parse(polo.Longitude));
+        (double elat, double elon) = (double.Parse(escola.Latitude, c), double.Parse(escola.Longitude, c));
+        (double plat, double plon) = (double.Parse(polo.Latitude, c), double.Parse(polo.Longitude, c));
 
         return GeoCalc.CalcularDistancia(elat, elon, plat, plon);
     }
