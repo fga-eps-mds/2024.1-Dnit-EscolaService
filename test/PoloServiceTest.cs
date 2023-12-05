@@ -145,7 +145,7 @@ public class PoloServiceTest : TestBed<Base>, IDisposable
         await poloService.CadastrarAsync(cadastro);
         
         var meuPolo = dbContext.Polos.First();
-        Console.WriteLine(meuPolo);
+
         Assert.NotNull(meuPolo);
     }
 

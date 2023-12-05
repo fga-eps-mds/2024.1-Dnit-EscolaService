@@ -77,6 +77,88 @@ namespace test
             await Assert.ThrowsAsync<AuthForbiddenException>(async () => await controller.ObterPolosAsync(filtro));
         }
 
+        [Fact]
+        public async Task Excluir_QuandoIdPoloForPassado_DeveExcluirPolo()
+        {
+            var idPolo = dbContext.Polos.First().Id;
+            await controller.ExcluirPolo(idPolo);
+
+            Assert.False(dbContext.Polos.Any(e => e.Id == idPolo));
+        }
+
+        [Fact]
+        public async Task Excluir_QuandoNaoTiverPermissao_DeveSerBloqueado()
+        {
+            var idPolo = dbContext.Polos.First().Id;
+
+            AutenticarUsuario(controller, permissoes: new());
+
+            await Assert.ThrowsAsync<AuthForbiddenException>(async () => await controller.ExcluirPolo(idPolo));
+        }
+
+         [Fact]
+        public async Task CadastrarPolo_QuandoPoloForCadastrado_DeveRetornarHttpOk()
+        {
+            var polo = PoloStub.ListarPolosDto(dbContext.Municipios.ToList()).First();
+
+            await controller.CriarPolo(polo);
+
+            var poloDb = dbContext.Polos.First(p => p.Cep == polo.Cep);
+
+            Assert.Equal(polo.Cep, poloDb.Cep);
+            Assert.Equal(polo.Nome, poloDb.Nome);
+            Assert.Equal(polo.Endereco, poloDb.Endereco);
+            Assert.Equal(polo.IdUf, (int?)poloDb.Uf);
+            Assert.Equal(polo.Latitude, poloDb.Latitude);
+            Assert.Equal(polo.Longitude, poloDb.Longitude);
+            Assert.Equal(polo.MunicipioId, poloDb.MunicipioId);
+        }
+
+        [Fact]
+        public async Task CadastrarPolo_QuandoNaoTiverPermissao_DeverBloquear()
+        {
+            var polo = PoloStub.ListarPolosDto(dbContext.Municipios.ToList()).First();
+
+            AutenticarUsuario(controller, permissoes: new());
+            await Assert.ThrowsAsync<AuthForbiddenException>(async () => await controller.CriarPolo(polo));
+        }
+
+        [Fact]
+        public async Task AlterarDadosPoloAsync_QuandoPoloForAlterado_DeveRetornarHttpOk()
+        {
+            var polo = PoloStub.ListarPolosDto(dbContext.Municipios.ToList()).First();
+
+            await controller.CriarPolo(polo);
+
+            polo.Nome =  dbContext.Polos.First().Nome;
+            polo.Cep =  dbContext.Polos.First().Cep;
+            polo.Endereco =  dbContext.Polos.First().Endereco;
+            polo.MunicipioId =  dbContext.Polos.First().MunicipioId;
+            polo.Latitude =  dbContext.Polos.First().Latitude;
+            polo.Longitude =  dbContext.Polos.First().Longitude;
+            polo.IdUf =  (int)dbContext.Polos.First().Uf;
+
+            var poloDb = dbContext.Polos.First(p => p.Cep == polo.Cep);
+
+            Assert.Equal(polo.Cep, poloDb.Cep);
+            Assert.Equal(polo.Nome, poloDb.Nome);
+            Assert.Equal(polo.Endereco, poloDb.Endereco);
+            Assert.Equal(polo.IdUf, (int?)poloDb.Uf);
+            Assert.Equal(polo.Latitude, poloDb.Latitude);
+            Assert.Equal(polo.Longitude, poloDb.Longitude);
+            Assert.Equal(polo.MunicipioId, poloDb.MunicipioId);
+        }
+
+        [Fact]
+        public async Task AlterarDadosPoloAsync_QuandoNaoTiverPermissao_DeveBloquear()
+        {
+            var polo = PoloStub.ListarPolosDto(dbContext.Municipios.ToList()).First();
+
+            AutenticarUsuario(controller, permissoes: new());
+
+            await Assert.ThrowsAsync<AuthForbiddenException>(async () => await controller.AtualizarPolo(1, polo));
+        }
+
         public new void Dispose()
         {
             dbContext.Clear();
