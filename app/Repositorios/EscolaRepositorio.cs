@@ -23,7 +23,9 @@ namespace app.Repositorios
 
         private IQueryable<Escola> SelecaoEscola(bool incluirEtapas = false, bool incluirMunicipio = false)
         {
-            var query = dbContext.Escolas.AsQueryable();
+            var query = dbContext.Escolas
+                .Include(e => e.Solicitacao)
+                .AsQueryable();
 
             if (incluirEtapas)
             {
@@ -65,7 +67,7 @@ namespace app.Repositorios
             return model;
         }
 
-        public Escola Criar(CadastroEscolaData escolaData, Municipio municipio, double distanciaSuperintendencia, Polo? superintendencia)
+        public Escola Criar(CadastroEscolaData escolaData, Municipio municipio, double distanciaPolo, Polo? polo)
         {
             var escola = new Escola
             {
@@ -86,15 +88,15 @@ namespace app.Repositorios
                 DataAtualizacao = DateTimeOffset.Now,
                 MunicipioId = municipio.Id,
                 Municipio = municipio,
-                DistanciaPolo = distanciaSuperintendencia,
-                PoloId = superintendencia?.Id,
-                Polo = superintendencia,
+                DistanciaPolo = distanciaPolo,
+                PoloId = polo?.Id,
+                Polo = polo,
             };
             dbContext.Add(escola);
             return escola;
         }
 
-        public Escola Criar(EscolaModel escola, double distanciaSuperintendencia = 0, Polo? superintendencia = null)
+        public Escola Criar(EscolaModel escola, double distanciaPolo = 0, Polo? polo = null)
         {
             var entidade = new Escola()
             {
@@ -116,20 +118,30 @@ namespace app.Repositorios
                 Situacao = escola.Situacao,
                 Observacao = escola.Observacao,
                 DataAtualizacao = DateTimeOffset.Now,
-                DistanciaPolo = distanciaSuperintendencia,
-                Polo = superintendencia,
-                PoloId = superintendencia?.Id,
+                DistanciaPolo = distanciaPolo,
+                Polo = polo,
+                PoloId = polo?.Id,
             };
             dbContext.Add(entidade);
             return entidade;
         }
 
-        public async Task<ListaPaginada<Escola>> ListarPaginadaAsync(PesquisaEscolaFiltro filtro)
+        public async Task<List<Escola>> ListarAsync()
+        {
+            return await dbContext.Escolas
+                .Include(e => e.EtapasEnsino)
+                .Include(e => e.Municipio)
+                .Include(e => e.Polo)
+                .ToListAsync();
+        }
+
+            public async Task<ListaPaginada<Escola>> ListarPaginadaAsync(PesquisaEscolaFiltro filtro)
         {
             var query = dbContext.Escolas
                 .Include(e => e.EtapasEnsino)
                 .Include(e => e.Municipio)
                 .Include(e => e.Polo)
+                .Include(e => e.Solicitacao)
                 .AsQueryable();
 
             if (filtro.Nome != null)

@@ -12,8 +12,8 @@ using app.Entidades;
 namespace app.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231124181145_Refatora_Superintendencias_para_Polos")]
-    partial class Refatora_Superintendencias_para_Polos
+    [Migration("20231126220842_RanqueDescricao")]
+    partial class RanqueDescricao
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -41,9 +41,6 @@ namespace app.Migrations
 
                     b.Property<DateTime?>("DataAtualizacaoUtc")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<double>("DistanciaPolo")
-                        .HasColumnType("double precision");
 
                     b.Property<string>("Endereco")
                         .IsRequired()
@@ -75,9 +72,6 @@ namespace app.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 
-                    b.Property<int?>("PoloId")
-                        .HasColumnType("integer");
-
                     b.Property<int?>("Porte")
                         .HasColumnType("integer");
 
@@ -107,8 +101,6 @@ namespace app.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("MunicipioId");
-
-                    b.HasIndex("PoloId");
 
                     b.ToTable("Escolas");
                 });
@@ -182,39 +174,6 @@ namespace app.Migrations
                     b.ToTable("Municipios");
                 });
 
-            modelBuilder.Entity("app.Entidades.Polo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Cep")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("character varying(10)");
-
-                    b.Property<string>("Endereco")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Latitude")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Longitude")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("Uf")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Polos");
-                });
-
             modelBuilder.Entity("app.Entidades.Ranque", b =>
                 {
                     b.Property<int>("Id")
@@ -232,6 +191,10 @@ namespace app.Migrations
                     b.Property<DateTime>("DataInicioUtc")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("Descricao")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
                     b.HasKey("Id");
 
                     b.ToTable("Ranques");
@@ -243,13 +206,7 @@ namespace app.Migrations
                         .WithMany()
                         .HasForeignKey("MunicipioId");
 
-                    b.HasOne("app.Entidades.Polo", "Polo")
-                        .WithMany()
-                        .HasForeignKey("PoloId");
-
                     b.Navigation("Municipio");
-
-                    b.Navigation("Polo");
                 });
 
             modelBuilder.Entity("app.Entidades.EscolaEtapaEnsino", b =>

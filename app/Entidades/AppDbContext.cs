@@ -8,6 +8,7 @@ namespace app.Entidades
     {
         public DbSet<Municipio> Municipios { get; set; }
         public DbSet<Escola> Escolas { get; set; }
+        public DbSet<SolicitacaoAcao> Solicitacoes { get; set; }
         public DbSet<EscolaEtapaEnsino> EscolaEtapaEnsino { get; set; }
         public DbSet<Ranque> Ranques { get; set; }
         public DbSet<EscolaRanque> EscolaRanques { get; set; }
@@ -78,10 +79,10 @@ namespace app.Entidades
 
         public List<Polo>? PopulaPolosPorArquivo(int? limit, string caminho)
         {
-            var hasSuperintendencias = Polos.Any();
-            var superintendencias = new List<Polo>();
+            var hasPolos = Polos.Any();
+            var polos = new List<Polo>();
 
-            if (hasSuperintendencias)
+            if (hasPolos)
                 return null;
 
             using (var fs = File.OpenRead(caminho))
@@ -110,7 +111,7 @@ namespace app.Entidades
                         Municipio = Municipios.First(m => m.Id == int.Parse(row[columns["Idmunicipio"]])),
                     };
 
-                    superintendencias.Add(polo);
+                    polos.Add(polo);
                     limit--;
 
                     if (limit == 0)
@@ -118,9 +119,9 @@ namespace app.Entidades
                 }
             }
 
-            AddRange(superintendencias);
+            AddRange(polos);
             SaveChanges();
-            return superintendencias;
+            return polos;
 
         }
 

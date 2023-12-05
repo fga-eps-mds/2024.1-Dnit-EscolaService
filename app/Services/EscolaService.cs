@@ -11,6 +11,8 @@ using System.Data;
 using System.Text.RegularExpressions;
 using app.util;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.AspNetCore.Mvc;
+using System.Text;
 
 namespace app.Services
 {
@@ -19,6 +21,7 @@ namespace app.Services
         private readonly IEscolaRepositorio escolaRepositorio;
         private readonly IMunicipioRepositorio municipioRepositorio;
         private readonly IPoloRepositorio poloRepositorio;
+        private readonly ISolicitacaoAcaoRepositorio solicitacaoAcaoRepositorio;
         private readonly IRanqueService ranqueService;
         private readonly ModelConverter modelConverter;
         private readonly AppDbContext dbContext;
@@ -26,6 +29,7 @@ namespace app.Services
         public EscolaService(
             IEscolaRepositorio escolaRepositorio,
             IMunicipioRepositorio municipioRepositorio,
+            ISolicitacaoAcaoRepositorio solicitacaoAcaoRepositorio,
             IRanqueService ranqueService,
             ModelConverter modelConverter,
             AppDbContext dbContext,
@@ -34,6 +38,7 @@ namespace app.Services
         {
             this.escolaRepositorio = escolaRepositorio;
             this.municipioRepositorio = municipioRepositorio;
+            this.solicitacaoAcaoRepositorio = solicitacaoAcaoRepositorio;
             this.ranqueService = ranqueService;
             this.modelConverter = modelConverter;
             this.dbContext = dbContext;
@@ -67,13 +72,20 @@ namespace app.Services
             
             return (poloMaisProximo, distancia == null ? 0 : distancia.GetValueOrDefault());
         }
-        
+
         public async Task CadastrarAsync(CadastroEscolaData cadastroEscolaData)
         {
             var municipioId = cadastroEscolaData.IdMunicipio ?? throw new ApiException(ErrorCodes.MunicipioNaoEncontrado);
             var municipio = await municipioRepositorio.ObterPorIdAsync(municipioId);
 
             var escola = escolaRepositorio.Criar(cadastroEscolaData, municipio);
+
+            var solicitacao = await solicitacaoAcaoRepositorio.ObterPorCodigoInepdAsync(escola.Codigo);
+            if (solicitacao != null) {
+                solicitacao.EscolaId = escola.Id;
+                escola.Solicitacao = solicitacao;
+            }
+
             cadastroEscolaData.IdEtapasDeEnsino
                 ?.Select(e => escolaRepositorio.AdicionarEtapaEnsino(escola, (EtapaEnsino)e))
                 ?.ToList();
@@ -229,7 +241,7 @@ namespace app.Services
             var resultado = etapas_separadas.Select(e => etapas.GetValueOrDefault(e.ToLower())).Where(e => e != default(EtapaEnsino)).ToList();
             return resultado;
         }
-        
+
         public async Task AlterarDadosEscolaAsync(AtualizarDadosEscolaData dados)
         {
             var escola = await escolaRepositorio.ObterPorIdAsync(dados.IdEscola, incluirEtapas: true);
@@ -243,11 +255,11 @@ namespace app.Services
             escola.Observacao = dados.Observacao;
             escola.Situacao = (Situacao?)dados.IdSituacao;
 
-            var (superIntendenciaMaisProxima, distanciaSuper) = await
+            var (poloMaisProximo, distanciaSuper) = await
                 CalcularPoloMaisProximo(escola);
 
-            escola.Polo = superIntendenciaMaisProxima;
-            escola.PoloId = superIntendenciaMaisProxima?.Id;
+            escola.Polo = poloMaisProximo;
+            escola.PoloId = poloMaisProximo?.Id;
             escola.DistanciaPolo = distanciaSuper;
             
             atualizarEtapasEnsino(escola, dados.IdEtapasDeEnsino.ConvertAll(e => (EtapaEnsino)e));
@@ -302,9 +314,9 @@ namespace app.Services
             {
                 escola.IdMunicipio = int.Parse(municipio);
             }
-            
+
             validaDadosCadastro(escola, obterValorLinha(linha, Coluna.EtapasEnsino));
-            
+
             var escolaExistente = await escolaRepositorio.ObterPorCodigoAsync(escola.CodigoEscola);
             if (escolaExistente != default)
             {
@@ -318,7 +330,7 @@ namespace app.Services
             {
                 escolaRepositorio.AdicionarEtapaEnsino(escolaNova, etapa);
             }
-            
+
 
             return escolaNova;
         }
@@ -375,7 +387,7 @@ namespace app.Services
         Telefone = 14,
         EtapasEnsino = 15,
         QtdEnsinoInfantil = 16,
-        QtdEnsinoFund1Ano= 17,
+        QtdEnsinoFund1Ano = 17,
         QtdEnsinoFund2Ano = 18,
         QtdEnsinoFund3Ano = 19,
         QtdEnsinoFund4Ano = 20,

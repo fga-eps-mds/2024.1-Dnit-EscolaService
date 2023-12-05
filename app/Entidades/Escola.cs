@@ -1,10 +1,12 @@
 ﻿using api;
+using app.Services;
+using EnumsNET;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace app.Entidades
 {
-    public class Escola
+    public class Escola : ISerializable
     {
         [Key]
         public Guid Id { get; set; }
@@ -41,7 +43,7 @@ namespace app.Entidades
 
         [Required]
         public Rede Rede { get; set; }
-        
+
         [Required]
         public double DistanciaPolo { get; set; }
         
@@ -69,6 +71,28 @@ namespace app.Entidades
         {
             get => DataAtualizacao?.UtcDateTime;
             set => DataAtualizacao = value != null ? new DateTimeOffset(value.Value, TimeSpan.Zero) : null;
+        }
+        public SolicitacaoAcao? Solicitacao { get; set; }
+
+        public List<object?> Serialize()
+        {
+            return new ()
+            {
+                Id, Nome, Codigo, Latitude, Longitude, TotalAlunos, TotalDocentes, Telefone, Uf?.ToString(),
+                Rede.ToString(), Porte?.AsString(EnumFormat.Description), Localizacao?.AsString(EnumFormat.Description),
+                Situacao?.AsString(EnumFormat.Description), string.Join("_", EtapasEnsino!.Select(e => e.EtapaEnsino.AsString(EnumFormat.Description))),
+                DistanciaPolo, PoloId
+            };
+        }
+
+        public static List<string> SerializeHeaders()
+        {
+            return new() {
+                "Id", "Nome", "Codigo", "Latitude", "Longitude",
+                "TotalAlunos", "TotalDocentes", "Telefone", "Uf",
+                "Rede", "Porte", "Localizacao", "Situacao", "EtapasEnsino",
+                "DistanciaPolo", "PoloId"
+            };
         }
     }
 }

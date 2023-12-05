@@ -20,5 +20,6 @@ namespace api.Ranques
         public MunicipioModel? Municipio { get; set; }
         public double DistanciaPolo { get; set; }
         public PoloModel Polo { get; set; }
+        public bool TemSolicitacao { get; set; } = false;
     }
 }

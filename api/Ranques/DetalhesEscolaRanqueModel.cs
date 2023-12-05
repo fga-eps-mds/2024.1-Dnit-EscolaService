@@ -28,6 +28,7 @@ namespace api.Escolas
         public List<EtapasdeEnsinoModel>? EtapasEnsino { get; set; }
         public double DistanciaPolo { get; set; }
         public PoloModel Polo { get; set; }
+        public bool TemSolicitacao { get; set; } = false;
     }
 
     public class RanqueInfo
