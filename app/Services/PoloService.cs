@@ -66,11 +66,16 @@ public class PoloService : IPoloService
 
     public async Task AtualizarAsync(Polo poloExistente, CadastroPoloDTO poloDto)
     {
+        var municipioId = poloDto.MunicipioId;
+        var municipio = await _municipioRepositorio.ObterPorIdAsync(municipioId);
+
         poloExistente.Endereco = poloDto.Endereco;
         poloExistente.Cep = poloDto.Cep;
         poloExistente.Latitude = poloDto.Latitude;
         poloExistente.Longitude = poloDto.Longitude;
         poloExistente.Nome = poloDto.Nome;
+        poloExistente.Municipio = municipio;
+        poloExistente.Uf = (UF)poloDto.IdUf;
 
         var escolas = await _escolaRepositorio.ListarAsync();
         escolas.ForEach(e => e.SubstituirSeMaisProximo(poloExistente));
