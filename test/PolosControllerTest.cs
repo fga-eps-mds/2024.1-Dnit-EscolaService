@@ -103,7 +103,7 @@ namespace test
 
             await controller.CriarPolo(polo);
 
-            var poloDb = dbContext.Polos.First(p => p.Cep == polo.Cep);
+            var poloDb = dbContext.Polos.First(p => p.Nome == polo.Nome);
 
             Assert.Equal(polo.Cep, poloDb.Cep);
             Assert.Equal(polo.Nome, poloDb.Nome);
