@@ -19,8 +19,5 @@ namespace app.Entidades
 
         [Required]
         public Guid FatorPriorizacaoId { get; set; }
-
-        public FatorPriorizacao FatorPriorizacao { get; set; }
-
     }
 }

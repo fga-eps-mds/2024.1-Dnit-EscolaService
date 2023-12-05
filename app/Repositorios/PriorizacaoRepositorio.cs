@@ -1,5 +1,6 @@
 ﻿using api;
 using api.CustoLogistico;
+using api.Fatores;
 using app.Entidades;
 using app.Repositorios.Interfaces;
 using app.Services;
@@ -53,6 +54,37 @@ namespace app.Repositorios
                 .OrderBy(c => c.Custo)
                 .ToListAsync();
         }
+
+        public FatorCondicao AdicionarFatorCondicao(FatorCondicaoModel fatorCondicao)
+        {
+            FatorCondicao fator = new FatorCondicao
+            {
+                Id = Guid.NewGuid(),
+                Propriedade = fatorCondicao.Propriedade,
+                Operador = fatorCondicao.Operador,
+                Valor = fatorCondicao.Valor,
+                FatorPriorizacaoId = (Guid)fatorCondicao.FatorPriorizacaoId,
+            };
+
+            dbContext.FatorCondicoes.Add(fator);
+            return fator;
+        }
+
+        public FatorPriorizacao AdicionarFatorPriorizacao(FatorPrioriModel novoFator)
+        {
+            FatorPriorizacao item = new FatorPriorizacao
+            {
+                Id = Guid.NewGuid(),
+                Nome = novoFator.Nome,
+                Ativo = novoFator.Ativo,
+                Peso = novoFator.Peso,
+                Primario = novoFator.Primario
+            };
+
+            dbContext.FatorPriorizacoes.Add(item);
+            return item;
+        }
+
         public async Task<List<CustoLogistico>> EditarCustosLogisticos(List<CustoLogisticoItem> custoItems)
         {
             var custosAtualizados = new List<CustoLogistico>();

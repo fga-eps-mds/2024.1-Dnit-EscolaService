@@ -10,6 +10,7 @@ namespace app.Services.Interfaces
         Task DeletarFatorId(Guid Id);
         Task <FatorPrioriModel> VisualizarFatorId(Guid Id);
         Task<List<FatorPrioriModel>> ListarFatores();
+        Task<FatorPrioriModel> AdicionarFatorPriorizacao(FatorPrioriModel novoFator);
         Task<List<CustoLogisticoItem>> ListarCustosLogisticos();
         Task<List<CustoLogisticoItem>> EditarCustosLogisticos(List<CustoLogisticoItem> custoItems);
         void CalcularFatorUps();

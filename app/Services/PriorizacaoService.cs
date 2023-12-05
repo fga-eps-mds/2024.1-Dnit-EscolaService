@@ -52,6 +52,22 @@ namespace app.Services
             
             return fatoresModel;
         }
+        public async Task<FatorPrioriModel> AdicionarFatorPriorizacao(FatorPrioriModel novoFator)
+        {
+            var fator = priorizacaoRepositorio.AdicionarFatorPriorizacao(novoFator);
+            var condicoesModel = novoFator.FatorCondicoes.ConvertAll(f =>
+            {
+                f.FatorPriorizacaoId = fator.Id;
+                return f;
+            });
+
+            var condicoes = condicoesModel.ConvertAll(priorizacaoRepositorio.AdicionarFatorCondicao);
+
+            await dbContext.SaveChangesAsync();
+
+            return modelConverter.ToModel(fator, condicoes);
+        }
+
         public async Task<List<CustoLogisticoItem>> EditarCustosLogisticos(List<CustoLogisticoItem> custoItems)
         {
             if (custoItems.Count != 4)
@@ -62,7 +78,7 @@ namespace app.Services
             var sortedCustoItems = custoItems.OrderBy(item => item.Custo).ToList();
             int[] custosPermitidos = { 1, 2, 3, 4 };
 
-            if (sortedCustoItems.Distinct().Count() == custoItems.Count)
+            if (sortedCustoItems.Select(c => c.Custo).Distinct().Count() == custoItems.Count)
             {
                 if (!sortedCustoItems.Select(item => item.Custo).All(c => custosPermitidos.Contains(c)))
                 {
@@ -119,7 +135,7 @@ namespace app.Services
                         Propriedade = condicao.Propriedade,
                         Operador = condicao.Operador,
                         Valor = condicao.Valor,
-                        FatorPriorizacaoId = condicao.FatorPriorizacaoId,
+                        FatorPriorizacaoId = (Guid)condicao.FatorPriorizacaoId,
                     }
                     );
                                             
@@ -128,7 +144,7 @@ namespace app.Services
                     fatorCondicao.Propriedade = condicao.Propriedade;
                     fatorCondicao.Operador = condicao.Operador;
                     fatorCondicao.Valor = condicao.Valor;
-                    fatorCondicao.FatorPriorizacaoId = condicao.FatorPriorizacaoId;
+                    fatorCondicao.FatorPriorizacaoId = (Guid)condicao.FatorPriorizacaoId;
 
                     dbContext.FatorCondicoes.Update(fatorCondicao);
                 }

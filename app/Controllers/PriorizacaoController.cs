@@ -32,6 +32,12 @@ namespace app.Controllers
             return await priorizacaoService.VisualizarFatorId(Id);
         }
 
+        [HttpPost("fatores")]
+        public async Task<FatorPrioriModel> AdicionarFatorPriorizacao([FromBody] FatorPrioriModel novoFator)
+        {
+            return await priorizacaoService.AdicionarFatorPriorizacao(novoFator);
+        }
+
         [HttpGet("custologistico")]
         public async Task<List<CustoLogisticoItem>> ListarCustosLogisticos()
         {
@@ -54,7 +60,7 @@ namespace app.Controllers
 
         [HttpDelete("fatores/{Id}")]
         public async Task<IActionResult>
-        DeletarFator([FromBody] Guid Id)
+        DeletarFator(Guid Id)
         {
             try
             {

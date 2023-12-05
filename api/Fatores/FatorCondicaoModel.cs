@@ -9,8 +9,6 @@ namespace api.Fatores
         public string Propriedade { get; set; }
         public int Operador { get; set; }
         public string Valor { get; set; }
-        public Guid FatorPriorizacaoId { get; set; }
-        public FatorPrioriModel FatorPriorizacao { get; set; }
-
+        public Guid? FatorPriorizacaoId { get; set; }
     }
 }
