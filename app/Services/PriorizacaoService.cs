@@ -3,6 +3,7 @@ using app.Services.Interfaces;
 using app.Repositorios.Interfaces;
 using app.Entidades;
 using api.Fatores;
+using Dapper;
 
 namespace app.Services
 {
@@ -45,7 +46,15 @@ namespace app.Services
         public async Task<List<FatorPrioriModel>> ListarFatores()
         {
             var items = await priorizacaoRepositorio.ListarFatoresAsync();
-            return items.ConvertAll(modelConverter.ToModel);
+            var fatoresModel = new List<FatorPrioriModel>();
+
+            foreach(var item in items)
+            {
+                var condicoes = dbContext.FatorCondicoes.Where(f => f.FatorPriorizacaoId == item.Id).AsList();
+                fatoresModel.Add(modelConverter.ToModel(item, condicoes));
+            }
+            
+            return fatoresModel;
         }
         public async Task<List<CustoLogisticoItem>> EditarCustosLogisticos(List<CustoLogisticoItem> custoItems)
         {
@@ -87,6 +96,26 @@ namespace app.Services
 
             return custosAtualizados.ConvertAll(modelConverter.ToModel);
         }
+        public async Task DeletarFatorId(Guid Id)
+        {
+            await priorizacaoRepositorio.DeletarFatorId(Id);
+        }
+
+        public async Task<FatorPriorizacao> EditarFatorPorId(Guid Id, FatorPrioriModel itemAtualizado)
+        {
+            var item = await priorizacaoRepositorio.ObterFatorPrioriPorIdAsync(Id);
+
+            item.Id = itemAtualizado.Id;
+            item.Nome = itemAtualizado.Nome;
+            item.Peso = itemAtualizado.Peso;
+            item.Ativo = itemAtualizado.Ativo;
+            item.Primario = itemAtualizado.Primario;
+
+            await dbContext.SaveChangesAsync();
+
+            return item;
+        }
+    
 
         public void CalcularFatorUps()
         {

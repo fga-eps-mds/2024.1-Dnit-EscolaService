@@ -51,5 +51,36 @@ namespace app.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
+        [HttpDelete("fatores/{Id}")]
+        public async Task<IActionResult>
+        DeletarFator([FromBody] Guid Id)
+        {
+            try
+            {
+                await priorizacaoService.DeletarFatorId(Id);
+                return Ok("Fator Excluido");
+            }
+            catch(InvalidOperationException e)
+            {
+                return StatusCode(400, e.Message);
+            }
+        }
+
+        [HttpPut("fatores/{Id}")]
+        public async Task<IActionResult>
+        EditarFator(Guid Id, [FromBody] FatorPrioriModel fatorPrioriModel)
+        {
+            fatorPrioriModel.Id = Id;
+            try
+            {
+                await priorizacaoService.EditarFatorPorId(Id, fatorPrioriModel);
+                return Ok("Empresa Editada com sucesso");
+            }
+            catch(InvalidOperationException ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
     }
 }

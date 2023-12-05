@@ -13,5 +13,7 @@ namespace api.Fatores
         public bool Ativo {get;set;}
 
         public bool Primario {get;set;}
+
+        public List<FatorCondicaoModel> FatorCondicoes {get;set;}
     }
 }

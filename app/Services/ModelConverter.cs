@@ -160,7 +160,7 @@ namespace app.Services
                 Valor = custoLogistico.Valor,
             };
         
-        public FatorPrioriModel ToModel(FatorPriorizacao fatorPriorizacao) =>
+        public FatorPrioriModel ToModel(FatorPriorizacao fatorPriorizacao, List<FatorCondicao> fatorCondicoes) =>
             new FatorPrioriModel
             {
                 Id = fatorPriorizacao.Id,
@@ -168,7 +168,19 @@ namespace app.Services
                 Peso = fatorPriorizacao.Peso,
                 Ativo = fatorPriorizacao.Ativo,
                 Primario = fatorPriorizacao.Primario,
+                FatorCondicoes = fatorCondicoes.ConvertAll(c => ToModel(c))
             };
+        
+        public FatorCondicaoModel ToModel(FatorCondicao fatorCondicao) =>   
+            new FatorCondicaoModel
+            {
+                Id = fatorCondicao.Id,
+                Propriedade = fatorCondicao.Propriedade,
+                Operador = fatorCondicao.Operador,
+                Valor = fatorCondicao.Valor,
+                FatorPriorizacaoId = fatorCondicao.FatorPriorizacaoId,  
+            };
+        
         public RanqueDetalhesModel ToModel(Ranque ranque, FatorModel[] fatores)
         {
             return new RanqueDetalhesModel{

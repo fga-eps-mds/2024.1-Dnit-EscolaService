@@ -33,6 +33,13 @@ namespace app.Repositorios
             return await dbContext.FatorEscolas.FirstOrDefaultAsync(c => c.EscolaId == escolaId) ?? throw new ApiException(ErrorCodes.FatorNaoEncontrado);
         }
 
+        public async Task DeletarFatorId(Guid Id)
+        {
+            FatorPriorizacao item = await ObterFatorPrioriPorIdAsync(Id);
+            dbContext.FatorPriorizacoes.Remove(item);
+            dbContext.SaveChanges();
+        }
+
         public async Task<List<FatorPriorizacao>> ListarFatoresAsync()
         {
             return await dbContext.FatorPriorizacoes

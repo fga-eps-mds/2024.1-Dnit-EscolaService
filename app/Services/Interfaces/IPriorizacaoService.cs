@@ -1,10 +1,13 @@
 ﻿using api.CustoLogistico;
 using api.Fatores;
+using app.Entidades;
 
 namespace app.Services.Interfaces
 {
     public interface IPriorizacaoService
     {
+        Task<FatorPriorizacao> EditarFatorPorId(Guid Id, FatorPrioriModel itemAtualizado);
+        Task DeletarFatorId(Guid Id);
         Task <FatorPrioriModel> VisualizarFatorId(Guid Id);
         Task<List<FatorPrioriModel>> ListarFatores();
         Task<List<CustoLogisticoItem>> ListarCustosLogisticos();
