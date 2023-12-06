@@ -176,7 +176,7 @@ namespace app.Services
                 builder.AppendLine($"{ranque.Id};{ranque.Descricao};{numEscola};{1};{escola.Pontuacao};{escola.Posicao};{escola.Pontuacao};{escolaCsv}");
             }
 
-            var bytes = Encoding.UTF8.GetBytes(builder.ToString());
+            var bytes = Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(builder.ToString())).ToArray();
             return new FileContentResult(bytes, "text/csv"){
                 FileDownloadName = $"ranque_{id}.csv",
             };
