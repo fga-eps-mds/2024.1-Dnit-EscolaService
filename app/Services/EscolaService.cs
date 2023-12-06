@@ -100,9 +100,9 @@ namespace app.Services
             var escola = escolaRepositorio.Criar(cadastroEscolaData, municipio, distanciaSuperintendecia, superintendenciaMaisProxima);
 
             var solicitacao = await solicitacaoAcaoRepositorio.ObterPorCodigoInepdAsync(escola.Codigo);
-            if (solicitacao != null) {
-                solicitacao.EscolaId = escola.Id;
-                escola.Solicitacao = solicitacao;
+            if (solicitacao != null)
+            {
+                AssociarSolicitacaoAEscola(solicitacao, escola);
             }
 
             cadastroEscolaData.IdEtapasDeEnsino
@@ -114,6 +114,27 @@ namespace app.Services
             await ranqueService.CalcularNovoRanqueAsync();
 
             await dbContext.SaveChangesAsync();
+        }
+
+        /// <summary>
+        /// Ao criar uma escola a partir de uma solicitação lá no frontend, pode
+        /// ser que o usuário preencha algumas informações na Escola que são
+        /// diferentes na Solicitação. Para não haver inconsistência de dados,
+        /// foi escolhido que as informações da Escola sobrescrevem as informações
+        /// da Solicitação.
+        /// </summary>
+        private static void AssociarSolicitacaoAEscola(SolicitacaoAcao solicitacao, Escola escola)
+        {
+            escola.Solicitacao = solicitacao;
+            solicitacao.EscolaId = escola.Id;
+            solicitacao.TotalAlunos = escola.TotalAlunos;
+
+            // TODO: tornar solicitacao.EscolaMunicipioId opicional?
+            // FIXME: Seria melhor que UF e Município fossem obrigatórios em Escola e Solicitação
+            if (escola.MunicipioId != null)
+                solicitacao.EscolaMunicipioId = (int)escola.MunicipioId;
+            if (escola.Uf != null)
+                solicitacao.EscolaUf = (UF)escola.Uf;
         }
 
         public async Task<List<string>> CadastrarAsync(MemoryStream planilha)
