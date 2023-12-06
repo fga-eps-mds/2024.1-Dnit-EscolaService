@@ -24,5 +24,9 @@ namespace app.Services
         }
 
         // Implementar os metodos da inteface
+        public async Task<PlanejamentoMacro> ObterPlanejamentoMacro(Guid id)
+        {
+            return await planejamentoRepositorio.ObterPlanejamentoMacro(id);
+        }
     }
 }

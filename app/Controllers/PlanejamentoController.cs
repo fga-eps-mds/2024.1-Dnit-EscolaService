@@ -1,8 +1,10 @@
 using api;
 using api.Planejamento;
+using app.Entidades;
 using app.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using service.Interfaces;
 
 namespace app.Controllers
 {
@@ -10,15 +12,15 @@ namespace app.Controllers
     [Route("api/planejamento")]
     public class PlanejamentoController : AppController
     {
-        //private readonly IPlanejamentoService planejamentoService;
+        private readonly IPlanejamentoService planejamentoService;
         private readonly AuthService authService;
 
         public PlanejamentoController(
-            //IPlanejamentoService planejamentoService,
+            IPlanejamentoService planejamentoService,
             AuthService authService
         )
         {
-            //this.planejamentoService = planejamentoService;
+            this.planejamentoService = planejamentoService;
             this.authService = authService;
         }
 
@@ -36,12 +38,10 @@ namespace app.Controllers
 
         [HttpGet("{id}")]
         [Authorize]
-        public async Task<IActionResult> ObterPlanejamentoMacro(Guid id)
+        public async Task<PlanejamentoMacro> ObterPlanejamentoMacro(Guid id)
         {
             authService.Require(Usuario, Permissao.PlanejamentoVisualizar);
-            // Deve retornar um objeto PlanejamentoMacroDetalhado
-
-            return Ok("Não implementado");
+            return await planejamentoService.ObterPlanejamentoMacro(id);
         }
 
         [HttpDelete("{id}")]
