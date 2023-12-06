@@ -90,7 +90,7 @@ namespace app.Entidades
             return new() {
                 "Id", "Nome", "Codigo", "Latitude", "Longitude",
                 "TotalAlunos", "TotalDocentes", "Telefone", "Uf",
-                "Rede", "Porte", "Localizacao", "Situacao", "EtapasEnsino",
+                "Rede", "Porte", "Localização", "Situação", "EtapasEnsino",
                 "DistanciaSuperintendencia", "SuperintendenciaId"
             };
         }
