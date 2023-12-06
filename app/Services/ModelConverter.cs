@@ -166,7 +166,7 @@ namespace app.Services
             new PoloModel
             {
                 Id = polo.Id,
-                Uf = polo.Uf.HasValue ? ToModel(polo.Uf.Value) : null,
+                Uf = ToModel(polo.Uf), 
                 Nome = polo.Nome,
                 Municipio = ToModel(polo.Municipio),
                 Cep = polo.Cep,

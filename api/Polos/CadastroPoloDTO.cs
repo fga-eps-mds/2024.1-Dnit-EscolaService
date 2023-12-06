@@ -2,7 +2,6 @@ namespace api.Polos;
 
 public class CadastroPoloDTO
 {
-    // TODO: Id gerado automaticamente
     public string Endereco { get; set; }  
     
     public string Cep { get; set; }

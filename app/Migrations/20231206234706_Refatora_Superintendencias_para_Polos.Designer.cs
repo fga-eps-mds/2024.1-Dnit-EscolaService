@@ -12,7 +12,7 @@ using app.Entidades;
 namespace app.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231205031722_Refatora_Superintendencias_para_Polos")]
+    [Migration("20231206234706_Refatora_Superintendencias_para_Polos")]
     partial class Refatora_Superintendencias_para_Polos
     {
         /// <inheritdoc />

@@ -150,7 +150,7 @@ namespace api
         RanqueVisualizar = 5002,
         [Description("Calcular Ranking de Escolas")]
         RanqueCalcular = 5003,
-        [Description("Calcular Ranking de Escolas")]
+        [Description("Poll ranking em processamento")]
         RanquePollProcessamento = 5004,
         
         [Description("Cadastrar Polo")]

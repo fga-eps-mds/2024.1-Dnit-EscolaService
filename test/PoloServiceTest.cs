@@ -262,7 +262,6 @@ public class PoloServiceTest : TestBed<Base>, IDisposable
         
         Assert.NotEqual(escola.Polo, poloCadastrado);
     }
-    // TODO: testes de recálculo
     public new void Dispose()
     {
         dbContext.Clear();

@@ -6,7 +6,6 @@ using app.Repositorios;
 using app.Repositorios.Interfaces;
 using app.Services.Interfaces;
 using app.util;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace app.Services;
 
@@ -50,6 +49,8 @@ public class PoloService : IPoloService
 
         var poloNovo = _poloRepositorio.Criar(poloDto, municipio);
 
+        // TODO: Analisar uma maneira de otimizar... 
+        //Atualmente: Em todo cadastro de polo, calcula-se se o novo polo é mais próximo do que o polo referenciado em escola, para todas as escolas.
         var escolas = await _escolaRepositorio.ListarAsync();
         escolas.ForEach(e => e.SubstituirSeMaisProximo(poloNovo));
         
@@ -77,6 +78,8 @@ public class PoloService : IPoloService
         poloExistente.Municipio = municipio;
         poloExistente.Uf = (UF)poloDto.IdUf;
 
+        // TODO: Analisar uma maneira de otimizar... 
+        //Atualmente: Em toda atualizacao de polo, calcula-se se o polo alterado é mais próximo do que o polo referenciado em escola, para todas as escolas.
         var escolas = await _escolaRepositorio.ListarAsync();
         escolas.ForEach(e => e.SubstituirSeMaisProximo(poloExistente));
 
@@ -85,6 +88,8 @@ public class PoloService : IPoloService
 
     public async Task ExcluirAsync(Polo poloExistente)
     {
+        // TODO: Analisar uma maneira de otimizar... 
+        //Atualmente: Em toda exclusao de um polo, calcula-se um o novo polo mais próximo para todas as escolas que possuiam o polo deletado como mais próximo.
         var escolasComPoloExcluido = await _escolaRepositorio.ListarAsync(e => e.Polo == poloExistente);
         var polosRestantes = await _poloRepositorio.ListarAsync(p => p != poloExistente);
         

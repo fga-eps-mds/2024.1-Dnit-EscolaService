@@ -29,7 +29,7 @@ namespace app.Entidades
         public string Longitude { get; set; }
         
         [Required]
-        public UF? Uf { get; set; }
+        public UF Uf { get; set; }
     }
 }
 

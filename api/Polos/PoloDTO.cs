@@ -16,5 +16,5 @@ public class PoloDTO
     
     public string Longitude { get; set; }
     
-    public UF? Uf { get; set; }
+    public UF Uf { get; set; }
 }

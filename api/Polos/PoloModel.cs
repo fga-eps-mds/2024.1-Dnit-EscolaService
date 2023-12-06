@@ -4,7 +4,6 @@ namespace api.Polos
 {
     public class PoloModel
     {
-        // TODO: ver se tem que mudar isso aqui
         public int Id { get; set; }
         
         public string Endereco { get; set; }  
