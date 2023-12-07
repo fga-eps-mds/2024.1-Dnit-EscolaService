@@ -84,7 +84,7 @@ public class PoloRepositorioTest: TestBed<Base>, IDisposable
     }
 
     [Fact]
-    public async void ListarPaginadaAsync_QuandoFiltroForPassado_DeveRetornarListaDePolosFiltradas()
+    public async Task ListarPaginadaAsync_QuandoFiltroForPassado_DeveRetornarListaDePolosFiltradas()
     {
         var polosDb = dbContext.PopulaPolos(5);
 
