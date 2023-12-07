@@ -36,9 +36,35 @@ namespace app.Services
             dbContext.Remove(planejamento);
             await dbContext.SaveChangesAsync();
         }
+        
+        /* [1]
+        rascunho de função-custo:
+        
+            X -> vetor q-dimensional
+            custo = 0;
+            for(int i = 0, i<q, i++)
+            {
+                custo += -V[X[i]].Ups + V[X[i]].custologistico
+            }
 
-        public Task<PlanejamentoMacroDetalhadoDTO> GerarRecomendacaoDePlanejamento(PlanejamentoMacroDTO planejamento)
+        */
+
+        public Task<PlanejamentoMacro> GerarRecomendacaoDePlanejamento(PlanejamentoMacroDTO planejamento)
         {
+            var q = planejamento.QuantidadeAcoes;
+            var n = q + q * 0.35;
+
+            //pegar um vetor V com as n primeiras escolas do ranking
+            //normalizar V num objeto com {Id, Ups, CustoLogistico}
+            //implemetar a função-custo como: [1]
+            //rodar uma otimização por enxame de partículas ou um algoritmo genético
+            //usar q dimensões num S = [0, n]
+            //captar o vetor R com o resultado da otimização
+            //R é composto pelos indices das escolhas escolhidas em V
+            //dividir q igualmente pela quantidade de meses
+            //tentar agrupar por UF as escolas selecionadas no mesmo Mês
+            //Montar um objeto PlanejamentoMacro com o resultado
+
             throw new NotImplementedException();
         }
 
