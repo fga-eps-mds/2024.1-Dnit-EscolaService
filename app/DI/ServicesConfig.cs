@@ -23,7 +23,7 @@ namespace app.DI
 
             services.AddScoped<IEscolaService, EscolaService>();
             services.AddScoped<IMunicipioService, MunicipioService>();
-            services.AddScoped<ISuperintendenciaService, SuperintendenciaService>();
+            services.AddScoped<IPoloService, PoloService>();
             services.AddScoped<ISolicitacaoAcaoService, SolicitacaoAcaoService>();
             services.AddScoped<IRanqueService, RanqueService>();
             services.AddScoped<IBackgroundJobClient, BackgroundJobClient>();

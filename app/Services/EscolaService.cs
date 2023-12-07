@@ -9,7 +9,10 @@ using api.Escolas;
 using System.Globalization;
 using System.Data;
 using System.Text.RegularExpressions;
+using app.util;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.AspNetCore.Mvc;
+using System.Text;
 
 namespace app.Services
 {
@@ -17,27 +20,29 @@ namespace app.Services
     {
         private readonly IEscolaRepositorio escolaRepositorio;
         private readonly IMunicipioRepositorio municipioRepositorio;
-        private readonly ISuperintendenciaRepositorio superIntendenciaRepositorio;
+        private readonly IPoloRepositorio poloRepositorio;
+        private readonly ISolicitacaoAcaoRepositorio solicitacaoAcaoRepositorio;
         private readonly IRanqueService ranqueService;
         private readonly ModelConverter modelConverter;
         private readonly AppDbContext dbContext;
-        private const double raioTerraEmKm = 6371.0;
 
         public EscolaService(
             IEscolaRepositorio escolaRepositorio,
             IMunicipioRepositorio municipioRepositorio,
+            ISolicitacaoAcaoRepositorio solicitacaoAcaoRepositorio,
             IRanqueService ranqueService,
             ModelConverter modelConverter,
             AppDbContext dbContext,
-            ISuperintendenciaRepositorio superIntendenciaRepositorio
+            IPoloRepositorio poloRepositorio
         )
         {
             this.escolaRepositorio = escolaRepositorio;
             this.municipioRepositorio = municipioRepositorio;
+            this.solicitacaoAcaoRepositorio = solicitacaoAcaoRepositorio;
             this.ranqueService = ranqueService;
             this.modelConverter = modelConverter;
             this.dbContext = dbContext;
-            this.superIntendenciaRepositorio = superIntendenciaRepositorio;
+            this.poloRepositorio = poloRepositorio;
         }
 
         public bool SuperaTamanhoMaximo(MemoryStream planilha)
@@ -53,57 +58,65 @@ namespace app.Services
             }
         }
         
-        private async Task<(Superintendencia?, double)> CalcularSuperintendenciaMaisProxima(string? lat, string? lon)
+        private async Task SetarPoloMaisProximo(Escola escola)
         {
-            var culture = new CultureInfo("pt-BR");
-            
-            var latVazia = lat == null || lat == "";
-            var lonVazia = lon == null || lon == "";
-            if (latVazia || lonVazia)
-                return (null, 0);
-            
-            return await CalcularSuperintendenciaMaisProxima(double.Parse(lat, culture), double.Parse(lon, culture));
+            (Polo? poloMaisProximo, double distanciaPolo) = await CalcularPoloMaisProximo(escola);
+            escola.Polo = poloMaisProximo;
+            escola.DistanciaPolo = distanciaPolo;
         }
         
-        private async Task<(Superintendencia, double)> CalcularSuperintendenciaMaisProxima(double lat, double lon)
+        private async Task<(Polo?, double)> CalcularPoloMaisProximo(Escola escola)
         {
-            var culture = new CultureInfo("pt-BR");
-            var superintendencias = await superIntendenciaRepositorio.ListarAsync();
-            var superintendenciaProxima = 
-                superintendencias.Select(s => new
-                {
-                    Superintendencia = s,
-                    lat = double.Parse(s.Latitude, culture),
-                    lon = double.Parse(s.Longitude, culture),
-                })
-                .Select(s => new
-                {
-                    s.Superintendencia,
-                    Distancia = CalcularDistancia(lat, lon, s.lat, s.lon)
-                })
-                .MinBy(s => s.Distancia);
+            var polos = await poloRepositorio.ListarAsync();
+            var (poloMaisProximo, distancia) = escola.CalcularPoloMaisProximo(polos);
+            
+            return (poloMaisProximo, distancia == null ? 0 : distancia.GetValueOrDefault());
+        }
 
-            return (superintendenciaProxima.Superintendencia, superintendenciaProxima.Distancia);
-        }
-        
         public async Task CadastrarAsync(CadastroEscolaData cadastroEscolaData)
         {
             var municipioId = cadastroEscolaData.IdMunicipio ?? throw new ApiException(ErrorCodes.MunicipioNaoEncontrado);
             var municipio = await municipioRepositorio.ObterPorIdAsync(municipioId);
-            
-            var (superintendenciaMaisProxima, distanciaSuperintendecia) = await 
-                    CalcularSuperintendenciaMaisProxima(cadastroEscolaData.Latitude, cadastroEscolaData.Longitude);
 
-            var escola = escolaRepositorio.Criar(cadastroEscolaData, municipio, distanciaSuperintendecia, superintendenciaMaisProxima);
+            var escola = escolaRepositorio.Criar(cadastroEscolaData, municipio);
+
+            var solicitacao = await solicitacaoAcaoRepositorio.ObterPorCodigoInepdAsync(escola.Codigo);
+            if (solicitacao != null)
+            {
+                AssociarSolicitacaoAEscola(solicitacao, escola);
+            }
+
             cadastroEscolaData.IdEtapasDeEnsino
                 ?.Select(e => escolaRepositorio.AdicionarEtapaEnsino(escola, (EtapaEnsino)e))
                 ?.ToList();
 
+            await SetarPoloMaisProximo(escola);
             // FIXME: seria melhor que fosse pedido apenas para calcular apenas
             // os UPSs das escolas recém adicionadas.
             await ranqueService.CalcularNovoRanqueAsync();
 
             await dbContext.SaveChangesAsync();
+        }
+
+        /// <summary>
+        /// Ao criar uma escola a partir de uma solicitação lá no frontend, pode
+        /// ser que o usuário preencha algumas informações na Escola que são
+        /// diferentes na Solicitação. Para não haver inconsistência de dados,
+        /// foi escolhido que as informações da Escola sobrescrevem as informações
+        /// da Solicitação.
+        /// </summary>
+        private static void AssociarSolicitacaoAEscola(SolicitacaoAcao solicitacao, Escola escola)
+        {
+            escola.Solicitacao = solicitacao;
+            solicitacao.EscolaId = escola.Id;
+            solicitacao.TotalAlunos = escola.TotalAlunos;
+
+            // TODO: tornar solicitacao.EscolaMunicipioId opicional?
+            // FIXME: Seria melhor que UF e Município fossem obrigatórios em Escola e Solicitação
+            if (escola.MunicipioId != null)
+                solicitacao.EscolaMunicipioId = (int)escola.MunicipioId;
+            if (escola.Uf != null)
+                solicitacao.EscolaUf = (UF)escola.Uf;
         }
 
         public async Task<List<string>> CadastrarAsync(MemoryStream planilha)
@@ -171,13 +184,7 @@ namespace app.Services
             escola.MunicipioId = data.IdMunicipio;
             escola.Porte = data.Porte;
             escola.DataAtualizacao = DateTimeOffset.Now;
-
-            var (superintendenciaMaisProxima, distanciaSuperintendecia) = await 
-                CalcularSuperintendenciaMaisProxima(escola.Latitude, escola.Longitude);
-
-            escola.SuperintendenciaId = superintendenciaMaisProxima?.Id;
-            escola.Superintendencia = superintendenciaMaisProxima;
-            escola.DistanciaSuperintendencia = distanciaSuperintendecia;
+            await SetarPoloMaisProximo(escola);
             
             atualizarEtapasEnsino(escola, data.EtapasEnsino!);
             await dbContext.SaveChangesAsync();
@@ -255,7 +262,7 @@ namespace app.Services
             var resultado = etapas_separadas.Select(e => etapas.GetValueOrDefault(e.ToLower())).Where(e => e != default(EtapaEnsino)).ToList();
             return resultado;
         }
-        
+
         public async Task AlterarDadosEscolaAsync(AtualizarDadosEscolaData dados)
         {
             var escola = await escolaRepositorio.ObterPorIdAsync(dados.IdEscola, incluirEtapas: true);
@@ -269,12 +276,12 @@ namespace app.Services
             escola.Observacao = dados.Observacao;
             escola.Situacao = (Situacao?)dados.IdSituacao;
 
-            var (superIntendenciaMaisProxima, distanciaSuper) = await
-                CalcularSuperintendenciaMaisProxima(escola.Latitude, escola.Longitude);
+            var (poloMaisProximo, distanciaSuper) = await
+                CalcularPoloMaisProximo(escola);
 
-            escola.Superintendencia = superIntendenciaMaisProxima;
-            escola.SuperintendenciaId = superIntendenciaMaisProxima?.Id;
-            escola.DistanciaSuperintendencia = distanciaSuper;
+            escola.Polo = poloMaisProximo;
+            escola.PoloId = poloMaisProximo?.Id;
+            escola.DistanciaPolo = distanciaSuper;
             
             atualizarEtapasEnsino(escola, dados.IdEtapasDeEnsino.ConvertAll(e => (EtapaEnsino)e));
 
@@ -328,27 +335,23 @@ namespace app.Services
             {
                 escola.IdMunicipio = int.Parse(municipio);
             }
-            
+
             validaDadosCadastro(escola, obterValorLinha(linha, Coluna.EtapasEnsino));
-            
+
             var escolaExistente = await escolaRepositorio.ObterPorCodigoAsync(escola.CodigoEscola);
             if (escolaExistente != default)
             {
                 await AtualizarAsync(escolaExistente, escola);
                 return null;
             }
-
-
-            var superIntendenciaProxima = 
-                await CalcularSuperintendenciaMaisProxima(escola.Latitude, escola.Longitude);
-
             
-            var escolaNova = escolaRepositorio.Criar(escola, superIntendenciaProxima.Item2, superIntendenciaProxima.Item1);
+            var escolaNova = escolaRepositorio.Criar(escola);
+            await SetarPoloMaisProximo(escolaNova);
             foreach (var etapa in escola.EtapasEnsino)
             {
                 escolaRepositorio.AdicionarEtapaEnsino(escolaNova, etapa);
             }
-            
+
 
             return escolaNova;
         }
@@ -384,26 +387,24 @@ namespace app.Services
                 throw new ArgumentNullException("Porte", "Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", descrição do porte inválida!");
             }
         }
-        
-        public static double ConverterParaRadianos(double grau)
+
+    public async Task<FileResult> ExportarEscolasAsync()
         {
-            return grau * Math.PI / 180.0;
-        }
+            var escolas = await escolaRepositorio.ListarAsync();
+            var builder = new StringBuilder("");
+            var delimiter = ";";
+            builder.AppendLine(string.Join(delimiter, Escola.SerializeHeaders()));
 
-        public double CalcularDistancia(double lat1, double long1, double lat2, double long2)
-        {
-            var diferencaLatitude = ConverterParaRadianos(lat2 - lat1);
-            var diferencaLongitude = ConverterParaRadianos(long2 - long1);
+            foreach (var escola in escolas)
+            {
+                builder.AppendLine(CsvSerializer.Serialize(escola, delimiter));
+            }
 
-            var primeiraParteFormula = Math.Sin(diferencaLatitude / 2) * Math.Sin(diferencaLatitude / 2) +
-                                       Math.Cos(ConverterParaRadianos(lat1)) * Math.Cos(ConverterParaRadianos(lat2)) *
-                                       Math.Sin(diferencaLongitude / 2) * Math.Sin(diferencaLongitude / 2);
-
-            var resultadoFormula = 2 * Math.Atan2(Math.Sqrt(primeiraParteFormula), Math.Sqrt(1 - primeiraParteFormula));
-
-            var distance = raioTerraEmKm * resultadoFormula;
-
-            return distance;
+            var bytes = Encoding.UTF8.GetBytes(builder.ToString());
+            return new FileContentResult(bytes, "text/csv")
+            {
+                FileDownloadName = $"escolas.csv",
+            };
         }
     }
 
@@ -426,7 +427,7 @@ namespace app.Services
         Telefone = 14,
         EtapasEnsino = 15,
         QtdEnsinoInfantil = 16,
-        QtdEnsinoFund1Ano= 17,
+        QtdEnsinoFund1Ano = 17,
         QtdEnsinoFund2Ano = 18,
         QtdEnsinoFund3Ano = 19,
         QtdEnsinoFund4Ano = 20,

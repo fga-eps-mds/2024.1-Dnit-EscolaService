@@ -1,5 +1,4 @@
-﻿using api;
-using app.Controllers;
+﻿using app.Controllers;
 using app.Entidades;
 using app.Repositorios;
 using app.Repositorios.Interfaces;
@@ -12,11 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using service.Interfaces;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
-using Xunit.Abstractions;
 using Xunit.Microsoft.DependencyInjection;
 using Xunit.Microsoft.DependencyInjection.Abstracts;
 
@@ -34,8 +29,9 @@ namespace test.Fixtures
             services.AddScoped<IEscolaRepositorio, EscolaRepositorio>();
             services.AddScoped<IMunicipioRepositorio, MunicipioRepositorio>();
             services.AddScoped<IRanqueRepositorio, RanqueRepositorio>();
-            services.AddScoped<ISuperintendenciaRepositorio, SuperIntendenciaRepositorio>();
             services.AddScoped<IPlanejamentoRepositorio, PlanejamentoRepositorio>();
+            services.AddScoped<IPoloRepositorio, PoloRepositorio>();
+            services.AddScoped<ISolicitacaoAcaoRepositorio, SolicitacaoAcaoRepositorio>();
 
             // Services
             services.AddScoped<IEscolaService, EscolaService>();
@@ -45,15 +41,15 @@ namespace test.Fixtures
             services.AddScoped<IUpsService, UpsServiceMock>();
             services.AddScoped<IBackgroundJobClient, BackgroundJobClientFake>();
             services.AddSingleton<ModelConverter>();
-            services.AddScoped<ISuperintendenciaService, SuperintendenciaService>();
             services.AddScoped<IPlanejamentoService, PlanejamentoService>();
+            services.AddScoped<IPoloService, PoloService>();
 
             // Controllers
             services.AddScoped<DominioController>();
             services.AddScoped<EscolaController>();
             services.AddScoped<RanqueController>();
-            services.AddScoped<SuperintendenciaController>();
             services.AddScoped<PlanejamentoController>();
+            services.AddScoped<PolosController>();
 
             services.AddAuth(configuration);
         }

@@ -8,12 +8,13 @@ namespace app.Entidades
     {
         public DbSet<Municipio> Municipios { get; set; }
         public DbSet<Escola> Escolas { get; set; }
+        public DbSet<SolicitacaoAcao> Solicitacoes { get; set; }
         public DbSet<EscolaEtapaEnsino> EscolaEtapaEnsino { get; set; }
         public DbSet<Ranque> Ranques { get; set; }
         public DbSet<EscolaRanque> EscolaRanques { get; set; }
-        public DbSet<Superintendencia> Superintendencias { get; set; }
         public DbSet<PlanejamentoMacro> PlanejamentoMacro { get; set; }
         public DbSet<PlanejamentoMacroEscola> PlanejamentoMacroEscola {get; set; }
+        public DbSet<Polo> Polos { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -44,7 +45,7 @@ namespace app.Entidades
         {
             PopulaMunicipiosPorArquivo(null, Path.Join(".", "Migrations", "Data", "municipios.csv"));
 
-            PopulaSuperintendenciasPorArquivo(null, Path.Join(".", "Migrations", "Data", "superintendencias.csv"));
+            PopulaPolosPorArquivo(null, Path.Join(".", "Migrations", "Data", "superintendencias.csv"));
         }
 
         public List<Municipio>? PopulaMunicipiosPorArquivo(int? limit, string caminho)
@@ -88,12 +89,12 @@ namespace app.Entidades
             return municipios;
         }
 
-        public List<Superintendencia>? PopulaSuperintendenciasPorArquivo(int? limit, string caminho)
+        public List<Polo>? PopulaPolosPorArquivo(int? limit, string caminho)
         {
-            var hasSuperintendencias = Superintendencias.Any();
-            var superintendencias = new List<Superintendencia>();
+            var hasPolos = Polos.Any();
+            var polos = new List<Polo>();
 
-            if (hasSuperintendencias)
+            if (hasPolos)
                 return null;
 
             using (var fs = File.OpenRead(caminho))
@@ -104,23 +105,25 @@ namespace app.Entidades
 
                 var columns = new Dictionary<string, int>
                 {
-                    { "id", 0 }, { "endereco", 1 }, { "cep", 2 }, { "latitude", 3 }, { "longitude" , 4}, { "uf" , 5}
+                    { "id", 0 }, { "endereco", 1 }, { "cep", 2 }, { "latitude", 3 }, { "longitude" , 4}, { "uf" , 5},
+                    { "nome", 6 }, {"Idmunicipio", 7},
                 };
 
                 while (!parser.EndOfData)
                 {
                     var row = parser.ReadFields()!;
-                    var superintendencia = new Superintendencia
+                    var polo = new Polo
                     {
-                        Id = int.Parse(row[columns["id"]]),
                         Endereco = row[columns["endereco"]],
                         Cep = row[columns["cep"]],
                         Latitude = row[columns["latitude"]],
                         Longitude = row[columns["longitude"]],
                         Uf = (UF)int.Parse(row[columns["uf"]]),
+                        Nome = row[columns["nome"]],
+                        Municipio = Municipios.First(m => m.Id == int.Parse(row[columns["Idmunicipio"]])),
                     };
 
-                    superintendencias.Add(superintendencia);
+                    polos.Add(polo);
                     limit--;
 
                     if (limit == 0)
@@ -128,9 +131,9 @@ namespace app.Entidades
                 }
             }
 
-            AddRange(superintendencias);
+            AddRange(polos);
             SaveChanges();
-            return superintendencias;
+            return polos;
 
         }
 

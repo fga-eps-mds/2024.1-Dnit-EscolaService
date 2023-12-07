@@ -125,8 +125,8 @@ namespace api
         EscolaNaoEncontrada,
         [Description("Municipio não encontrado")]
         MunicipioNaoEncontrado,
-        [Description("Superintendência não encontrada")]
-        SuperIntendenciaNaoEncontrada,
+        [Description("Polo não encontrado")]
+        PoloNaoEncontrado,
         [Description("Já tem um ranque sendo calculado, tente novamente mais tarde")]
         RanqueJaSendoCalculado,
         [Description("Formato JSON não reconhecido")]
@@ -182,21 +182,37 @@ namespace api
         EscolaRemover = 1002,
         [Description("Visualizar Escola")]
         EscolaVisualizar = 1003,
+        [Description("Exportar Escola")]
+        EscolaExportar = 1004,
 
         [Description("Visualizar Ranking de Escolas")]
         RanqueVisualizar = 5002,
         [Description("Calcular Ranking de Escolas")]
         RanqueCalcular = 5003,
-        [Description("Calcular Ranking de Escolas")]
+        [Description("Poll ranking em processamento")]
         RanquePollProcessamento = 5004,
+        [Description("Exportar Ranking de Escolas")]
+        RanqueExportar = 5005,
+
+        [Description("Visualizar solicitação")]
+        SolicitacaoVisualizar = 9000,
+        
+        [Description("Cadastrar Polo")]
+        PoloCadastrar = 10000,
+        [Description("Editar Polo")]
+        PoloEditar = 10001,
+        [Description("Remover Polo")]
+        PoloRemover = 10002,
+        [Description("Visualizar Polo")]
+        PoloVisualizar = 10003,
 
         [Description("Visualizar Planejamento Macro")]
-        PlanejamentoVisualizar = 9000,
+        PlanejamentoVisualizar = 11000,
         [Description("Criar Planejamento Macro")]
-        PlanejamentoCriar = 9001,
+        PlanejamentoCriar = 11001,
         [Description("Editar Planejamento Macro")]
-        PlanejamentoEditar = 9002,
+        PlanejamentoEditar = 11002,
         [Description("Remover Planejamento Macro")]
-        PlanejamentoRemover = 9003,
+        PlanejamentoRemover = 11003,
     }
 }
