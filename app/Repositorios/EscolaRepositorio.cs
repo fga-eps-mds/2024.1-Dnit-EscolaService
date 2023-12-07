@@ -131,7 +131,7 @@ namespace app.Repositorios
             return await dbContext.Escolas
                 .Include(e => e.EtapasEnsino)
                 .Include(e => e.Municipio)
-                .Include(e => e.Polo)
+                .Include(e => e.Polo).ThenInclude(p => p.Municipio)
                 .ToListAsync();
         }
 
@@ -140,7 +140,7 @@ namespace app.Repositorios
             var query = dbContext.Escolas
                 .Include(e => e.EtapasEnsino)
                 .Include(e => e.Municipio)
-                .Include(e => e.Polo)
+                .Include(e => e.Polo).ThenInclude(p => p.Municipio)
                 .Include(e => e.Solicitacao)
                 .AsQueryable();
 
