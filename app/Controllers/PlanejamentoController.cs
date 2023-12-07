@@ -14,14 +14,17 @@ namespace app.Controllers
     {
         private readonly IPlanejamentoService planejamentoService;
         private readonly AuthService authService;
+        private readonly ModelConverter modelConverter;
 
         public PlanejamentoController(
             IPlanejamentoService planejamentoService,
-            AuthService authService
+            AuthService authService,
+            ModelConverter modelConverter
         )
         {
             this.planejamentoService = planejamentoService;
             this.authService = authService;
+            this.modelConverter = modelConverter;
         }
 
         [HttpGet]
@@ -56,14 +59,17 @@ namespace app.Controllers
 
         [HttpPost]
         [Authorize]
-        public IActionResult CriarPlanejamentoMacro([FromBody] PlanejamentoMacroDTO planejamentoMacro)
+        public async Task<IActionResult> CriarPlanejamentoMacro([FromBody] PlanejamentoMacroDTO planejamentoMacro)
         {
             authService.Require(Usuario, Permissao.PlanejamentoCriar);
+            var recomendacao = await planejamentoService.GerarRecomendacaoDePlanejamento(planejamentoMacro);
+            var planejamentoMacroCriado = planejamentoService.CriarPlanejamentoMacro(recomendacao);
+            var planejamentoMacroDetalhadoModel = modelConverter.ToModel(planejamentoMacroCriado);
             // Deve retornar um objeto PlanejamentoMacroDetralhadoModel
             // gera recomendação do planejamento (recebe PlanejamentoMacroDetalhadoDTO)
             // deve registrar o planejamento macro no banco (envia o PlanejamentoMacroDetalhadoDTO)
 
-            return Ok("Não implementado");
+            return Ok(planejamentoMacroDetalhadoModel);
         }
 
         [HttpPut("{id}")]
