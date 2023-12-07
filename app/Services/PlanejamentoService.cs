@@ -32,9 +32,20 @@ namespace app.Services
 
         public async Task ExcluirPlanejamentoMacro(Guid id)
         {
-            var planejamento = await planejamentoRepositorio.ObterPlanejamentoMacro(id);
+            var planejamento = await planejamentoRepositorio.ObterPlanejamentoMacroDetalhado(id);
             dbContext.Remove(planejamento);
             await dbContext.SaveChangesAsync();
+        }
+
+        public Task<PlanejamentoMacroDetalhadoDTO> GerarRecomendacaoDePlanejamento(PlanejamentoMacroDTO planejamento)
+        {
+            throw new NotImplementedException();
+        }
+
+        public PlanejamentoMacro CriarPlanejamentoMacro(PlanejamentoMacroDetalhadoDTO planejamento)
+        {
+            
+            throw new NotImplementedException();
         }
     }
 }

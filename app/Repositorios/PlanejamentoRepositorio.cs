@@ -22,6 +22,22 @@ namespace app.Repositorios
             throw new NotImplementedException();
         }
 
+        public PlanejamentoMacro RegistrarPlanejamentoMacro(PlanejamentoMacroDTO p)
+        {
+            var planejamento = new PlanejamentoMacro
+            {   
+                Nome=p.Nome,
+                Responsavel=p.Responsavel,
+                MesInicio=p.MesInicio,
+                MesFim=p.MesFim,
+                AnoInicio=p.AnoInicio,
+                AnoFim=p.AnoFim,
+                QuantidadeAcoes=p.QuantidadeAcoes
+            };
+            dbContext.Add(planejamento);
+            return planejamento;
+        }
+
         Task<PlanejamentoMacroDetalhadoModel> IPlanejamentoRepositorio.ObterPlanejamentoMacroDetalhado(Guid id)
         {
             throw new NotImplementedException();

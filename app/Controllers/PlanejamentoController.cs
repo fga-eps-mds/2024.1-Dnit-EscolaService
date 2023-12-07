@@ -60,8 +60,8 @@ namespace app.Controllers
         {
             authService.Require(Usuario, Permissao.PlanejamentoCriar);
             // Deve retornar um objeto PlanejamentoMacroDetralhadoModel
-            // gera recomendação do planejamento 
-            //  
+            // gera recomendação do planejamento (recebe PlanejamentoMacroDetalhadoDTO)
+            // deve registrar o planejamento macro no banco (envia o PlanejamentoMacroDetalhadoDTO)
 
             return Ok("Não implementado");
         }
