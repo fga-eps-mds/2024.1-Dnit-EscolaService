@@ -168,12 +168,15 @@ namespace app.Services
             var ranque = escolas.First().Ranque;
             var builder = new StringBuilder("");
             var escolaHeaders = string.Join(";", Escola.SerializeHeaders());
-            builder.AppendLine($"RanqueId;RanqueDescrição;NumEscolas;UPSPeso;UPSValor;Posição;Pontuação;{escolaHeaders}");
+            builder.AppendLine($"RanqueId;RanqueDescrição;NumEscolas;UPSPeso;UPSValor;Posição;Pontuação;{escolaHeaders};DistanciaSuperintendencia");
             var numEscola = escolas.Count();
 
             foreach(var escola in escolas) {
+                string formatDistanciaSuperintendencia = escola.Escola.DistanciaSuperintendencia.ToString();
+                formatDistanciaSuperintendencia = formatDistanciaSuperintendencia.Replace(".", ",");
+                formatDistanciaSuperintendencia = $"\"{formatDistanciaSuperintendencia}\"";
                 var escolaCsv = CsvSerializer.Serialize(escola.Escola, ";");
-                builder.AppendLine($"{ranque.Id};{ranque.Descricao};{numEscola};{1};{escola.Pontuacao};{escola.Posicao};{escola.Pontuacao};{escolaCsv}");
+                builder.AppendLine($"{ranque.Id};{ranque.Descricao};{numEscola};{1};{escola.Pontuacao};{escola.Posicao};{escola.Pontuacao};{escolaCsv};{formatDistanciaSuperintendencia}");
             }
 
             var bytes = Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(builder.ToString())).ToArray();
