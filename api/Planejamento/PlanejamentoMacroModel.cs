@@ -12,7 +12,7 @@ namespace api.Planejamento
         public int QuantidadeAcoes { get; set; }
     }
 
-    public class PlanejamentoMacroDetralhadoModel : PlanejamentoMacroModel
+    public class PlanejamentoMacroDetalhadoModel : PlanejamentoMacroModel
     {
         public List<DetalhesPorUF> DetalhesPorUF { get; set; }
         public List<PlanejamentoMacroMensalModel> PlanejamentoMacroMensal { get; set; }

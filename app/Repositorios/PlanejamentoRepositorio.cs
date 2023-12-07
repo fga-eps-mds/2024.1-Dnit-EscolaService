@@ -1,3 +1,4 @@
+using api.Planejamento;
 using app.Entidades;
 using app.Repositorios.Interfaces;
 
@@ -16,5 +17,14 @@ namespace app.Repositorios
 
         // Implemetar os metodos da inteface
 
+        public Task<List<PlanejamentoMacro>> ListarAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<PlanejamentoMacroDetalhadoModel> IPlanejamentoRepositorio.ObterPlanejamentoMacroDetalhado(Guid id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -1,3 +1,4 @@
+using api.Planejamento;
 using app.Entidades;
 
 namespace service.Interfaces
@@ -5,6 +6,7 @@ namespace service.Interfaces
     public interface IPlanejamentoService
     {
         // Definir os métodos a serem implementados
-        Task<PlanejamentoMacro> ObterPlanejamentoMacro(Guid id);
+        Task<PlanejamentoMacroDetalhadoModel> ObterPlanejamentoMacroDetalhado(Guid id);
+        Task ExcluirPlanejamentoMacro(Guid id);
     }
 }

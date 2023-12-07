@@ -38,20 +38,20 @@ namespace app.Controllers
 
         [HttpGet("{id}")]
         [Authorize]
-        public async Task<PlanejamentoMacro> ObterPlanejamentoMacro(Guid id)
+        public async Task<IActionResult> ObterPlanejamentoMacro(Guid id)
         {
             authService.Require(Usuario, Permissao.PlanejamentoVisualizar);
-            return await planejamentoService.ObterPlanejamentoMacro(id);
+            return Ok(await planejamentoService.ObterPlanejamentoMacroDetalhado(id));
         }
 
         [HttpDelete("{id}")]
         [Authorize]
-        public async Task<IActionResult> ExcluirPlanejamentoMacro(Guid id)
+        public async Task ExcluirPlanejamentoMacro(Guid id)
         {
             authService.Require(Usuario, Permissao.PlanejamentoRemover);
             // Deve retornar o status da operação
-
-            return Ok("Não implementado");
+            await planejamentoService.ExcluirPlanejamentoMacro(id);
+            //return Ok("Não implementado");
         }
 
         [HttpPost]
@@ -60,6 +60,8 @@ namespace app.Controllers
         {
             authService.Require(Usuario, Permissao.PlanejamentoCriar);
             // Deve retornar um objeto PlanejamentoMacroDetralhadoModel
+            // gera recomendação do planejamento 
+            //  
 
             return Ok("Não implementado");
         }

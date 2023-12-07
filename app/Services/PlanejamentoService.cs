@@ -1,4 +1,5 @@
 using System.Numerics;
+using api.Planejamento;
 using app.Entidades;
 using app.Repositorios.Interfaces;
 using service.Interfaces;
@@ -24,9 +25,16 @@ namespace app.Services
         }
 
         // Implementar os metodos da inteface
-        public async Task<PlanejamentoMacro> ObterPlanejamentoMacro(Guid id)
+        public async Task<PlanejamentoMacroDetalhadoModel> ObterPlanejamentoMacroDetalhado(Guid id)
         {
-            return await planejamentoRepositorio.ObterPlanejamentoMacro(id);
+            return await planejamentoRepositorio.ObterPlanejamentoMacroDetalhado(id);
+        }
+
+        public async Task ExcluirPlanejamentoMacro(Guid id)
+        {
+            var planejamento = await planejamentoRepositorio.ObterPlanejamentoMacro(id);
+            dbContext.Remove(planejamento);
+            await dbContext.SaveChangesAsync();
         }
     }
 }
