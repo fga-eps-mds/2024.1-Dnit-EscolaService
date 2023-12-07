@@ -107,7 +107,7 @@ namespace app.Migrations
 
                     b.HasIndex("SuperintendenciaId");
 
-                    b.ToTable("Escolas");
+                    b.ToTable("Escolas", (string)null);
                 });
 
             modelBuilder.Entity("app.Entidades.EscolaEtapaEnsino", b =>
@@ -126,7 +126,7 @@ namespace app.Migrations
 
                     b.HasIndex("EscolaId");
 
-                    b.ToTable("EscolaEtapaEnsino");
+                    b.ToTable("EscolaEtapaEnsino", (string)null);
                 });
 
             modelBuilder.Entity("app.Entidades.EscolaRanque", b =>
@@ -155,7 +155,7 @@ namespace app.Migrations
 
                     b.HasIndex("RanqueId");
 
-                    b.ToTable("EscolaRanques");
+                    b.ToTable("EscolaRanques", (string)null);
                 });
 
             modelBuilder.Entity("app.Entidades.Municipio", b =>
@@ -176,72 +176,7 @@ namespace app.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Municipios");
-                });
-
-            modelBuilder.Entity("app.Entidades.PlanejamentoMacro", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("AnoFim")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("AnoInicio")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("MesFim")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("MesInicio")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Nome")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
-
-                    b.Property<int>("QuantidadeAcoes")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Responsavel")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("PlanejamentoMacro");
-                });
-
-            modelBuilder.Entity("app.Entidades.PlanejamentoMacroEscola", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Ano")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("EscolaId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("Mes")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid>("PlanejamentoMacroId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EscolaId");
-
-                    b.HasIndex("PlanejamentoMacroId");
-
-                    b.ToTable("PlanejamentoMacroEscola");
+                    b.ToTable("Municipios", (string)null);
                 });
 
             modelBuilder.Entity("app.Entidades.Ranque", b =>
@@ -263,7 +198,7 @@ namespace app.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Ranques");
+                    b.ToTable("Ranques", (string)null);
                 });
 
             modelBuilder.Entity("app.Entidades.Superintendencia", b =>
@@ -296,7 +231,7 @@ namespace app.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Superintendencias");
+                    b.ToTable("Superintendencias", (string)null);
                 });
 
             modelBuilder.Entity("app.Entidades.Escola", b =>
@@ -344,33 +279,9 @@ namespace app.Migrations
                     b.Navigation("Ranque");
                 });
 
-            modelBuilder.Entity("app.Entidades.PlanejamentoMacroEscola", b =>
-                {
-                    b.HasOne("app.Entidades.Escola", "Escola")
-                        .WithMany()
-                        .HasForeignKey("EscolaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("app.Entidades.PlanejamentoMacro", "PlanejamentoMacro")
-                        .WithMany("Escolas")
-                        .HasForeignKey("PlanejamentoMacroId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Escola");
-
-                    b.Navigation("PlanejamentoMacro");
-                });
-
             modelBuilder.Entity("app.Entidades.Escola", b =>
                 {
                     b.Navigation("EtapasEnsino");
-                });
-
-            modelBuilder.Entity("app.Entidades.PlanejamentoMacro", b =>
-                {
-                    b.Navigation("Escolas");
                 });
 #pragma warning restore 612, 618
         }
