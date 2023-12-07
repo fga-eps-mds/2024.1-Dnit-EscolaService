@@ -7,7 +7,7 @@ namespace service.Interfaces
     {
         // Definir os métodos a serem implementados
         Task<PlanejamentoMacro> GerarRecomendacaoDePlanejamento(PlanejamentoMacroDTO planejamento);
-        PlanejamentoMacro CriarPlanejamentoMacro(PlanejamentoMacro planejamento);
+        public PlanejamentoMacro CriarPlanejamentoMacro(PlanejamentoMacroDetalhadoDTO planejamento);
 
         Task<PlanejamentoMacroDetalhadoModel> ObterPlanejamentoMacroDetalhado(Guid id);
         Task ExcluirPlanejamentoMacro(Guid id);

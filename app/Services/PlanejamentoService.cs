@@ -1,7 +1,10 @@
 using System.Numerics;
+using api;
+using api.Escolas;
 using api.Planejamento;
 using app.Entidades;
 using app.Repositorios.Interfaces;
+using EnumsNET;
 using service.Interfaces;
 
 namespace app.Services
@@ -9,6 +12,7 @@ namespace app.Services
     public class PlanejamentoService : IPlanejamentoService
     {
         private readonly IPlanejamentoRepositorio planejamentoRepositorio;
+        private readonly IRanqueService ranqueService;
         private readonly ModelConverter modelConverter;
         private readonly AppDbContext dbContext;
 
@@ -16,12 +20,14 @@ namespace app.Services
         (
             IPlanejamentoRepositorio planejamentoRepositorio,
             ModelConverter modelConverter,
+            IRanqueService ranqueService,
             AppDbContext dbContext
         )
         {
             this.planejamentoRepositorio = planejamentoRepositorio;
             this.modelConverter = modelConverter;
             this.dbContext = dbContext;
+            this.ranqueService = ranqueService;
         }
 
         // Implementar os metodos da inteface
@@ -37,35 +43,82 @@ namespace app.Services
             await dbContext.SaveChangesAsync();
         }
         
-        /* [1]
-        rascunho de função-custo:
         
-            X -> vetor q-dimensional
-            custo = 0;
-            for(int i = 0, i<q, i++)
+
+        public async Task<PlanejamentoMacro> GerarRecomendacaoDePlanejamento(PlanejamentoMacroDTO planejamento)
+        {
+            //algoritmo de recomendação fake a fim de teste
+            //retorna uma recomendação apenas com as primeiras escolas do ranking separadas nos meses
+            
+            var q = planejamento.QuantidadeAcoes;
+            // var n = (int) Math.Ceiling(q + q * 0.35);
+
+            var filtro = new PesquisaEscolaFiltro()
             {
-                custo += -V[X[i]].Ups + V[X[i]].custologistico
+                TamanhoPagina = q
+            };
+
+            var escolas = await ranqueService.ListarEscolasUltimoRanqueAsync(filtro);
+            var numeroMeses = Math.Abs(planejamento.MesFim - planejamento.MesInicio);
+            var acoesPorMes = (int) Math.Ceiling((double) q / numeroMeses);
+
+            var lista = new List<PlanejamentoMacroEscola>();
+
+            int i = 0, mes = (int) planejamento.MesInicio;
+            foreach(var e in escolas.Items)
+            {
+                if(i == acoesPorMes)
+                {
+                    i = 0;
+                    mes = mes == 12 ? 1 : mes + 1;
+                }
+
+                var planejamentoMacroEscola = new PlanejamentoMacroEscola()
+                {
+                    Mes = (Mes) mes,
+                    Ano = planejamento.AnoInicio,
+                    EscolaId = e.Escola.Id    
+                };
+
+                lista.Add(planejamentoMacroEscola);
             }
 
-        */
+            var planejamentoMacroGerado = new PlanejamentoMacro()
+            {
+                Nome = planejamento.Nome,
+                Responsavel = planejamento.Responsavel,
+                MesInicio = planejamento.MesInicio,
+                MesFim = planejamento.MesFim,
+                AnoInicio = planejamento.AnoInicio,
+                AnoFim = planejamento.AnoFim,
+                QuantidadeAcoes = planejamento.QuantidadeAcoes,
+                Escolas = lista                
+            };
 
-        public Task<PlanejamentoMacro> GerarRecomendacaoDePlanejamento(PlanejamentoMacroDTO planejamento)
-        {
-            var q = planejamento.QuantidadeAcoes;
-            var n = q + q * 0.35;
-
+            //algoritmo de recomendação real:    
             //pegar um vetor V com as n primeiras escolas do ranking
-            //normalizar V num objeto com {Id, Ups, CustoLogistico}
+            //normalizar V para objetos com {Id, Ups, CustoLogistico}
             //implemetar a função-custo como: [1]
             //rodar uma otimização por enxame de partículas ou um algoritmo genético
             //usar q dimensões num S = [0, n]
             //captar o vetor R com o resultado da otimização
-            //R é composto pelos indices das escolhas escolhidas em V
+            //R é composto pelos indices das escolas escolhidas em V
             //dividir q igualmente pela quantidade de meses
             //tentar agrupar por UF as escolas selecionadas no mesmo Mês
             //Montar um objeto PlanejamentoMacro com o resultado
 
-            throw new NotImplementedException();
+            /* [1]
+            rascunho de função-custo:
+        
+                X -> vetor q-dimensional
+                custo = 0;
+                for(int i = 0, i < q, i++)
+                {
+                    custo += -V[X[i]].Ups + V[X[i]].custologistico
+                }
+            */
+
+            return planejamentoMacroGerado;
         }
 
         public PlanejamentoMacro CriarPlanejamentoMacro(PlanejamentoMacroDetalhadoDTO planejamento)
