@@ -73,7 +73,7 @@ public class PoloServiceTest : TestBed<Base>, IDisposable
     }
 
     [Fact]
-    public async void ListarPaginadaAsync_QuandoFiltroForPassado_DeveRetornarListaDePolosFiltrados()
+    public async Task ListarPaginadaAsync_QuandoFiltroForPassado_DeveRetornarListaDePolosFiltrados()
     {
         var poloPesquisado = dbContext.Polos.First();
         var poloModeloPesquisado = modelConverter.ToModel(poloPesquisado);
