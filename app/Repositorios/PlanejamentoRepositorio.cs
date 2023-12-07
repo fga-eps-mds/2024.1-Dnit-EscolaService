@@ -21,21 +21,37 @@ namespace app.Repositorios
         {
             throw new NotImplementedException();
         }
-
-        public PlanejamentoMacro RegistrarPlanejamentoMacro(PlanejamentoMacroDTO p)
+        
+        public  PlanejamentoMacro RegistrarPlanejamentoMacro(PlanejamentoMacroDTO pm, List<Escola> escolas)
         {
-            var planejamento = new PlanejamentoMacro
-            {   
-                Nome=p.Nome,
-                Responsavel=p.Responsavel,
-                MesInicio=p.MesInicio,
-                MesFim=p.MesFim,
-                AnoInicio=p.AnoInicio,
-                AnoFim=p.AnoFim,
-                QuantidadeAcoes=p.QuantidadeAcoes
+            var planejamentoMacro = new PlanejamentoMacro
+            {
+                Nome = pm.Nome,
+                Responsavel = pm.Responsavel,
+                MesInicio = pm.MesInicio,
+                AnoInicio = pm.AnoInicio,
+                MesFim = pm.MesFim,
+                AnoFim = pm.AnoFim,
+                QuantidadeAcoes = pm.QuantidadeAcoes
             };
-            dbContext.Add(planejamento);
-            return planejamento;
+            List<PlanejamentoMacroEscola> pmEscolas = new List<PlanejamentoMacroEscola>();
+            foreach (var escola in escolas)
+            {
+                var escolaAtual = new PlanejamentoMacroEscola
+                {
+                    Mes = pm.MesInicio,
+                    Ano = pm.AnoInicio,
+                    PlanejamentoMacroId = planejamentoMacro.Id,
+                    PlanejamentoMacro = planejamentoMacro,
+                    EscolaId = escola.Id,
+                    Escola = escola
+                };
+                pmEscolas.Add(escolaAtual);
+            }
+
+            planejamentoMacro.Escolas = pmEscolas;
+            dbContext.Add(planejamentoMacro);
+            return planejamentoMacro;
         }
 
         Task<PlanejamentoMacroDetalhadoModel> IPlanejamentoRepositorio.ObterPlanejamentoMacroDetalhado(Guid id)
