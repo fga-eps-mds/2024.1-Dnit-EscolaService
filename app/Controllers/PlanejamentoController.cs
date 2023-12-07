@@ -63,13 +63,16 @@ namespace app.Controllers
         {
             authService.Require(Usuario, Permissao.PlanejamentoCriar);
             var recomendacao = await planejamentoService.GerarRecomendacaoDePlanejamento(planejamentoMacro);
-            var planejamentoMacroCriado = planejamentoService.CriarPlanejamentoMacro(recomendacao);
-            var planejamentoMacroDetalhadoModel = modelConverter.ToModel(planejamentoMacroCriado);
-            // Deve retornar um objeto PlanejamentoMacroDetralhadoModel
-            // gera recomendação do planejamento (recebe PlanejamentoMacroDetalhadoDTO)
-            // deve registrar o planejamento macro no banco (envia o PlanejamentoMacroDetalhadoDTO)
+            
+            //var planejamentoMacroCriado = planejamentoService.CriarPlanejamentoMacro(recomendacao);
+            //var planejamentoMacroDetalhadoModel = modelConverter.ToModel(planejamentoMacroCriado);
+            
+            // deve registrar o planejamento macro no banco
 
-            return Ok(planejamentoMacroDetalhadoModel);
+            return Ok(recomendacao);
+            // Deve retornar um objeto PlanejamentoMacroDetralhadoModel
+            // está retornando essa recomendação só para testar pelo swagger o retorno 
+            // da geração  de recomendação 
         }
 
         [HttpPut("{id}")]
