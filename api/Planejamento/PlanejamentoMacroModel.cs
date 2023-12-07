@@ -14,13 +14,6 @@ namespace api.Planejamento
 
     public class PlanejamentoMacroDetalhadoModel : PlanejamentoMacroModel
     {
-        public List<DetalhesPorUF> DetalhesPorUF { get; set; }
         public List<PlanejamentoMacroMensalModel> PlanejamentoMacroMensal { get; set; }
-    }
-
-    public class DetalhesPorUF
-    {
-        public UF UF { get; set; }
-        public int QuantidadeEscolasTotal { get; set; }
     }
 }
