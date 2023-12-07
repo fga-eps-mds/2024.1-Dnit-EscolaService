@@ -5,6 +5,7 @@ using app.Repositorios.Interfaces;
 using app.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
+using System.Linq.Expressions;
 
 namespace app.Repositorios
 {
@@ -44,6 +45,11 @@ namespace app.Repositorios
                 ?? throw new ApiException(ErrorCodes.EscolaNaoEncontrada);
         }
 
+        public async Task<List<Escola>> ListarAsync(Expression<Func<Escola, bool>>? filter = null)
+        {
+            return await dbContext.Escolas.Where(filter ?? (e => true)).AsQueryable().ToListAsync();
+        }
+
         public async Task<Escola?> ObterPorCodigoAsync(int codigo, bool incluirEtapas = false, bool incluirMunicipio = false)
         {
             return await SelecaoEscola(incluirEtapas, incluirMunicipio).FirstOrDefaultAsync(e => e.Codigo == codigo);
@@ -61,7 +67,7 @@ namespace app.Repositorios
             return model;
         }
 
-        public Escola Criar(CadastroEscolaData escolaData, Municipio municipio, double distanciaSuperintendencia, Superintendencia? superintendencia)
+        public Escola Criar(CadastroEscolaData escolaData, Municipio municipio, double distanciaPolo, Polo? polo)
         {
             var escola = new Escola
             {
@@ -82,15 +88,15 @@ namespace app.Repositorios
                 DataAtualizacao = DateTimeOffset.Now,
                 MunicipioId = municipio.Id,
                 Municipio = municipio,
-                DistanciaSuperintendencia = distanciaSuperintendencia,
-                SuperintendenciaId = superintendencia?.Id,
-                Superintendencia = superintendencia,
+                DistanciaPolo = distanciaPolo,
+                PoloId = polo?.Id,
+                Polo = polo,
             };
             dbContext.Add(escola);
             return escola;
         }
 
-        public Escola Criar(EscolaModel escola, double distanciaSuperintendencia = 0, Superintendencia? superintendencia = null)
+        public Escola Criar(EscolaModel escola, double distanciaPolo = 0, Polo? polo = null)
         {
             var entidade = new Escola()
             {
@@ -112,9 +118,9 @@ namespace app.Repositorios
                 Situacao = escola.Situacao,
                 Observacao = escola.Observacao,
                 DataAtualizacao = DateTimeOffset.Now,
-                DistanciaSuperintendencia = distanciaSuperintendencia,
-                Superintendencia = superintendencia,
-                SuperintendenciaId = superintendencia?.Id,
+                DistanciaPolo = distanciaPolo,
+                Polo = polo,
+                PoloId = polo?.Id,
             };
             dbContext.Add(entidade);
             return entidade;
@@ -125,7 +131,7 @@ namespace app.Repositorios
             return await dbContext.Escolas
                 .Include(e => e.EtapasEnsino)
                 .Include(e => e.Municipio)
-                .Include(e => e.Superintendencia)
+                .Include(e => e.Polo)
                 .ToListAsync();
         }
 
@@ -134,8 +140,8 @@ namespace app.Repositorios
             var query = dbContext.Escolas
                 .Include(e => e.EtapasEnsino)
                 .Include(e => e.Municipio)
+                .Include(e => e.Polo)
                 .Include(e => e.Solicitacao)
-                .Include(e => e.Superintendencia)
                 .AsQueryable();
 
             if (filtro.Nome != null)

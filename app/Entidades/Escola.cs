@@ -45,10 +45,10 @@ namespace app.Entidades
         public Rede Rede { get; set; }
 
         [Required]
-        public double DistanciaSuperintendencia { get; set; }
-
-        public int? SuperintendenciaId { get; set; }
-        public Superintendencia? Superintendencia { get; set; }
+        public double DistanciaPolo { get; set; }
+        
+        public int? PoloId { get; set; }
+        public Polo? Polo { get; set; }
         public UF? Uf { get; set; }
 
         public Localizacao? Localizacao { get; set; }
@@ -81,7 +81,7 @@ namespace app.Entidades
                 Id, Nome, Codigo, Latitude, Longitude, TotalAlunos, TotalDocentes, Telefone, Uf?.ToString(),
                 Rede.ToString(), Porte?.AsString(EnumFormat.Description), Localizacao?.AsString(EnumFormat.Description),
                 Situacao?.AsString(EnumFormat.Description), string.Join("_", EtapasEnsino!.Select(e => e.EtapaEnsino.AsString(EnumFormat.Description))),
-                DistanciaSuperintendencia, SuperintendenciaId
+                DistanciaPolo, PoloId
             };
         }
 
@@ -91,7 +91,7 @@ namespace app.Entidades
                 "Id", "Nome", "Codigo", "Latitude", "Longitude",
                 "TotalAlunos", "TotalDocentes", "Telefone", "Uf",
                 "Rede", "Porte", "Localizacao", "Situacao", "EtapasEnsino",
-                "DistanciaSuperintendencia", "SuperintendenciaId"
+                "DistanciaPolo", "PoloId"
             };
         }
     }

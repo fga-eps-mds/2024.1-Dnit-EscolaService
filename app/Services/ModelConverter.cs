@@ -1,9 +1,9 @@
 ﻿using api;
 using api.Escolas;
 using api.Municipios;
+using api.Polos;
 using api.Ranques;
 using api.Solicitacoes;
-using api.Superintendencias;
 using app.Entidades;
 using EnumsNET;
 
@@ -42,9 +42,9 @@ namespace app.Services
                 NumeroTotalDeDocentes = value.TotalDocentes,
                 NumeroTotalDeAlunos = value.TotalAlunos,
                 IdMunicipio = value.MunicipioId,
-                SuperintendenciaId = value.SuperintendenciaId,
-                DistanciaSuperintendencia = value.DistanciaSuperintendencia,
-                UfSuperintendencia = value.Superintendencia?.Uf.ToString(),
+                PoloId = value.PoloId,
+                DistanciaPolo = value.DistanciaPolo,
+                UfPolo = value.Polo?.Uf.ToString(),
                 NomeMunicipio = value.Municipio?.Nome,
                 EtapasEnsino = value.EtapasEnsino?.ConvertAll(e => e.EtapaEnsino),
                 EtapaEnsino = value.EtapasEnsino?.ToDictionary(e => (int)e.EtapaEnsino, e => e.EtapaEnsino.AsString(EnumFormat.Description) ?? ""),
@@ -109,8 +109,8 @@ namespace app.Services
                     EtapaEnsino = escolaRanque.Escola.EtapasEnsino?.ConvertAll(e => ToModel(e.EtapaEnsino)),
                     Municipio = escolaRanque.Escola.Municipio != null ? ToModel(escolaRanque.Escola.Municipio) : null,
                     Uf = escolaRanque.Escola.Uf.HasValue ? ToModel(escolaRanque.Escola.Uf.Value) : null,
-                    Superintendencia = escolaRanque.Escola.Superintendencia != null ? ToModel(escolaRanque.Escola.Superintendencia) : null,
-                    DistanciaSuperintendencia = escolaRanque.Escola.DistanciaSuperintendencia,
+                    Polo = escolaRanque.Escola.Polo != null ? ToModel(escolaRanque.Escola.Polo): null,
+                    DistanciaPolo = escolaRanque.Escola.DistanciaPolo,
                     TemSolicitacao = escolaRanque.Escola.Solicitacao != null,
                 }
             };
@@ -136,8 +136,8 @@ namespace app.Services
                 Localizacao = escola.Localizacao.HasValue ? ToModel(escola.Localizacao.Value) : null,
                 Situacao = escola.Situacao.HasValue ? ToModel(escola.Situacao.Value) : null,
                 EtapasEnsino = escola.EtapasEnsino?.ConvertAll(e => ToModel(e.EtapaEnsino)),
-                Superintendencia = ToModel(escola.Superintendencia),
-                DistanciaSuperintendencia = escola.DistanciaSuperintendencia,
+                Polo = ToModel(escola.Polo),
+                DistanciaPolo = escola.DistanciaPolo,
                 TemSolicitacao = escola.Solicitacao != null,
             };
 
@@ -162,11 +162,17 @@ namespace app.Services
                 Descricao = localizacao.ToString(),
             };
 
-        public SuperintendenciaModel ToModel(Superintendencia superintendencia) =>
-            new SuperintendenciaModel
+        public PoloModel ToModel(Polo polo) =>
+            new PoloModel
             {
-                Id = superintendencia.Id,
-                Uf = superintendencia.Uf,
+                Id = polo.Id,
+                Uf = ToModel(polo.Uf), 
+                Nome = polo.Nome,
+                Municipio = ToModel(polo.Municipio),
+                Cep = polo.Cep,
+                Endereco = polo.Endereco,
+                Latitude = polo.Latitude,
+                Longitude = polo.Longitude,
             };
 
         public SolicitacaoAcaoModel ToModel(SolicitacaoAcao solicitacao)
@@ -221,9 +227,9 @@ namespace app.Services
                 NumeroTotalDeDocentes = value.TotalDocentes,
                 NumeroTotalDeAlunos = value.TotalAlunos,
                 IdMunicipio = value.MunicipioId,
-                SuperintendenciaId = value.SuperintendenciaId,
-                DistanciaSuperintendencia = value.DistanciaSuperintendencia,
-                UfSuperintendencia = value.Superintendencia?.Uf.ToString(),
+                PoloId = value.PoloId,
+                DistanciaPolo = value.DistanciaPolo,
+                UfPolo = value.Polo?.Uf.ToString(),
                 NomeMunicipio = value.Municipio?.Nome,
                 EtapasEnsino = value.EtapasEnsino?.ConvertAll(e => e.EtapaEnsino),
                 EtapaEnsino = value.EtapasEnsino?.ToDictionary(e => (int)e.EtapaEnsino, e => e.EtapaEnsino.AsString(EnumFormat.Description) ?? ""),
