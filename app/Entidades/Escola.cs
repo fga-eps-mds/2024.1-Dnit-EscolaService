@@ -81,7 +81,7 @@ namespace app.Entidades
                 Id, Nome, Latitude, Longitude, TotalAlunos, TotalDocentes, Uf?.ToString(),
                 Rede.ToString(), Porte?.AsString(EnumFormat.Description), Localizacao?.AsString(EnumFormat.Description),
                 Situacao?.AsString(EnumFormat.Description), string.Join("_", EtapasEnsino!.Select(e => e.EtapaEnsino.AsString(EnumFormat.Description))),
-                PoloId
+                PoloId, DistanciaPolo, Codigo, Telefone
             };
         }
 

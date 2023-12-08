@@ -47,7 +47,11 @@ namespace app.Repositorios
 
         public async Task<List<Escola>> ListarAsync(Expression<Func<Escola, bool>>? filter = null)
         {
-            return await dbContext.Escolas.Where(filter ?? (e => true)).AsQueryable().ToListAsync();
+            return await dbContext.Escolas
+                .Include(e => e.EtapasEnsino)
+                .Where(filter ?? (e => true))
+                .AsQueryable()
+                .ToListAsync();
         }
 
         public async Task<Escola?> ObterPorCodigoAsync(int codigo, bool incluirEtapas = false, bool incluirMunicipio = false)
