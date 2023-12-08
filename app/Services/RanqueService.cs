@@ -168,11 +168,11 @@ namespace app.Services
             var ranque = escolas.First().Ranque;
             var builder = new StringBuilder("");
             var escolaHeaders = string.Join(";", Escola.SerializeHeaders());
-            builder.AppendLine($"RanqueId;RanqueDescrição;NumEscolas;UPSPeso;UPSValor;Posição;Pontuação;{escolaHeaders};DistanciaSuperintendencia");
+            builder.AppendLine($"RanqueId;RanqueDescrição;NumEscolas;UPSPeso;UPSValor;Posição;Pontuação;{escolaHeaders}");
             var numEscola = escolas.Count();
 
             foreach(var escola in escolas) {
-                string formatDistanciaSuperintendencia = escola.Escola.DistanciaSuperintendencia.ToString();
+                string formatDistanciaSuperintendencia = escola.Escola.DistanciaPolo.ToString();
                 formatDistanciaSuperintendencia = formatDistanciaSuperintendencia.Replace(".", ",");
                 formatDistanciaSuperintendencia = $"\"{formatDistanciaSuperintendencia}\"";
                 var escolaCsv = CsvSerializer.Serialize(escola.Escola, ";");
