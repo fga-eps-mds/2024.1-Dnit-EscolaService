@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using api.Fatores;
 using app.Entidades;
 
 namespace test.Stubs
@@ -40,6 +41,39 @@ namespace test.Stubs
                 },
                 
             };
+        }
+
+        public static FatorPrioriModel ObterPriorizacaoComCondicao()
+        {
+            return new FatorPrioriModel
+            {
+                Id = Guid.NewGuid(),
+                Nome = "TesteModel",
+                Peso = 12,
+                Ativo = true,
+                Primario = false,
+                FatorCondicoes = new List<FatorCondicaoModel>{
+                    new FatorCondicaoModel
+                    {
+                        Id = Guid.NewGuid(),
+                        Propriedade = "PropriedadeModel",
+                        Operador = 1,
+                        Valor = "1",
+                    }
+                }
+            };
+        }
+
+        public static FatorCondicao ObterCondicao()
+        {
+            return new FatorCondicao
+                    {
+                        Id = Guid.NewGuid(),
+                        Propriedade = "PropriedadeModel1",
+                        Operador = 12,
+                        Valor = "11",
+                    };
+          
         }
     }
 }

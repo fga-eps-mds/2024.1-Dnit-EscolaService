@@ -1,5 +1,8 @@
 ﻿
+using api.Fatores;
 using app.Entidades;
+using app.Services;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -74,6 +77,14 @@ namespace test.Stubs
             dbContext.AddRange(Priorizacoes);
             dbContext.SaveChanges();
             return Priorizacoes;
+        }
+
+        public static FatorCondicao PopulaCondicao(this AppDbContext dbContext, int limit)
+        {
+            var condicoes = PriorizacaoStub.ObterCondicao();
+            dbContext.AddRange(condicoes); 
+            dbContext.SaveChanges();
+            return condicoes;
         }
 
         public static void Clear(this AppDbContext dbContext)
