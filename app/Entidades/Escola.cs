@@ -78,7 +78,7 @@ namespace app.Entidades
         {
             return new ()
             {
-                Id, Nome, Codigo, Latitude, Longitude, TotalAlunos, TotalDocentes, Telefone, Uf?.ToString(),
+                Id, Nome, Latitude, Longitude, TotalAlunos, TotalDocentes, Uf?.ToString(),
                 Rede.ToString(), Porte?.AsString(EnumFormat.Description), Localizacao?.AsString(EnumFormat.Description),
                 Situacao?.AsString(EnumFormat.Description), string.Join("_", EtapasEnsino!.Select(e => e.EtapaEnsino.AsString(EnumFormat.Description))),
                 PoloId
@@ -88,10 +88,10 @@ namespace app.Entidades
         public static List<string> SerializeHeaders()
         {
             return new() {
-                "Id", "Nome", "Codigo", "Latitude", "Longitude",
-                "TotalAlunos", "TotalDocentes", "Telefone", "Uf",
+                "Id", "Nome", "Latitude", "Longitude",
+                "TotalAlunos", "TotalDocentes", "Uf",
                 "Rede", "Porte", "Localização", "Situação", "EtapasEnsino",
-                "PoloId", "DistânciaPolo"
+                "PoloId", "DistânciaPolo", "Codigo", "Telefone"
             };
         }
     }
