@@ -56,5 +56,16 @@ namespace test
             Assert.NotNull(visualizar);
             Assert.Equal(visualizar.Nome, priorizacoes[0].Nome);  
         }
+
+        [Fact]
+        public async Task ListarFatores_QuandoMetodoForChamado_DeveRetornarLista()
+        {
+           var priorizacoes = db.FatorPriorizacoes.ToList();
+           var visualizar = await controller.ListarFatores();
+
+            Assert.NotNull(priorizacoes);
+            Assert.NotNull(visualizar);
+            Assert.Equal(visualizar.Count, priorizacoes.Count);  
+        }
     }
 }
