@@ -172,11 +172,11 @@ namespace app.Services
             var numEscola = escolas.Count();
 
             foreach(var escola in escolas) {
-                string formatDistanciaSuperintendencia = escola.Escola.DistanciaPolo.ToString();
-                formatDistanciaSuperintendencia = formatDistanciaSuperintendencia.Replace(".", ",");
-                formatDistanciaSuperintendencia = $"\"{formatDistanciaSuperintendencia}\"";
+                string formatDistanciaPolo = escola.Escola.DistanciaPolo.ToString();
+                formatDistanciaPolo = formatDistanciaPolo.Replace(".", ",");
+                formatDistanciaPolo = $"\"{formatDistanciaPolo}\"";
                 var escolaCsv = CsvSerializer.Serialize(escola.Escola, ";");
-                builder.AppendLine($"{ranque.Id};{ranque.Descricao};{numEscola};{1};{escola.Pontuacao};{escola.Posicao};{escola.Pontuacao};{escolaCsv};{formatDistanciaSuperintendencia}");
+                builder.AppendLine($"{ranque.Id};{ranque.Descricao};{numEscola};{1};{escola.Pontuacao};{escola.Posicao};{escola.Pontuacao};{escolaCsv};{formatDistanciaPolo}");
             }
 
             var bytes = Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(builder.ToString())).ToArray();
