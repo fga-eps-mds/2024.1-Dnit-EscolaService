@@ -54,7 +54,7 @@ namespace app.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(400, ex.Message);
             }
         }
 

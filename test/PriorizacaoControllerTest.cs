@@ -94,5 +94,17 @@ namespace test
             Assert.Equal(novoFator.Primario, resposta.Primario);
             Assert.Equal(novoFator.Peso, resposta.Peso);
         }
+
+        [Fact]
+        public async Task EditarCustosLogisticos_QuandoFornecidoEntradaInvalida_DeveRetornarStatusCode400()
+        {
+            var custoInvalido = CustoLogisticoStub.ObterCustoLogisticoComCustoInvalido();
+
+            var resposta = await controller.EditarCustosLogisticos(custoInvalido);
+
+            Assert.IsType<ObjectResult>(resposta);
+            ObjectResult objectResult = (ObjectResult)resposta;
+            Assert.Equal(400, objectResult.StatusCode);
+        }
     }
 }
