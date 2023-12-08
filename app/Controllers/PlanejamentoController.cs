@@ -45,7 +45,8 @@ namespace app.Controllers
         public async Task<IActionResult> ObterPlanejamentoMacro(Guid id)
         {
             authService.Require(Usuario, Permissao.PlanejamentoVisualizar);
-            return Ok(await planejamentoService.ObterPlanejamentoMacroAsync(id));
+            var plan = await planejamentoService.ObterPlanejamentoMacroAsync(id);
+            return Ok(modelConverter.ToModel(plan));
         }
 
         [HttpDelete("{id}")]
