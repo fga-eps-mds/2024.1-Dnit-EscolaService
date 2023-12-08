@@ -30,10 +30,10 @@ namespace app.Repositorios
             dbContext.PlanejamentoMacroEscola.Remove(pm);
         }
 
-        public async Task<List<PlanejamentoMacro>> ListarAsync()
-        {
-            throw new NotImplementedException();
-        }
+        // public async Task<List<PlanejamentoMacro>> ListarAsync()
+        // {
+        //     throw new NotImplementedException();
+        // }
 
         public async Task<PlanejamentoMacro> ObterPlanejamentoMacroAsync(Guid id)
         {

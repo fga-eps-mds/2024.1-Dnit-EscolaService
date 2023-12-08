@@ -10,6 +10,6 @@ namespace app.Repositorios.Interfaces
         void ExcluirPlanejamentoMacroEscola(PlanejamentoMacroEscola pm);
         Task<PlanejamentoMacro> ObterPlanejamentoMacroAsync(Guid id);
         PlanejamentoMacro RegistrarPlanejamentoMacro(PlanejamentoMacro pm);
-        Task<List<PlanejamentoMacro>> ListarAsync();
+        // Task<List<PlanejamentoMacro>> ListarAsync();
     }
 }
