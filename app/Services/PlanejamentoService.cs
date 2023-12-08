@@ -32,18 +32,20 @@ namespace app.Services
         }
 
         // Implementar os metodos da inteface
-        public async Task<PlanejamentoMacroDetalhadoModel> ObterPlanejamentoMacroDetalhado(Guid id)
+        //Obtém planejamento macro pelo ID
+        public async Task<PlanejamentoMacro> ObterPlanejamentoMacroAsync(Guid id)
         {
-            return await planejamentoRepositorio.ObterPlanejamentoMacroDetalhado(id);
+            return await planejamentoRepositorio.ObterPlanejamentoMacroAsync(id);
         }
 
+    
         public async Task ExcluirPlanejamentoMacro(Guid id)
         {
-            var planejamento = await planejamentoRepositorio.ObterPlanejamentoMacroDetalhado(id);
-            dbContext.Remove(planejamento);
+            var planejamento = await planejamentoRepositorio.ObterPlanejamentoMacroAsync(id);
+            planejamento.Escolas.ForEach(e => planejamentoRepositorio.ExcluirPlanejamentoMacroEscola(e));
+            planejamentoRepositorio.ExcluirPlanejamentoMacro(planejamento);
             await dbContext.SaveChangesAsync();
         }
-        
         
 
         public async Task<PlanejamentoMacro> GerarRecomendacaoDePlanejamento(PlanejamentoMacroDTO planejamento)
@@ -129,5 +131,7 @@ namespace app.Services
             dbContext.SaveChanges();
             return planejamentoMacro;
         }
+
+        
     }
 }

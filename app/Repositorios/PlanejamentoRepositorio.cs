@@ -1,6 +1,9 @@
 using api.Planejamento;
 using app.Entidades;
 using app.Repositorios.Interfaces;
+using app.Services;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 
 namespace app.Repositorios
 {
@@ -15,50 +18,34 @@ namespace app.Repositorios
             this.dbContext = dbContext;
         }
 
+        public void ExcluirPlanejamentoMacro(PlanejamentoMacro pm)
+        {
+            dbContext.PlanejamentoMacro.Remove(pm);
+        }
+
         // Implemetar os metodos da inteface
 
-        public Task<List<PlanejamentoMacro>> ListarAsync()
+        public void ExcluirPlanejamentoMacroEscola(PlanejamentoMacroEscola pm)
+        {
+            dbContext.PlanejamentoMacroEscola.Remove(pm);
+        }
+
+        public async Task<List<PlanejamentoMacro>> ListarAsync()
         {
             throw new NotImplementedException();
         }
-        
+
+        public async Task<PlanejamentoMacro> ObterPlanejamentoMacroAsync(Guid id)
+        {
+            return await dbContext.PlanejamentoMacro.Include(p => p.Escolas).FirstOrDefaultAsync(x => x.Id==id) ?? throw new ApiException(api.ErrorCodes.PlanejamentoMacroNaoEncontrado);
+        }
+
         public  PlanejamentoMacro RegistrarPlanejamentoMacro(PlanejamentoMacro pm)
         {
-            // var planejamentoMacro = new PlanejamentoMacro
-            // {
-            //     Nome = pm.Nome,
-            //     Responsavel = pm.Responsavel,
-            //     MesInicio = pm.MesInicio,
-            //     AnoInicio = pm.AnoInicio,
-            //     MesFim = pm.MesFim,
-            //     AnoFim = pm.AnoFim,
-            //     QuantidadeAcoes = pm.QuantidadeAcoes
-            // };
-            // List<PlanejamentoMacroEscola> pmEscolas = new List<PlanejamentoMacroEscola>();
-            // foreach (var escola in escolas)
-            // {
-            //     var escolaAtual = new PlanejamentoMacroEscola
-            //     {
-            //         Mes = pm.MesInicio,
-            //         Ano = pm.AnoInicio,
-            //         PlanejamentoMacroId = planejamentoMacro.Id,
-            //         PlanejamentoMacro = planejamentoMacro,
-            //         EscolaId = escola.Id,
-            //         Escola = escola
-            //     };
-            //     pmEscolas.Add(escolaAtual);
-            // }
-
-            // planejamentoMacro.Escolas = pmEscolas;
-            // dbContext.Add(planejamentoMacro);
-            // return planejamentoMacro;
             dbContext.PlanejamentoMacro.Add(pm);
             return pm;
         }
 
-        Task<PlanejamentoMacroDetalhadoModel> IPlanejamentoRepositorio.ObterPlanejamentoMacroDetalhado(Guid id)
-        {
-            throw new NotImplementedException();
-        }
+       
     }
 }

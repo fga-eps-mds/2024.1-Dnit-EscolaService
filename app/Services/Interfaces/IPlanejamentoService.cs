@@ -9,7 +9,7 @@ namespace service.Interfaces
         Task<PlanejamentoMacro> GerarRecomendacaoDePlanejamento(PlanejamentoMacroDTO planejamento);
         public PlanejamentoMacro CriarPlanejamentoMacro(PlanejamentoMacro planejamento);
 
-        Task<PlanejamentoMacroDetalhadoModel> ObterPlanejamentoMacroDetalhado(Guid id);
+        Task<PlanejamentoMacro> ObterPlanejamentoMacroAsync(Guid id);
         Task ExcluirPlanejamentoMacro(Guid id);
     }
 }
