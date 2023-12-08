@@ -1,5 +1,6 @@
 using app.Controllers;
 using app.Entidades;
+using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
 using test.Fixtures;
@@ -66,6 +67,18 @@ namespace test
             Assert.NotNull(priorizacoes);
             Assert.NotNull(visualizar);
             Assert.Equal(visualizar.Count, priorizacoes.Count);  
+        }
+
+        [Fact]
+        public async Task DeletarFatorId_QuandoColocadoId_DeveRetornarOk()
+        {
+            var priorizacao = db.FatorPriorizacoes.FirstOrDefault();
+            
+            Assert.NotNull(priorizacao);
+
+            var resposta = await controller.DeletarFator(priorizacao.Id);
+
+            Assert.IsType<OkObjectResult>(resposta);  
         }
     }
 }
