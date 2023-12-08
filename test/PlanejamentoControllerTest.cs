@@ -1,11 +1,7 @@
-using System.Linq;
-using api.Escolas;
 using app.Controllers;
 using app.Entidades;
 using app.Services;
 using System.Threading.Tasks;
-using api.Polos;
-using auth;
 using Microsoft.EntityFrameworkCore;
 using test.Fixtures;
 using test.Stubs;
@@ -27,8 +23,21 @@ namespace test
         }
         
         [Fact]
+        public async Task GetPlanejamento_QuandoExistir_DeveRetornar()
+        {
+            dbContext.PopulaPlanejamentoMacro(1);
+            var primeiroPlanejamentoMacro = await dbContext.PlanejamentoMacro.FirstOrDefaultAsync();
+            Assert.NotNull(primeiroPlanejamentoMacro);
+            
+            var planejamentoMacro = await controller.ObterPlanejamentoMacro(primeiroPlanejamentoMacro.Id);
+            Assert.NotNull(planejamentoMacro);
+            Assert.IsNotType<ApiException>(async () => await controller.ObterPlanejamentoMacro(primeiroPlanejamentoMacro.Id));
+        }
+        
+        [Fact]
         public async Task GetPlanejamento_QuandoNaoExistir_DeveLancarExcessao()
         {
+            dbContext.PopulaPlanejamentoMacro(1);
             await Assert.ThrowsAsync<ApiException>(async () => await controller.ObterPlanejamentoMacro(Guid.NewGuid()));
         }
         
