@@ -2,6 +2,7 @@ using System.Numerics;
 using api;
 using api.Escolas;
 using api.Planejamento;
+using api.Polos;
 using app.Entidades;
 using app.Repositorios.Interfaces;
 using EnumsNET;
@@ -38,7 +39,7 @@ namespace app.Services
             return await planejamentoRepositorio.ObterPlanejamentoMacroAsync(id);
         }
 
-    
+            
         public async Task ExcluirPlanejamentoMacro(Guid id)
         {
             var planejamento = await planejamentoRepositorio.ObterPlanejamentoMacroAsync(id);
@@ -132,6 +133,35 @@ namespace app.Services
             return planejamentoMacro;
         }
 
-        
+        public async Task<PlanejamentoMacro> EditarPlanejamentoMacro(PlanejamentoMacro planejamento, PlanejamentoMacroDTO dto)
+        {
+            var planejamentoMacroAtualizar = await planejamentoRepositorio.ObterPlanejamentoMacroAsync(planejamento.Id) ?? throw new KeyNotFoundException("Planejamento não encontrado");
+
+            planejamentoMacroAtualizar.Nome = dto.Nome;
+            planejamentoMacroAtualizar.Responsavel = dto.Responsavel;
+            planejamentoMacroAtualizar.MesInicio = dto.MesInicio;
+            planejamentoMacroAtualizar.MesFim = dto.MesFim;
+            planejamentoMacroAtualizar.AnoInicio = dto.MesInicio.ToString();
+            planejamentoMacroAtualizar.AnoFim = dto.MesFim.ToString();
+            planejamentoMacroAtualizar.QuantidadeAcoes = dto.QuantidadeAcoes;
+
+            await dbContext.SaveChangesAsync();
+
+            return planejamentoMacroAtualizar;
+        }
+
+        // public async Task EditarPlanejamentoMacroAsync(Guid id, PlanejamentoMacroplanejamento pmplanejamento)
+        // {
+        //     var planejamento = await planejamentoRepositorio.ObterPlanejamentoMacroAsync(id);
+
+        //     planejamento!.Nome = pmplanejamento.Nome;
+        //     planejamento!.Responsavel = pmplanejamento.Responsavel;
+        //     planejamento!.MesInicio = pmplanejamento.MesInicio;
+        //     planejamento!.MesFim = pmplanejamento.MesFim;
+        //     planejamento!.AnoInicio = pmplanejamento.AnoFim;
+        //     planejamento!.QuantidadeAcoes = pmplanejamento.QuantidadeAcoes;
+
+        //     await dbContext.SaveChangesAsync();
+        // }
     }
 }
