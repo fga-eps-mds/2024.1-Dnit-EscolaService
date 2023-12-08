@@ -131,6 +131,8 @@ namespace api
         RanqueJaSendoCalculado,
         [Description("Formato JSON não reconhecido")]
         FormatoJsonNaoReconhecido,
+        [Description("Planejamento Macro não encontrado")]
+        PlanejamentoMacroNaoEncontrado,
     }
 
     public enum Mes
