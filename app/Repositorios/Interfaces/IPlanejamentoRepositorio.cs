@@ -7,7 +7,7 @@ namespace app.Repositorios.Interfaces
     {
         //Definir os metodos a serem implementados
         Task<PlanejamentoMacroDetalhadoModel> ObterPlanejamentoMacroDetalhado(Guid id);
-        PlanejamentoMacro RegistrarPlanejamentoMacro(PlanejamentoMacroDTO p, List<Escola> escolas);
+        PlanejamentoMacro RegistrarPlanejamentoMacro(PlanejamentoMacro pm);
         Task<List<PlanejamentoMacro>> ListarAsync();
     }
 }
