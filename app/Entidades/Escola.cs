@@ -90,8 +90,8 @@ namespace app.Entidades
             return new() {
                 "Id", "Nome", "Codigo", "Latitude", "Longitude",
                 "TotalAlunos", "TotalDocentes", "Telefone", "Uf",
-                "Rede", "Porte", "Localizacao", "Situacao", "EtapasEnsino",
-                "PoloId", "DistanciaPolo"
+                "Rede", "Porte", "Localização", "Situação", "EtapasEnsino",
+                "PoloId", "DistânciaPolo"
             };
         }
     }
