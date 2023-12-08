@@ -42,6 +42,18 @@ namespace test
         }
         
         [Fact]
+        public async Task DeletePlanejamento_QuandoExistir_DeveRetornar()
+        {
+            dbContext.PopulaPlanejamentoMacro(1);
+            var primeiroPlanejamentoMacro = await dbContext.PlanejamentoMacro.FirstOrDefaultAsync();
+            Assert.NotNull(primeiroPlanejamentoMacro);
+            
+            await controller.ExcluirPlanejamentoMacro(primeiroPlanejamentoMacro.Id);
+            Assert.False(await dbContext.PlanejamentoMacro.AnyAsync(e => e.Id == primeiroPlanejamentoMacro.Id));
+            Assert.IsNotType<ApiException>(async () => await controller.ExcluirPlanejamentoMacro(primeiroPlanejamentoMacro.Id));
+        }
+        
+        [Fact]
         public async Task DeletePlanejamento_QuandoNaoExistir_DeveLancarExcessao()
         {
             dbContext.PopulaPlanejamentoMacro(1);
