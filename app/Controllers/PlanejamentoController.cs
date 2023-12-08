@@ -4,6 +4,7 @@ using app.Entidades;
 using app.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Migrations;
 using service.Interfaces;
 
 namespace app.Controllers
@@ -62,14 +63,18 @@ namespace app.Controllers
         public async Task<IActionResult> CriarPlanejamentoMacro([FromBody] PlanejamentoMacroDTO planejamentoMacro)
         {
             authService.Require(Usuario, Permissao.PlanejamentoCriar);
-            var recomendacao = await planejamentoService.GerarRecomendacaoDePlanejamento(planejamentoMacro);
+            var recomendacao = await planejamentoService.GerarRecomendacaoDePlanejamento(planejamentoMacro); //retorna entidade sem id
+            var planejamentoMacroCriado = planejamentoService.CriarPlanejamentoMacro(recomendacao);
+            var planejamentoMacroDetalhadoModel = modelConverter.ToModel(planejamentoMacroCriado);
             
-            //var planejamentoMacroCriado = planejamentoService.CriarPlanejamentoMacro(recomendacao);
-            //var planejamentoMacroDetalhadoModel = modelConverter.ToModel(planejamentoMacroCriado);
+            //inserir no banco
+
+            //pegar objeto do banco e retornar como model para o front (usar o ModelConverter)
+
             
             // deve registrar o planejamento macro no banco
 
-            return Ok(recomendacao);
+            return Ok(planejamentoMacroDetalhadoModel);
             // Deve retornar um objeto PlanejamentoMacroDetralhadoModel
             // está retornando essa recomendação só para testar pelo swagger o retorno 
             // da geração  de recomendação 
