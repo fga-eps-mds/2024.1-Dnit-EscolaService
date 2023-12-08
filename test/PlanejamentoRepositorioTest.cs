@@ -24,7 +24,17 @@ namespace test
             dbContext.PopulaPlanejamentoMacro(5);
         }
         
-        
+        [Fact]
+        public async Task ObterPorIdAsync_QuandoExistir_DeveRetornar()
+        {
+            dbContext.PopulaPlanejamentoMacro(1);
+            var planejBanco = await dbContext.PlanejamentoMacro.FirstOrDefaultAsync();
+            Assert.NotNull(planejBanco);
+            
+            var planejamentoMacro = await planejamentoRepositorio.ObterPlanejamentoMacroAsync(planejBanco.Id);
+            Assert.Equal(planejBanco, planejamentoMacro);
+            Assert.IsNotType<ApiException>(async () => await planejamentoRepositorio.ObterPlanejamentoMacroAsync(planejBanco.Id));
+        }
         
         public new void Dispose()
         {
