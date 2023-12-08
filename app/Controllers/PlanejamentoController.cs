@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Migrations;
 using service.Interfaces;
+using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 
 namespace app.Controllers
 {
@@ -16,11 +18,11 @@ namespace app.Controllers
         private readonly IPlanejamentoService planejamentoService;
         private readonly AuthService authService;
         private readonly ModelConverter modelConverter;
-
         public PlanejamentoController(
             IPlanejamentoService planejamentoService,
             AuthService authService,
             ModelConverter modelConverter
+            
         )
         {
             this.planejamentoService = planejamentoService;
@@ -45,7 +47,8 @@ namespace app.Controllers
         public async Task<IActionResult> ObterPlanejamentoMacro(Guid id)
         {
             authService.Require(Usuario, Permissao.PlanejamentoVisualizar);
-            return Ok(await planejamentoService.ObterPlanejamentoMacroAsync(id));
+            var plan = await planejamentoService.ObterPlanejamentoMacroAsync(id);
+            return Ok(modelConverter.ToModel(plan));
         }
 
         [HttpDelete("{id}")]
@@ -84,12 +87,41 @@ namespace app.Controllers
 
         [HttpPut("{id}")]
         [Authorize]
-        public async Task<IActionResult> EditarPlanejamentoMacro(Guid id, [FromBody] PlanejamentoMacroDetalhadoDTO planejamentoMacro)
+        public async Task<IActionResult> EditarPlanejamentoMacro(Guid id, [FromBody] PlanejamentoMacroDTO dto)
         {
             authService.Require(Usuario, Permissao.PlanejamentoEditar);
-            // Deve retornar um objeto PlanejamentoMacroDetalhadoModel
 
-            return Ok("Não implementado");
+
+
+            try{
+            //Pega o planejamento macro com o ID específico
+            var planejamento = await planejamentoService.ObterPlanejamentoMacroAsync(id);
+
+            //Edita o planejamento macro
+            await planejamentoService.EditarPlanejamentoMacro(planejamento, dto);
+
+            return Ok(modelConverter.ToModel(planejamento));
+            }
+            // var planejamento = mapper.Map<PlanejamentoMacro>(dto);
+            // planejamento.Id = id;
+
+            // try{
+            //     var novoPlanejamento = await planejamentoService.EditarPlanejamentoMacro(id, planejamento);
+
+            //     var planejamentoMacroDetalhadoModel = modelConverter.ToModel(novoPlanejamento);
+
+            //     var result = mapper.Map<PlanejamentoMacroDetalhadoModel>(planejamentoMacroDetalhadoModel);
+            //     return Ok(result);
+            catch(KeyNotFoundException)
+            {
+                return NotFound("Planejamento Macro não encontrado.");
+            }
+            catch(DbUpdateException){
+                return UnprocessableEntity("Erro ao editar Planejamento.");
+            }
+            catch(Exception ex){
+                return StatusCode(500, $"Houve um erro interno no servidor. {ex.Message}");
+            }
         }
     }
 }
