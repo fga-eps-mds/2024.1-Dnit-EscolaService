@@ -173,7 +173,7 @@ namespace app.Services
 
             foreach(var escola in escolas) {
                 string formatCodigo = $"\"{escola.Escola.Codigo}.\"";
-                string formatTelefone = $"\"{escola.Escola.Telefone}.\"";
+                string formatTelefone = $"({escola.Escola.Telefone.Substring(0, 2)}){escola.Escola.Telefone.Substring(2)}";; 
                 string formatDistanciaPolo = escola.Escola.DistanciaPolo.ToString();
                 formatDistanciaPolo = formatDistanciaPolo.Replace(".", ",");
                 formatDistanciaPolo = $"\"{formatDistanciaPolo}\"";
