@@ -2,6 +2,7 @@ using app.Controllers;
 using app.Entidades;
 using app.Services;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using test.Fixtures;
 using test.Stubs;
@@ -26,12 +27,12 @@ namespace test
         public async Task GetPlanejamento_QuandoExistir_DeveRetornar()
         {
             dbContext.PopulaPlanejamentoMacro(1);
-            var primeiroPlanejamentoMacro = await dbContext.PlanejamentoMacro.FirstOrDefaultAsync();
-            Assert.NotNull(primeiroPlanejamentoMacro);
+            var planejBanco = await dbContext.PlanejamentoMacro.FirstOrDefaultAsync();
+            Assert.NotNull(planejBanco);
             
-            var planejamentoMacro = await controller.ObterPlanejamentoMacro(primeiroPlanejamentoMacro.Id);
+            var planejamentoMacro = await controller.ObterPlanejamentoMacro(planejBanco.Id);
             Assert.NotNull(planejamentoMacro);
-            Assert.IsNotType<ApiException>(async () => await controller.ObterPlanejamentoMacro(primeiroPlanejamentoMacro.Id));
+            Assert.IsNotType<ApiException>(async () => await controller.ObterPlanejamentoMacro(planejBanco.Id));
         }
         
         [Fact]
@@ -45,12 +46,12 @@ namespace test
         public async Task DeletePlanejamento_QuandoExistir_DeveRetornar()
         {
             dbContext.PopulaPlanejamentoMacro(1);
-            var primeiroPlanejamentoMacro = await dbContext.PlanejamentoMacro.FirstOrDefaultAsync();
-            Assert.NotNull(primeiroPlanejamentoMacro);
+            var planejBanco = await dbContext.PlanejamentoMacro.FirstOrDefaultAsync();
+            Assert.NotNull(planejBanco);
             
-            await controller.ExcluirPlanejamentoMacro(primeiroPlanejamentoMacro.Id);
-            Assert.False(await dbContext.PlanejamentoMacro.AnyAsync(e => e.Id == primeiroPlanejamentoMacro.Id));
-            Assert.IsNotType<ApiException>(async () => await controller.ExcluirPlanejamentoMacro(primeiroPlanejamentoMacro.Id));
+            await controller.ExcluirPlanejamentoMacro(planejBanco.Id);
+            Assert.False(await dbContext.PlanejamentoMacro.AnyAsync(e => e.Id == planejBanco.Id));
+            Assert.IsNotType<ApiException>(async () => await controller.ExcluirPlanejamentoMacro(planejBanco.Id));
         }
         
         [Fact]
