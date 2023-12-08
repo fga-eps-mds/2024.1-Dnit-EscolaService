@@ -45,17 +45,19 @@ namespace app.Controllers
         public async Task<IActionResult> ObterPlanejamentoMacro(Guid id)
         {
             authService.Require(Usuario, Permissao.PlanejamentoVisualizar);
-            return Ok(await planejamentoService.ObterPlanejamentoMacroDetalhado(id));
+            return Ok(await planejamentoService.ObterPlanejamentoMacroAsync(id));
         }
 
         [HttpDelete("{id}")]
         [Authorize]
-        public async Task ExcluirPlanejamentoMacro(Guid id)
+        public async Task<IActionResult> ExcluirPlanejamentoMacro(Guid id)
         {
             authService.Require(Usuario, Permissao.PlanejamentoRemover);
-            // Deve retornar o status da operação
+            
+            var planejamentoExistente = await planejamentoService.ObterPlanejamentoMacroAsync(id);
             await planejamentoService.ExcluirPlanejamentoMacro(id);
-            //return Ok("Não implementado");
+
+            return Ok();
         }
 
         [HttpPost]
