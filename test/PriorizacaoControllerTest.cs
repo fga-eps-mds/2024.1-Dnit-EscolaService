@@ -80,5 +80,19 @@ namespace test
 
             Assert.IsType<OkObjectResult>(resposta);  
         }
+
+        [Fact]
+        public async Task AdicionarFatorPriorizacao_QuandoFornecidoNovoFator_DeveRetornarFatorAdicionado()
+        {
+            var novoFator = PriorizacaoStub.ListarFatorPrioriModel(false).First();
+
+            var resposta = await controller.AdicionarFatorPriorizacao(novoFator);
+
+            Assert.NotNull(resposta);
+            Assert.Equal(novoFator.Nome, resposta.Nome);
+            Assert.Equal(novoFator.Ativo, resposta.Ativo);
+            Assert.Equal(novoFator.Primario, resposta.Primario);
+            Assert.Equal(novoFator.Peso, resposta.Peso);
+        }
     }
 }

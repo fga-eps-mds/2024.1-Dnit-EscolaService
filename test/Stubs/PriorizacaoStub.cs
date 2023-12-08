@@ -75,5 +75,27 @@ namespace test.Stubs
                     };
           
         }
+        public static IEnumerable<FatorPrioriModel> ListarFatorPrioriModel(bool hasId = true)
+        {
+            while (true)
+            {
+                var fatorPriorizacao = new FatorPrioriModel
+                {
+                    Nome = $"Fator {Random.Shared.Next()}",
+                    Ativo = true,
+                    Peso = Random.Shared.Next() % 100,
+                    Primario = true,
+                    FatorCondicoes = new List<FatorCondicaoModel>(),
+                };
+
+                if (hasId == true)
+                {
+                    fatorPriorizacao.Id = Guid.NewGuid();
+                }
+
+                yield return fatorPriorizacao;
+            }
+
+        }
     }
 }
