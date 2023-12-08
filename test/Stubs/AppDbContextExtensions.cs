@@ -68,6 +68,14 @@ namespace test.Stubs
             return custoLogisticos;
         }
 
+        public static List<FatorPriorizacao> PopulaPriorizacao(this AppDbContext dbContext, int limit)
+        {
+            var Priorizacoes = PriorizacaoStub.ObterListaPriorizacoes();
+            dbContext.AddRange(Priorizacoes);
+            dbContext.SaveChanges();
+            return Priorizacoes;
+        }
+
         public static void Clear(this AppDbContext dbContext)
         {
             dbContext.RemoveRange(dbContext.Escolas);

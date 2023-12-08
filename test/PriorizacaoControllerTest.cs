@@ -17,6 +17,7 @@ namespace test
         {
             db = fixture.GetService<AppDbContext>(testOutputHelper)!;
             db.PopulaCustosLogisticos(4);
+            db.PopulaPriorizacao(4);
             controller = fixture.GetService<PriorizacaoController>(testOutputHelper)!;
         }
 
@@ -43,6 +44,17 @@ namespace test
             Assert.Equal(item.RaioMin, itemDb.RaioMin);
             Assert.Equal(item.RaioMax, itemDb.RaioMax);
             Assert.Equal(item.Valor, itemDb.Valor);
+        }
+
+        [Fact]
+        public async Task VisualizarFatorId_QuandoColocarId_DeveRetornarOk()
+        {
+            var priorizacoes = db.FatorPriorizacoes.ToList();
+            var visualizar = await controller.VisualizarFatorId(priorizacoes.First().Id);
+
+            Assert.NotNull(priorizacoes);
+            Assert.NotNull(visualizar);
+            Assert.Equal(visualizar.Nome, priorizacoes[0].Nome);  
         }
     }
 }
