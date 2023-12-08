@@ -397,10 +397,13 @@ namespace app.Services
 
             foreach (var escola in escolas)
             {
-                builder.AppendLine(CsvSerializer.Serialize(escola, delimiter));
+                string formatDistanciaPolo = escola.DistanciaPolo.ToString();
+                formatDistanciaPolo = formatDistanciaPolo.Replace(".", ",");
+                formatDistanciaPolo = $"\"{formatDistanciaPolo}\"";
+                builder.AppendLine($"{CsvSerializer.Serialize(escola, delimiter)}; {formatDistanciaPolo}");
             }
 
-            var bytes = Encoding.UTF8.GetBytes(builder.ToString());
+            var bytes = Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(builder.ToString())).ToArray();
             return new FileContentResult(bytes, "text/csv")
             {
                 FileDownloadName = $"escolas.csv",
