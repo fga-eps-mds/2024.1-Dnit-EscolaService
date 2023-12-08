@@ -26,6 +26,12 @@ namespace test
             dbContext.PopulaPlanejamentoMacro(5);        
         }
         
+        [Fact]
+        public async Task GetPlanejamento_QuandoNaoExistir_DeveLancarExcessao()
+        {
+            await Assert.ThrowsAsync<ApiException>(async () => await controller.ObterPlanejamentoMacro(Guid.NewGuid()));
+        }
+        
         public new void Dispose()
         {
             dbContext.Clear();
