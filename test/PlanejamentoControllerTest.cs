@@ -23,7 +23,12 @@ namespace test
             dbContext = fixture.GetService<AppDbContext>(testOutputHelper)!;
             controller = fixture.GetService<PlanejamentoController>(testOutputHelper)!;
             AutenticarUsuario(controller);
-            // dbContext.PlanejamentoMacro(5);        
+            dbContext.PopulaPlanejamentoMacro(5);        
+        }
+        
+        public new void Dispose()
+        {
+            dbContext.Clear();
         }
     }
 }
