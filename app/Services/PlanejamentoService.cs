@@ -5,6 +5,7 @@ using api.Planejamento;
 using app.Entidades;
 using app.Repositorios.Interfaces;
 using EnumsNET;
+using Microsoft.VisualBasic;
 using service.Interfaces;
 
 namespace app.Services
@@ -59,7 +60,7 @@ namespace app.Services
             };
 
             var escolas = await ranqueService.ListarEscolasUltimoRanqueAsync(filtro);
-            var numeroMeses = Math.Abs(planejamento.MesFim - planejamento.MesInicio);
+            var numeroMeses = Math.Abs(planejamento.MesFim - planejamento.MesInicio) + 1;
             var acoesPorMes = (int) Math.Ceiling((double) q / numeroMeses);
 
             var lista = new List<PlanejamentoMacroEscola>();
@@ -81,6 +82,7 @@ namespace app.Services
                 };
 
                 lista.Add(planejamentoMacroEscola);
+                i++;
             }
 
             var planejamentoMacroGerado = new PlanejamentoMacro()
@@ -121,10 +123,11 @@ namespace app.Services
             return planejamentoMacroGerado;
         }
 
-        public PlanejamentoMacro CriarPlanejamentoMacro(PlanejamentoMacroDetalhadoDTO planejamento)
+        public PlanejamentoMacro CriarPlanejamentoMacro(PlanejamentoMacro planejamento)
         {
-            
-            throw new NotImplementedException();
+            var planejamentoMacro = planejamentoRepositorio.RegistrarPlanejamentoMacro(planejamento);
+            dbContext.SaveChanges();
+            return planejamentoMacro;
         }
     }
 }
