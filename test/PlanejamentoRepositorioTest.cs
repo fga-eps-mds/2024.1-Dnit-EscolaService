@@ -25,7 +25,7 @@ namespace test
         }
         
         [Fact]
-        public async Task ObterPlanejamentoMacroPorIdAsync_QuandoNaoExistir()
+        public async Task ObterPlanejamentoMacroPorIdAsync_QuandoExistir_DeveRetornar()
         {
             dbContext.PopulaPlanejamentoMacro(1);
             var planejBanco = await dbContext.PlanejamentoMacro.FirstOrDefaultAsync();
@@ -43,7 +43,7 @@ namespace test
         }
         
         [Fact]
-        public async Task DeletePlanejamentoMacro_QuandoExistir_DeveRetornar()
+        public async Task DeletePlanejamentoMacro_QuandoExistir_DeveDeletar()
         {
             dbContext.PopulaPlanejamentoMacro(1);
             var planejBanco = await dbContext.PlanejamentoMacro.FirstOrDefaultAsync();
