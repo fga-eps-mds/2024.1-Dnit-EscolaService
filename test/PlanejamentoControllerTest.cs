@@ -24,7 +24,7 @@ namespace test
         }
         
         [Fact]
-        public async Task GetPlanejamento_QuandoExistir_DeveRetornar()
+        public async Task ObterPlanejamentoMacro_QuandoExistir_DeveRetornar()
         {
             dbContext.PopulaPlanejamentoMacro(1);
             var planejBanco = await dbContext.PlanejamentoMacro.FirstOrDefaultAsync();
@@ -36,14 +36,14 @@ namespace test
         }
         
         [Fact]
-        public async Task GetPlanejamento_QuandoNaoExistir_DeveLancarExcessao()
+        public async Task ObterPlanejamentoMacro_QuandoNaoExistir_DeveLancarExcessao()
         {
             dbContext.PopulaPlanejamentoMacro(1);
             await Assert.ThrowsAsync<ApiException>(async () => await controller.ObterPlanejamentoMacro(Guid.NewGuid()));
         }
         
         [Fact]
-        public async Task DeletePlanejamento_QuandoExistir_DeveRetornar()
+        public async Task DeletePlanejamentoMacro_QuandoExistir_DeveRetornar()
         {
             dbContext.PopulaPlanejamentoMacro(1);
             var planejBanco = await dbContext.PlanejamentoMacro.FirstOrDefaultAsync();
@@ -55,7 +55,7 @@ namespace test
         }
         
         [Fact]
-        public async Task DeletePlanejamento_QuandoNaoExistir_DeveLancarExcessao()
+        public async Task DeletePlanejamentoMacro_QuandoNaoExistir_DeveLancarExcecao()
         {
             dbContext.PopulaPlanejamentoMacro(1);
             await Assert.ThrowsAsync<ApiException>(async () => await controller.ExcluirPlanejamentoMacro(Guid.NewGuid()));
