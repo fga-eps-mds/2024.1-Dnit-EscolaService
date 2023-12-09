@@ -50,7 +50,8 @@ namespace test
             Assert.NotNull(planejBanco);
     
             planejamentoRepositorio.ExcluirPlanejamentoMacro(planejBanco);
-            
+            dbContext.SaveChangesAsync();
+
             Assert.False(await dbContext.PlanejamentoMacro.AnyAsync(e => e.Id == planejBanco.Id));
             Assert.IsNotType<ApiException>(() => planejamentoRepositorio.ExcluirPlanejamentoMacro(planejBanco));
         }
