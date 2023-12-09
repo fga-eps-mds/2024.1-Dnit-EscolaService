@@ -191,5 +191,12 @@ namespace app.Services
                 Fatores = fatores
             };
         }
+
+        public PropriedadeCondicaoModel ToModel(PropriedadeCondicao propriedadeCondicao) =>
+            new PropriedadeCondicaoModel
+            {
+                Id = (int)propriedadeCondicao,
+                Rotulo = propriedadeCondicao.ToString()
+            };
     }
 }
