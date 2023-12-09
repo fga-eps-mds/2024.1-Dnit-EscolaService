@@ -91,8 +91,6 @@ namespace app.Controllers
         {
             authService.Require(Usuario, Permissao.PlanejamentoEditar);
 
-
-
             try{
             //Pega o planejamento macro com o ID específico
             var planejamento = await planejamentoService.ObterPlanejamentoMacroAsync(id);
@@ -102,16 +100,6 @@ namespace app.Controllers
 
             return Ok(modelConverter.ToModel(planejamento));
             }
-            // var planejamento = mapper.Map<PlanejamentoMacro>(dto);
-            // planejamento.Id = id;
-
-            // try{
-            //     var novoPlanejamento = await planejamentoService.EditarPlanejamentoMacro(id, planejamento);
-
-            //     var planejamentoMacroDetalhadoModel = modelConverter.ToModel(novoPlanejamento);
-
-            //     var result = mapper.Map<PlanejamentoMacroDetalhadoModel>(planejamentoMacroDetalhadoModel);
-            //     return Ok(result);
             catch(KeyNotFoundException)
             {
                 return NotFound("Planejamento Macro não encontrado.");
