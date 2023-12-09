@@ -63,6 +63,12 @@ namespace test
             Assert.True(Enum.GetValues<PropriedadeCondicao>().ToList().All(propriedade => propriedades.Any(p => p.Id == (int)propriedade)));
         }
 
+        [Fact]
+        public void ObterPorte_QuandoMetodoForChamado_DeveRetornarTodosOsPortes()
+        {
+            var portes = dominioController.ObterPorteEscola().ToList();
+            Assert.True(Enum.GetValues<Porte>().ToList().All(porte => portes.Any(p => p.Id == porte)));
+        }
         public new void Dispose()
         {
             dbContext.Clear();
