@@ -56,6 +56,13 @@ namespace test
 
         }
 
+        [Fact]
+        public void ObterPropriedades_QuandoMetodoForChamado_DeveRetornarTodasPropriedades()
+        {
+            var propriedades = dominioController.ObterPropriedades().ToList();
+            Assert.True(Enum.GetValues<PropriedadeCondicao>().ToList().All(propriedade => propriedades.Any(p => p.Id == (int)propriedade)));
+        }
+
         public new void Dispose()
         {
             dbContext.Clear();
