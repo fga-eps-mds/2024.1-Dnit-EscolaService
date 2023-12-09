@@ -52,5 +52,11 @@ namespace app.Controllers
         {
             return Enum.GetValues<PropriedadeCondicao>().Select(modelConverter.ToModel).OrderBy(e => e.Id);
         }
+
+        [HttpGet("porte")]
+        public IEnumerable<PorteModel> ObterPorteEscola()
+        {
+            return Enum.GetValues<Porte>().Select(modelConverter.ToModel).OrderBy(e => e.Id);
+        }
     }
 }
