@@ -106,5 +106,23 @@ namespace test
             ObjectResult objectResult = (ObjectResult)resposta;
             Assert.Equal(400, objectResult.StatusCode);
         }
+
+        [Fact]
+        public async Task EditarFatorPriorizacao_QuandoMetodoForChamado_RetornaOK()
+        {
+            var priorizacaoDb = db.FatorPriorizacoes.FirstOrDefault();
+            var priorizacaoAtualizado = PriorizacaoStub.ObterPriorizacaoComCondicao();
+            var resposta = await controller.EditarFator(priorizacaoDb.Id, priorizacaoAtualizado);
+            var priorizacaoDbAtualizado = db.FatorPriorizacoes.ToList();
+
+            var itemDb = priorizacaoDbAtualizado.FirstOrDefault(c => c.Id == priorizacaoAtualizado.Id);
+
+            Assert.NotNull(itemDb);
+            Assert.Equal(priorizacaoAtualizado.Id, itemDb.Id);
+            Assert.Equal(priorizacaoAtualizado.Nome, itemDb.Nome);
+            Assert.Equal(priorizacaoAtualizado.Primario, itemDb.Primario);
+            Assert.Equal(priorizacaoAtualizado.Ativo, itemDb.Ativo);
+            Assert.IsType<ObjectResult>(resposta);
+        }
     }
 }
