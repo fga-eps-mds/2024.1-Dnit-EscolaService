@@ -2,7 +2,6 @@ using System.Numerics;
 using api;
 using api.Escolas;
 using api.Planejamento;
-using api.Polos;
 using app.Entidades;
 using app.Repositorios.Interfaces;
 using EnumsNET;
@@ -141,8 +140,8 @@ namespace app.Services
             planejamentoMacroAtualizar.Responsavel = dto.Responsavel;
             planejamentoMacroAtualizar.MesInicio = dto.MesInicio;
             planejamentoMacroAtualizar.MesFim = dto.MesFim;
-            planejamentoMacroAtualizar.AnoInicio = dto.MesInicio.ToString();
-            planejamentoMacroAtualizar.AnoFim = dto.MesFim.ToString();
+            planejamentoMacroAtualizar.AnoInicio = dto.AnoInicio;
+            planejamentoMacroAtualizar.AnoFim = dto.AnoFim;
             planejamentoMacroAtualizar.QuantidadeAcoes = dto.QuantidadeAcoes;
 
             await dbContext.SaveChangesAsync();
@@ -157,7 +156,7 @@ namespace app.Services
         //     planejamento!.Nome = pmplanejamento.Nome;
         //     planejamento!.Responsavel = pmplanejamento.Responsavel;
         //     planejamento!.MesInicio = pmplanejamento.MesInicio;
-        //     planejamento!.MesFim = pmplanejamento.MesFim;
+        //     planejamento!.MesFim = pmplanejamento.MesFim;  
         //     planejamento!.AnoInicio = pmplanejamento.AnoFim;
         //     planejamento!.QuantidadeAcoes = pmplanejamento.QuantidadeAcoes;
 
