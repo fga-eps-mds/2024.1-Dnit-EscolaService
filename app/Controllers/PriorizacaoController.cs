@@ -59,8 +59,7 @@ namespace app.Controllers
         }
 
         [HttpDelete("fatores/{Id}")]
-        public async Task<IActionResult>
-        DeletarFator(Guid Id)
+        public async Task<IActionResult> DeletarFator(Guid Id)
         {
             try
             {
@@ -74,8 +73,7 @@ namespace app.Controllers
         }
 
         [HttpPut("fatores/{Id}")]
-        public async Task<IActionResult>
-        EditarFator(Guid Id, [FromBody] FatorPrioriModel fatorPrioriModel)
+        public async Task<IActionResult> EditarFator(Guid Id, [FromBody] FatorPrioriModel fatorPrioriModel)
         {
             fatorPrioriModel.Id = Id;
             try

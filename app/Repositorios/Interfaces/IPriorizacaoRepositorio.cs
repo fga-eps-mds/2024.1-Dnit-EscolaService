@@ -13,7 +13,7 @@ namespace app.Repositorios.Interfaces
         Task<FatorEscola> ObterFatorEscolaPorIdAsync(Guid escolaId);
         Task<List<CustoLogistico>> ListarCustosLogisticosAsync();
         FatorCondicao AdicionarFatorCondicao(FatorCondicaoModel fatorCondicao);
-        FatorPriorizacao AdicionarFatorPriorizacao(FatorPrioriModel novoFator);
+        FatorPriorizacao AdicionarFatorPriorizacao(FatorPriorizacao novoFator);
         Task<List<CustoLogistico>> EditarCustosLogisticos(List<CustoLogisticoItem> custoItems);
     }
 }

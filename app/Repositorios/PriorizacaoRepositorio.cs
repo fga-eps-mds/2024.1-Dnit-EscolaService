@@ -21,7 +21,9 @@ namespace app.Repositorios
 
         public async Task<FatorPriorizacao>  ObterFatorPrioriPorIdAsync(Guid prioriId)
         {
-            return await dbContext.FatorPriorizacoes.FirstOrDefaultAsync(c => c.Id == prioriId) ?? throw new ApiException(ErrorCodes.FatorNaoEncontrado); 
+            return await dbContext.FatorPriorizacoes
+                .Include(f => f.FatorCondicoes)
+                .FirstOrDefaultAsync(c => c.Id == prioriId && c.DeleteTime == null) ?? throw new ApiException(ErrorCodes.FatorNaoEncontrado); 
         }
 
         public async Task<FatorCondicao>  ObterFatorCondiPorIdAsync(Guid condicaoId)
@@ -37,13 +39,16 @@ namespace app.Repositorios
         public async Task DeletarFatorId(Guid Id)
         {
             FatorPriorizacao item = await ObterFatorPrioriPorIdAsync(Id);
-            dbContext.FatorPriorizacoes.Remove(item);
+            item.DeleteTime = DateTime.UtcNow;
+            dbContext.FatorPriorizacoes.Update(item);
             dbContext.SaveChanges();
         }
 
         public async Task<List<FatorPriorizacao>> ListarFatoresAsync()
         {
             return await dbContext.FatorPriorizacoes
+                .Include(f => f.FatorCondicoes)
+                .Where(c => c.DeleteTime == null)
                 .OrderBy(c => c.Id)
                 .ToListAsync();
         }
@@ -57,12 +62,13 @@ namespace app.Repositorios
 
         public FatorCondicao AdicionarFatorCondicao(FatorCondicaoModel fatorCondicao)
         {
+            Guid id = Guid.NewGuid();
             FatorCondicao fator = new FatorCondicao
             {
-                Id = Guid.NewGuid(),
-                Propriedade = fatorCondicao.Propriedade,
-                Operador = fatorCondicao.Operador,
-                Valor = fatorCondicao.Valor,
+                Id = id,
+                Propriedade = (PropriedadeCondicao)fatorCondicao.Propriedade,
+                Operador = (OperacaoCondicao)fatorCondicao.Operador,
+                Valores = ConverterValoresFatorCondicao(id, fatorCondicao.Valores),
                 FatorPriorizacaoId = (Guid)fatorCondicao.FatorPriorizacaoId,
             };
 
@@ -70,19 +76,20 @@ namespace app.Repositorios
             return fator;
         }
 
-        public FatorPriorizacao AdicionarFatorPriorizacao(FatorPrioriModel novoFator)
+        private List<CondicaoValor> ConverterValoresFatorCondicao(Guid id, List<string> valores)
         {
-            FatorPriorizacao item = new FatorPriorizacao
-            {
-                Id = Guid.NewGuid(),
-                Nome = novoFator.Nome,
-                Ativo = novoFator.Ativo,
-                Peso = novoFator.Peso,
-                Primario = novoFator.Primario
-            };
+            return valores.ConvertAll(v => new CondicaoValor{ FatorCondicaoId = id, Valor = v });
+        }
 
-            dbContext.FatorPriorizacoes.Add(item);
-            return item;
+        public FatorPriorizacao AdicionarFatorPriorizacao(FatorPriorizacao novoFator)
+        {
+            foreach(var condicao in novoFator.FatorCondicoes)
+            {
+                condicao.FatorPriorizacaoId = novoFator.Id;
+            }
+
+            dbContext.FatorPriorizacoes.Add(novoFator);
+            return novoFator;
         }
 
         public async Task<List<CustoLogistico>> EditarCustosLogisticos(List<CustoLogisticoItem> custoItems)

@@ -34,38 +34,24 @@ namespace app.Services
         {
             FatorPriorizacao item = await priorizacaoRepositorio.ObterFatorPrioriPorIdAsync(Id);
 
-            var condicoes = dbContext.FatorCondicoes.Where(f => f.FatorPriorizacaoId == item.Id).AsList();
-
-            return modelConverter.ToModel(item, condicoes);
+            return modelConverter.ToModel(item);
         }
 
         public async Task<List<FatorPrioriModel>> ListarFatores()
         {
             var items = await priorizacaoRepositorio.ListarFatoresAsync();
-            var fatoresModel = new List<FatorPrioriModel>();
-
-            foreach(var item in items)
-            {
-                var condicoes = dbContext.FatorCondicoes.Where(f => f.FatorPriorizacaoId == item.Id).AsList();
-                fatoresModel.Add(modelConverter.ToModel(item, condicoes));
-            }
-            
+            var fatoresModel = items.ConvertAll<FatorPrioriModel>(modelConverter.ToModel);            
             return fatoresModel;
         }
+        
         public async Task<FatorPrioriModel> AdicionarFatorPriorizacao(FatorPrioriModel novoFator)
         {
-            var fator = priorizacaoRepositorio.AdicionarFatorPriorizacao(novoFator);
-            var condicoesModel = novoFator.FatorCondicoes.ConvertAll(f =>
-            {
-                f.FatorPriorizacaoId = fator.Id;
-                return f;
-            });
 
-            var condicoes = condicoesModel.ConvertAll(priorizacaoRepositorio.AdicionarFatorCondicao);
-
+            FatorPriorizacao item = modelConverter.ToModel(novoFator);
+            var fator = priorizacaoRepositorio.AdicionarFatorPriorizacao(item);
             await dbContext.SaveChangesAsync();
-
-            return modelConverter.ToModel(fator, condicoes);
+            
+            return modelConverter.ToModel(fator);
         }
 
         public async Task<List<CustoLogisticoItem>> EditarCustosLogisticos(List<CustoLogisticoItem> custoItems)
@@ -115,47 +101,50 @@ namespace app.Services
 
         public async Task<FatorPriorizacao> EditarFatorPorId(Guid Id, FatorPrioriModel itemAtualizado)
         {
-            var item = await priorizacaoRepositorio.ObterFatorPrioriPorIdAsync(Id); 
-
-            item.Id = itemAtualizado.Id;
-            item.Nome = itemAtualizado.Nome;
-            item.Peso = itemAtualizado.Peso;
-            item.Ativo = itemAtualizado.Ativo;
-            item.Primario = itemAtualizado.Primario;
+            var fator = await priorizacaoRepositorio.ObterFatorPrioriPorIdAsync(Id);
+            await priorizacaoRepositorio.DeletarFatorId(fator.Id);
             
-            foreach(var condicao in itemAtualizado.FatorCondicoes)
-            {
-                var fatorCondicao = dbContext.FatorCondicoes.Where(c => c.Id == condicao.Id).First();
-
-                if(fatorCondicao == null)
-                {
-                    dbContext.FatorCondicoes.Add(new FatorCondicao
-                    {
-                        Id = Guid.NewGuid(),
-                        Propriedade = condicao.Propriedade,
-                        Operador = condicao.Operador,
-                        Valor = condicao.Valor,
-                        FatorPriorizacaoId = (Guid)condicao.FatorPriorizacaoId,
-                    }
-                    );
-                                            
-                }else
-                {
-                    fatorCondicao.Propriedade = condicao.Propriedade;
-                    fatorCondicao.Operador = condicao.Operador;
-                    fatorCondicao.Valor = condicao.Valor;
-                    fatorCondicao.FatorPriorizacaoId = (Guid)condicao.FatorPriorizacaoId;
-
-                    dbContext.FatorCondicoes.Update(fatorCondicao);
-                }
-            }
+            var novoFator = CopiarFatorPriorizacao(modelConverter.ToModel(itemAtualizado));
+            priorizacaoRepositorio.AdicionarFatorPriorizacao(novoFator);
 
             await dbContext.SaveChangesAsync();
+            return novoFator;
+        }
 
-            return item;
+        private static FatorPriorizacao CopiarFatorPriorizacao(FatorPriorizacao fatorPriorizacao) 
+        {
+            var id = new Guid();
+            var fator = new FatorPriorizacao
+            {
+                Id = id,
+                Nome = fatorPriorizacao.Nome,
+                Ativo = fatorPriorizacao.Ativo,
+                Peso = fatorPriorizacao.Peso,
+                Primario = fatorPriorizacao.Primario,
+                FatorCondicoes = fatorPriorizacao.FatorCondicoes
+                    .ConvertAll(f => 
+                    {
+                        var condicao = CopiarFatorCondicao(f);
+                        condicao.FatorPriorizacaoId = id;
+                        return condicao;
+                    })
+            };
+
+            return fator;
+        }
+
+        private static FatorCondicao CopiarFatorCondicao(FatorCondicao fatorCondicao)
+        {
+            Guid id = new();
+            return new FatorCondicao
+            {
+                Id = id,
+                Propriedade = fatorCondicao.Propriedade,
+                Operador = fatorCondicao.Operador,
+                Valores = fatorCondicao.Valores.ConvertAll(v => new CondicaoValor{ FatorCondicaoId = id, Valor = v.Valor }),
+            };
         }
     
-
         public void CalcularFatorUps()
         {
             var fatorUps = dbContext.FatorPriorizacoes.Where(

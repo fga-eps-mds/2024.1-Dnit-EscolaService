@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using api;
 using api.Fatores;
 using app.Entidades;
 
@@ -56,9 +57,9 @@ namespace test.Stubs
                     new FatorCondicaoModel
                     {
                         Id = Guid.NewGuid(),
-                        Propriedade = "PropriedadeModel",
+                        Propriedade = (int)PropriedadeCondicao.Situacao,
                         Operador = 1,
-                        Valor = "1",
+                        Valores = new List<string>{"1"},
                     }
                 }
             };
@@ -66,12 +67,19 @@ namespace test.Stubs
 
         public static FatorCondicao ObterCondicao()
         {
+            Guid id = Guid.NewGuid();
             return new FatorCondicao
                     {
-                        Id = Guid.NewGuid(),
-                        Propriedade = "PropriedadeModel1",
-                        Operador = 12,
-                        Valor = "11",
+                        Id = id,
+                        Propriedade = PropriedadeCondicao.Municipio,
+                        Operador = OperacaoCondicao.Equals,
+                        Valores = new List<CondicaoValor>{
+                            new CondicaoValor
+                            {
+                                FatorCondicaoId = id,
+                                Valor = "2"
+                            }
+                        },
                     };
           
         }

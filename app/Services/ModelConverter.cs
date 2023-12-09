@@ -160,7 +160,7 @@ namespace app.Services
                 Valor = custoLogistico.Valor,
             };
         
-        public FatorPrioriModel ToModel(FatorPriorizacao fatorPriorizacao, List<FatorCondicao> fatorCondicoes) =>
+        public FatorPrioriModel ToModel(FatorPriorizacao fatorPriorizacao) =>
             new FatorPrioriModel
             {
                 Id = fatorPriorizacao.Id,
@@ -168,17 +168,37 @@ namespace app.Services
                 Peso = fatorPriorizacao.Peso,
                 Ativo = fatorPriorizacao.Ativo,
                 Primario = fatorPriorizacao.Primario,
-                FatorCondicoes = fatorCondicoes.ConvertAll(c => ToModel(c))
+                FatorCondicoes = fatorPriorizacao.FatorCondicoes.ConvertAll(ToModel)
             };
-        
+
+        public FatorPriorizacao ToModel(FatorPrioriModel fator) =>
+            new FatorPriorizacao
+            {
+                Id = fator.Id,
+                Nome = fator.Nome,
+                Peso = fator.Peso,
+                Ativo = fator.Ativo,
+                Primario = fator.Primario,
+                FatorCondicoes = fator.FatorCondicoes.ConvertAll(ToModel)
+            };
+
         public FatorCondicaoModel ToModel(FatorCondicao fatorCondicao) =>   
             new FatorCondicaoModel
             {
                 Id = fatorCondicao.Id,
-                Propriedade = fatorCondicao.Propriedade,
-                Operador = fatorCondicao.Operador,
-                Valor = fatorCondicao.Valor,
-                FatorPriorizacaoId = fatorCondicao.FatorPriorizacaoId,  
+                Propriedade = (int)fatorCondicao.Propriedade,
+                Operador = (int)fatorCondicao.Operador,
+                Valores = fatorCondicao.Valores.ConvertAll(v => v.Valor),
+                FatorPriorizacaoId = fatorCondicao.FatorPriorizacaoId
+            };
+
+        public FatorCondicao ToModel(FatorCondicaoModel fatorCondicaoModel) => 
+            new FatorCondicao
+            {
+                Id = fatorCondicaoModel.Id,
+                Propriedade = (PropriedadeCondicao)fatorCondicaoModel.Propriedade,
+                Operador = (OperacaoCondicao)fatorCondicaoModel.Operador,
+                Valores = fatorCondicaoModel.Valores.ConvertAll(v => new CondicaoValor{ FatorCondicaoId = fatorCondicaoModel.Id, Valor = v }),
             };
         
         public RanqueDetalhesModel ToModel(Ranque ranque, FatorModel[] fatores)
