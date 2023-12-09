@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using test.Fixtures;
 using test.Stubs;
 using Xunit.Abstractions;
+using Moq;
+using service.Interfaces;
 
 namespace test
 {
@@ -14,9 +16,10 @@ namespace test
     {
         private readonly PlanejamentoController controller;
         private readonly AppDbContext dbContext;
-
+        private readonly Mock<IPlanejamentoService> planejamentoServiceMock;
         public PlanejamentoControllerTest(ITestOutputHelper testOutputHelper, Base fixture) : base(testOutputHelper, fixture)
         {
+            planejamentoServiceMock = new Mock<IPlanejamentoService>();
             dbContext = fixture.GetService<AppDbContext>(testOutputHelper)!;
             controller = fixture.GetService<PlanejamentoController>(testOutputHelper)!;
             AutenticarUsuario(controller);
@@ -61,6 +64,17 @@ namespace test
             await Assert.ThrowsAsync<ApiException>(async () => await controller.ExcluirPlanejamentoMacro(Guid.NewGuid()));
         }
         
+        [Fact]
+        public async Task CriarPlanejamentoMacro_QuandoSolicitacaoForEnviada_DeveGerarRecomendacao()
+        {
+            PlanejamentoMacroStub stub = new();
+            var criaPlanejamentoDTO = stub.CriarPlanejamentoMacroDTO();
+
+            var recomendacao = planejamentoServiceMock.Setup(x => x.GerarRecomendacaoDePlanejamento(criaPlanejamentoDTO));
+
+            Assert.NotNull(recomendacao);
+        }
+
         public new void Dispose()
         {
             dbContext.Clear();
