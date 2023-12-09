@@ -1,4 +1,5 @@
 using api;
+using api.Planejamento;
 using app.Entidades;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,8 +7,22 @@ using System.Linq;
 
 namespace test.Stubs
 {
-    public static class PlanejamentoMacroStub
+    public class PlanejamentoMacroStub
     {
+        public PlanejamentoMacroDTO CriarPlanejamentoMacroDTO()
+        {
+            return new()
+            {
+                Nome = "Planejamento Teste",
+                Responsavel = "Responsavel Teste",
+                MesInicio = Mes.Janeiro,
+                MesFim = Mes.Fevereiro,
+                AnoInicio = "2023",
+                AnoFim = "2023",
+                QuantidadeAcoes = 10
+            };
+        }
+        
         public static IEnumerable<PlanejamentoMacro> ListarPlanejamentoMacro(IEnumerable<Municipio> municipios)
         {
             while (true)
