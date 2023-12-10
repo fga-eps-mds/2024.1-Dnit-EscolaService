@@ -6,6 +6,8 @@ using app.Entidades;
 using app.Repositorios.Interfaces;
 using EnumsNET;
 using Microsoft.VisualBasic;
+using OptimizationPSO;
+using OptimizationPSO.Swarm;
 using service.Interfaces;
 
 namespace app.Services
@@ -49,26 +51,29 @@ namespace app.Services
         
 
         public async Task<PlanejamentoMacro> GerarRecomendacaoDePlanejamento(PlanejamentoMacroDTO planejamento)
-        {
-            //algoritmo de recomendação fake a fim de teste
-            //retorna uma recomendação apenas com as primeiras escolas do ranking separadas nos meses
-            
+        {            
             var q = planejamento.QuantidadeAcoes;
-            // var n = (int) Math.Ceiling(q + q * 0.35);
+            var n = q * 3;
 
             var filtro = new PesquisaEscolaFiltro()
             {
-                TamanhoPagina = q
+                TamanhoPagina = n
             };
 
             var escolas = await ranqueService.ListarEscolasUltimoRanqueAsync(filtro);
             var numeroMeses = Math.Abs(planejamento.MesFim - planejamento.MesInicio) + 1;
             var acoesPorMes = (int) Math.Ceiling((double) q / numeroMeses);
 
+            var escolaParaOtimizacao = new List<EscolaParaOtimizacao>();
+            escolas.Items.ForEach(e => escolaParaOtimizacao.Add(e.Escola.ParaOtimizacao()));
+
             var lista = new List<PlanejamentoMacroEscola>();
 
+            var otimizador = new Otimizador(q, escolaParaOtimizacao);
+            var listaOtimizada = otimizador.Solve();
+
             int i = 0, mes = (int) planejamento.MesInicio;
-            foreach(var e in escolas.Items)
+            foreach(var e in listaOtimizada)
             {
                 if(i == acoesPorMes)
                 {
@@ -80,7 +85,7 @@ namespace app.Services
                 {
                     Mes = (Mes) mes,
                     Ano = planejamento.AnoInicio,
-                    EscolaId = e.Escola.Id    
+                    EscolaId = e    
                 };
 
                 lista.Add(planejamentoMacroEscola);
@@ -97,9 +102,9 @@ namespace app.Services
                 AnoFim = planejamento.AnoFim,
                 QuantidadeAcoes = planejamento.QuantidadeAcoes,
                 Escolas = lista                
-            };
+            };          
 
-            //algoritmo de recomendação real:    
+            //algoritmo de recomendação:    
             //pegar um vetor V com as n primeiras escolas do ranking
             //normalizar V para objetos com {Id, Ups, CustoLogistico}
             //implemetar a função-custo como: [1]
@@ -188,19 +193,65 @@ namespace app.Services
             var planejamentosCorretos = planejamentos.Items.ConvertAll(modelConverter.ToModel);
             return new ListaPaginada<PlanejamentoMacroDetalhadoModel>(planejamentosCorretos, planejamentos.Pagina, planejamentos.ItemsPorPagina, planejamentos.Total);
         }
+    }
 
-        // public async Task EditarPlanejamentoMacroAsync(Guid id, PlanejamentoMacroplanejamento pmplanejamento)
-        // {
-        //     var planejamento = await planejamentoRepositorio.ObterPlanejamentoMacroAsync(id);
+    internal class Otimizador
+    {
+        private int NumDim;
+        private List<EscolaParaOtimizacao> EspacoDeBusca;
 
-        //     planejamento!.Nome = pmplanejamento.Nome;
-        //     planejamento!.Responsavel = pmplanejamento.Responsavel;
-        //     planejamento!.MesInicio = pmplanejamento.MesInicio;
-        //     planejamento!.MesFim = pmplanejamento.MesFim;  
-        //     planejamento!.AnoInicio = pmplanejamento.AnoFim;
-        //     planejamento!.QuantidadeAcoes = pmplanejamento.QuantidadeAcoes;
+        internal Otimizador(int numDim, List<EscolaParaOtimizacao> espacoDeBusca)
+        {
+            NumDim = numDim;
+            EspacoDeBusca = espacoDeBusca;
+        }
 
-        //     await dbContext.SaveChangesAsync();
-        // }
+        private int FuncaoCusto(double[] x)
+        {
+            if(x.Select(Convert.ToInt32).Distinct().Count() != NumDim)
+            {
+                return int.MaxValue;
+            }
+
+            int custo = 0;
+            for(int i = 0; i < NumDim; i++)
+            {
+                int index = (int) x[i];
+                custo += (-2 * EspacoDeBusca[index].Ups) + (int) Math.Ceiling(EspacoDeBusca[index].DistanciaPolo);
+                custo /= 3;
+            }
+
+            return custo;
+        }
+
+        internal List<Guid> Solve()
+        {   
+            var lb = new double[NumDim];
+            var ub = new double[NumDim];
+            Array.Fill<double>(lb, 0);
+            Array.Fill<double>(ub, EspacoDeBusca.Count - 1);
+
+            var solveConfig = PSOSolverConfig.CreateDefault(                
+                numberParticles: 50,
+                maxEpochs: 400,
+                lowerBound: lb,
+                upperBound: ub,
+                isStoppingCriteriaEnabled: true
+            );
+
+            Func<double[], double> func = x => FuncaoCusto(x);
+            var solver = new ParticleSwarmMinimization(func, solveConfig);
+
+            var resultado = solver.Solve().BestPosition;
+
+            var listaOtimizada = new List<Guid>();
+
+            foreach(var r in resultado)
+            {
+                listaOtimizada.Add(EspacoDeBusca[(int) r].Id);
+            }
+
+            return listaOtimizada;
+        }
     }
 }

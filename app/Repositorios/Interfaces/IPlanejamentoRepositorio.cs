@@ -15,5 +15,6 @@ namespace app.Repositorios.Interfaces
         Task<ListaPaginada<PlanejamentoMacro>> ListarPaginadaAsync(PesquisaPlanejamentoFiltro filtro);
         Task<List<PlanejamentoMacro>> ListarAsync(Expression<Func<PlanejamentoMacro, bool>>? filter = null);  
         //Correcao
+        void RegistrarPlanejamentoMacroMensal(PlanejamentoMacroEscola pme);
     }
 }

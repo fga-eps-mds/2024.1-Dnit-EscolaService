@@ -113,6 +113,7 @@ namespace app.Services
                     Polo = escolaRanque.Escola.Polo != null ? ToModel(escolaRanque.Escola.Polo): null,
                     DistanciaPolo = escolaRanque.Escola.DistanciaPolo,
                     TemSolicitacao = escolaRanque.Escola.Solicitacao != null,
+                    Ups = escolaRanque.Escola.Ups
                 }
             };
 
