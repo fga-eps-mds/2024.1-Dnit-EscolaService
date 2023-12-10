@@ -9,6 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using test.Fixtures;
 using test.Stubs;
 using Xunit.Abstractions;
+using api.Planejamento;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 
 namespace test
 {
@@ -60,6 +62,22 @@ namespace test
         public async Task DeletePlanejamentoMacro_QuandoNaoExistir_DeveLancarExcecao()
         {
             await Assert.ThrowsAsync<ApiException>(async() => await planejamentoRepositorio.ObterPlanejamentoMacroAsync(Guid.NewGuid()));
+        }
+
+        [Fact]
+        public async void ListarPaginadaAsync_QuandoFiltrosForemNulos_DeveRetornarListaDePlanejamentosPaginados()
+        {
+            var planDb = dbContext.PopulaPlanejamentoMacro(5);
+
+            var filtro = new PesquisaPlanejamentoFiltro();
+            filtro.Pagina = 1;
+            filtro.TamanhoPagina = 2;
+
+            var listaPaginada = await planejamentoRepositorio.ListarPaginadaAsync(filtro);
+
+            Assert.Equal(filtro.Pagina, listaPaginada.Pagina);
+            Assert.Equal(filtro.TamanhoPagina, listaPaginada.ItemsPorPagina);
+            Assert.Equal(planDb.Count, listaPaginada.Total);
         }
         public new void Dispose()
         {
