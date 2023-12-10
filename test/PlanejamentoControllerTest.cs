@@ -75,7 +75,17 @@ namespace test
 
             var recomendacao = planejamentoServiceMock.Setup(x => x.GerarRecomendacaoDePlanejamento(criaPlanejamentoDTO));
 
-            Assert.NotNull(recomendacao);
+           Assert.NotNull(recomendacao);
+        }
+
+        [Fact]
+        public async Task CriarPlanejamentoMacro_QuandoNaoTiverPermissao_DeveSerBloqueado(){
+            PlanejamentoMacroStub stub = new();
+            var criaPlanejamentoDTO = stub.CriarPlanejamentoMacroDTO();
+
+            AutenticarUsuario(controller, permissoes: new() {});
+
+            await Assert.ThrowsAsync<AuthForbiddenException>(async() => await controller.CriarPlanejamentoMacro(criaPlanejamentoDTO));
         }
 
         [Fact]
