@@ -37,7 +37,10 @@ namespace app.Repositorios
 
         public async Task<PlanejamentoMacro> ObterPlanejamentoMacroAsync(Guid id)
         {
-            return await dbContext.PlanejamentoMacro.Include(p => p.Escolas).FirstOrDefaultAsync(x => x.Id==id) ?? throw new ApiException(api.ErrorCodes.PlanejamentoMacroNaoEncontrado);
+            return await dbContext.PlanejamentoMacro
+                .Include(p => p.Escolas)
+                .ThenInclude(e => e.Escola)
+                .FirstOrDefaultAsync(x => x.Id==id) ?? throw new ApiException(api.ErrorCodes.PlanejamentoMacroNaoEncontrado);
         }
 
         public  PlanejamentoMacro RegistrarPlanejamentoMacro(PlanejamentoMacro pm)
@@ -46,6 +49,9 @@ namespace app.Repositorios
             return pm;
         }
 
-       
+        public void RegistrarPlanejamentoMacroMensal(PlanejamentoMacroEscola pme)
+        {
+           dbContext.PlanejamentoMacroEscola.Add(pme);
+        }
     }
 }

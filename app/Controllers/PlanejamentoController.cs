@@ -87,18 +87,14 @@ namespace app.Controllers
 
         [HttpPut("{id}")]
         [Authorize]
-        public async Task<IActionResult> EditarPlanejamentoMacro(Guid id, [FromBody] PlanejamentoMacroDTO dto)
+        public async Task<IActionResult> EditarPlanejamentoMacro(Guid id, [FromBody] PlanejamentoMacroDetalhadoDTO dto)
         {
             authService.Require(Usuario, Permissao.PlanejamentoEditar);
 
             try{
-            //Pega o planejamento macro com o ID específico
-            var planejamento = await planejamentoService.ObterPlanejamentoMacroAsync(id);
-
-            //Edita o planejamento macro
-            await planejamentoService.EditarPlanejamentoMacro(planejamento, dto);
-
-            return Ok(modelConverter.ToModel(planejamento));
+                //Edita o planejamento macro
+                var planejamento = await planejamentoService.EditarPlanejamentoMacro(id, dto.Nome, dto.PlanejamentoMacroMensal);
+                return Ok(modelConverter.ToModel(planejamento));
             }
             catch(KeyNotFoundException)
             {

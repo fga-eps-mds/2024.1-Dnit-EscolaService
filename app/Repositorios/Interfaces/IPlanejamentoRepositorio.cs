@@ -11,5 +11,7 @@ namespace app.Repositorios.Interfaces
         Task<PlanejamentoMacro> ObterPlanejamentoMacroAsync(Guid id);
         PlanejamentoMacro RegistrarPlanejamentoMacro(PlanejamentoMacro pm);
         // Task<List<PlanejamentoMacro>> ListarAsync();
+
+        void RegistrarPlanejamentoMacroMensal(PlanejamentoMacroEscola pme);
     }
 }
