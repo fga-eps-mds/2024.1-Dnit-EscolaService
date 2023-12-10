@@ -1,8 +1,11 @@
+using System.Linq;
 using System.Threading.Tasks;
+using api.Planejamento;
 using app.Entidades;
 using app.Repositorios.Interfaces;
 using app.Services;
 using Microsoft.EntityFrameworkCore;
+using service.Interfaces;
 using test.Fixtures;
 using test.Stubs;
 using Xunit.Abstractions;
@@ -12,11 +15,13 @@ namespace test
 {
     public class PlanejamentoServiceTest : TestBed<Base>, IDisposable
     {
+        private readonly IPlanejamentoService planejamentoService;
         private readonly IPlanejamentoRepositorio planejamentoRepositorio;
         private readonly AppDbContext dbContext;
         
         public PlanejamentoServiceTest(ITestOutputHelper testOutputHelper, Base fixture) : base(testOutputHelper, fixture)
         {
+            planejamentoService = fixture.GetService<IPlanejamentoService>(testOutputHelper)!;
             dbContext = fixture.GetService<AppDbContext>(testOutputHelper)!;
             planejamentoRepositorio = fixture.GetService<IPlanejamentoRepositorio>(testOutputHelper)!;
             dbContext.PopulaPlanejamentoMacro(5);
@@ -33,7 +38,7 @@ namespace test
             Assert.Equal(planejBanco, planejamentoMacro);
             Assert.IsNotType<ApiException>(async () => await planejamentoRepositorio.ObterPlanejamentoMacroAsync(planejBanco.Id));
         }
-        
+
         [Fact]
         public async Task ObterPlanejamentoMacroPorIdAsync_QuandoNaoExistir_DeveLancarExcecao()
         {
@@ -58,6 +63,29 @@ namespace test
         public async Task DeletePlanejamentoMacro_QuandoNaoExistir_DeveLancarExcecao()
         {
             await Assert.ThrowsAsync<ApiException>(async() => await planejamentoRepositorio.ObterPlanejamentoMacroAsync(Guid.NewGuid()));
+        }
+
+        [Fact]
+        public async Task CriarPlanejamentoMacro_QuandoPossuiSolicitacao_RetornaPlanejamentoMacro(){
+            dbContext.Clear();
+            dbContext.PopulaEscolas(5);
+
+            var cad = new PlanejamentoMacro
+            {
+                Nome = "Planejamento ",
+                MesInicio = api.Mes.Janeiro,
+                MesFim = api.Mes.Fevereiro,
+                AnoInicio = "2023",
+                AnoFim = "2023",
+                Responsavel = "Robertinho",
+                QuantidadeAcoes = 10,
+            };
+
+            planejamentoService.CriarPlanejamentoMacro(cad);
+
+            var planejamento = dbContext.PlanejamentoMacro.First();
+
+            Assert.NotNull(planejamento);
         }
 
         public new void Dispose()
