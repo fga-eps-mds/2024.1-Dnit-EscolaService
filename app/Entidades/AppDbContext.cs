@@ -67,6 +67,8 @@ namespace app.Entidades
             PopulaCustosLogisticosPorArquivo(null, Path.Join(".", "Migrations", "Data", "custoslogisticos.csv"));
 
             PopulaPolosPorArquivo(null, Path.Join(".", "Migrations", "Data", "superintendencias.csv"));
+        
+            PopulaFatoresPrimarios(Path.Join(".", "Migrations", "Data", "fatoresprimarios.csv"));
         }
 
         public void PopulaCustosLogisticosPorArquivo(int? limit, string caminho)
@@ -202,6 +204,43 @@ namespace app.Entidades
             SaveChanges();
             return polos;
 
+        }
+
+        public void PopulaFatoresPrimarios(string caminho)
+        {
+            var hasFatoresPrimarios = FatorPriorizacoes.Any();
+            var fatores = new List<FatorPriorizacao>();
+
+            if (hasFatoresPrimarios) return;
+
+            using (var fs = File.OpenRead(caminho))
+            using (var parser = new TextFieldParser(fs))
+            {
+                parser.TextFieldType = FieldType.Delimited;
+                parser.SetDelimiters(",");
+
+                var columns = new Dictionary<string, int> { { "nome", 0 }, { "peso", 1 }, 
+                    { "ativo", 2 }, { "primario", 3 } };
+
+                while (!parser.EndOfData)
+                {
+                    var row = parser.ReadFields()!;
+                    var fator = new FatorPriorizacao
+                    {
+                        Id = new Guid(),
+                        Nome = row[columns["nome"]],
+                        Peso = int.Parse(row[columns["peso"]]),
+                        Ativo = int.Parse(row[columns["ativo"]]) == 1,
+                        Primario = int.Parse(row[columns["primario"]]) == 1,
+                        FatorCondicoes = new List<FatorCondicao>()
+                    };
+            
+                    fatores.Add(fator);
+                }
+            }
+
+            AddRange(fatores);
+            SaveChanges();
         }
 
     }

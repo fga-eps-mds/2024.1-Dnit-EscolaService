@@ -127,7 +127,7 @@ namespace app.Services
             if (ExisteFatorEscola(fator, escola)) return;
 
             // Valor de pontuacao do custo logistico = Valor(CL) * peso / 100
-            int valor = getCustoLogisticoValue(custoLogisticos, escola.DistanciaSuperintendencia);
+            int valor = getCustoLogisticoValue(custoLogisticos, escola.DistanciaPolo);
             
             dbContext.Add(new FatorEscola
                 {
