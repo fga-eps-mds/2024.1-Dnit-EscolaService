@@ -22,6 +22,9 @@ namespace app.Services
         }
         public async Task<List<int>> CalcularUpsEscolasAsync(List<Escola> escolas, double raioKm, int desdeAno, int expiracaoMinutos)
         {
+            HttpClient client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Authorization", config.ApiKey);
+
             var localizacoes = escolas.Select(
                 e => new LocalizacaoEscola
                 {
@@ -30,13 +33,13 @@ namespace app.Services
                     Longitude = double.Parse(e.Longitude.Replace(',', '.')),
                 });
 
-            httpClient.Timeout = expiracaoMinutos <= 0
+            client.Timeout = expiracaoMinutos <= 0
                 ? new TimeSpan(0, 0, 0, 0, -1) // tempo infinito para expiração
                 : TimeSpan.FromMinutes(expiracaoMinutos);
 
             var conteudo = JsonContent.Create(localizacoes);
 
-            var resposta = await httpClient.PostAsync(
+            var resposta = await client.PostAsync(
                 config.Host + Endpoint + $"?desde={desdeAno}&raiokm={raioKm}", conteudo);
 
             resposta.EnsureSuccessStatusCode();

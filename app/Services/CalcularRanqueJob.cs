@@ -2,10 +2,8 @@ using api;
 using api.Escolas;
 using app.Entidades;
 using app.Repositorios.Interfaces;
-using app.Services.Interfaces;
 using Hangfire;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using service.Interfaces;
 
 namespace app.Services
@@ -15,16 +13,22 @@ namespace app.Services
         private readonly AppDbContext dbContext;
         private readonly IBackgroundJobClient jobClient;
         private readonly IEscolaRepositorio escolaRepositorio;
+        private readonly IUpsService upsService;
+        private readonly IRanqueService ranqueService;
 
         public CalcularRanqueJob(
             AppDbContext dbContext,
             IBackgroundJobClient jobClient,
-            IEscolaRepositorio escolaRepositorio
+            IEscolaRepositorio escolaRepositorio,
+            IUpsService upsService,
+            IRanqueService ranqueService
         )
         {
             this.dbContext = dbContext;
-            this.escolaRepositorio = escolaRepositorio;
             this.jobClient = jobClient;
+            this.escolaRepositorio = escolaRepositorio;
+            this.upsService = upsService;
+            this.ranqueService = ranqueService;
         }
 
         [MaximumConcurrentExecutions(1)]
@@ -43,6 +47,7 @@ namespace app.Services
                 filtro.Pagina = pagina;
                 var lista = await escolaRepositorio.ListarPaginadaAsync(filtro);
                 
+                await CalcularUpsEscolas(lista.Items);
                 CalcularPontuacaoEscolas(lista.Items, novoRanqueId);
                 
                 ranque.BateladasEmProgresso = (int)totalPaginas - pagina;
@@ -50,6 +55,24 @@ namespace app.Services
                 dbContext.Update(ranque);
                 dbContext.SaveChanges();
             }
+
+            await ranqueService.ConcluirRanqueamentoAsync(ranque);
+            dbContext.SaveChanges();
+        }
+
+        private async Task CalcularUpsEscolas(List<Escola> escolas)
+        {
+            var raio = 2.0D;
+            var desde = 2019;
+
+            var upss = await upsService.CalcularUpsEscolasAsync(escolas, raio, desde, 20);
+
+            for (int i = 0; i < escolas.Count; i++)
+            {
+                escolas[i].Ups = upss[i];
+            }
+            dbContext.UpdateRange(escolas);
+            dbContext.SaveChanges();
         }
 
         private void CalcularPontuacaoEscolas(List<Escola> escolas, int ranqueId)
@@ -98,6 +121,9 @@ namespace app.Services
                 CalcularESalvarOutrosFatores(escola, outrosFatores);
 
                 dbContext.SaveChanges();
+
+                // Finalmente a pontuação
+                CalcularESalvarPontuacao(escola, ranqueId);
             }
         }
 
@@ -164,7 +190,6 @@ namespace app.Services
         {
             foreach(var fator in fatores)
             {
-                Console.WriteLine("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
                 if (ExisteFatorEscola(fator, escola)) continue;
                 
                 FatorEscola fatorEscola = new FatorEscola
@@ -261,6 +286,36 @@ namespace app.Services
                 RanqueId = ranqueId
             };
             dbContext.Add(fatorRanque);
+        }
+
+        private void CalcularESalvarPontuacao(Escola escola, int ranqueId)
+        {
+            if (ExisteEscolaRanque(escola, ranqueId)) return;
+
+            List<FatorRanque> fatoresRanque = dbContext.FatorRanques.Where(f => f.RanqueId == ranqueId).ToList();
+            int pontuacao = 0;
+
+            foreach(var fatorRanque in fatoresRanque)
+            {
+                pontuacao += dbContext.FatorEscolas
+                    .Where(f => f.EscolaId == escola.Id && f.FatorPriorizacaoId == fatorRanque.FatorPriorizacaoId)
+                    .Select(f => f.Valor).First();
+            }
+
+            EscolaRanque escolaRanque = new EscolaRanque
+            {
+                EscolaId = escola.Id,
+                RanqueId = ranqueId,
+                Pontuacao = pontuacao
+            };
+
+            dbContext.Add(escolaRanque);
+            dbContext.SaveChanges();
+        }
+
+        private bool ExisteEscolaRanque(Escola escola, int ranqueId)
+        {
+            return dbContext.EscolaRanques.Any(e => e.EscolaId == escola.Id && e.RanqueId == ranqueId);
         }
     }
 }
