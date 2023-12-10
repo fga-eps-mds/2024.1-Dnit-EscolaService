@@ -43,6 +43,7 @@ namespace test.Fixtures
             services.AddSingleton<ModelConverter>();
             services.AddScoped<IPriorizacaoService, PriorizacaoService>();
             services.AddScoped<IPoloService, PoloService>();
+            services.AddScoped<ICalcularRanqueJob, CalcularRanqueJob>();
 
             // Controllers
             services.AddScoped<DominioController>();

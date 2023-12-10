@@ -61,7 +61,7 @@ namespace app.Services
             dbContext.SaveChanges();
         }
 
-        private async Task CalcularUpsEscolas(List<Escola> escolas)
+        public async Task CalcularUpsEscolas(List<Escola> escolas)
         {
             var raio = 2.0D;
             var desde = 2019;
