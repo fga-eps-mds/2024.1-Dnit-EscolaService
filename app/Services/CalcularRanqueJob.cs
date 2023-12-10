@@ -4,6 +4,7 @@ using app.Entidades;
 using app.Repositorios.Interfaces;
 using Hangfire;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using service.Interfaces;
 
 namespace app.Services
@@ -13,22 +14,22 @@ namespace app.Services
         private readonly AppDbContext dbContext;
         private readonly IBackgroundJobClient jobClient;
         private readonly IEscolaRepositorio escolaRepositorio;
-        private readonly IUpsService upsService;
         private readonly IRanqueService ranqueService;
+        private readonly IOptions<UpsServiceConfig> upsConfig;
 
         public CalcularRanqueJob(
             AppDbContext dbContext,
             IBackgroundJobClient jobClient,
             IEscolaRepositorio escolaRepositorio,
-            IUpsService upsService,
-            IRanqueService ranqueService
+            IRanqueService ranqueService,
+            IOptions<UpsServiceConfig> config
         )
         {
             this.dbContext = dbContext;
             this.jobClient = jobClient;
             this.escolaRepositorio = escolaRepositorio;
-            this.upsService = upsService;
             this.ranqueService = ranqueService;
+            this.upsConfig = config;
         }
 
         [MaximumConcurrentExecutions(1)]
@@ -64,6 +65,12 @@ namespace app.Services
         {
             var raio = 2.0D;
             var desde = 2019;
+
+            HttpClient httpClient = new();
+            UpsService upsService = new UpsService(
+                httpClient,
+                upsConfig
+            );
 
             var upss = await upsService.CalcularUpsEscolasAsync(escolas, raio, desde, 20);
 
