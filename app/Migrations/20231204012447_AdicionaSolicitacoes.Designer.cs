@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using app.Entidades;
@@ -11,9 +12,11 @@ using app.Entidades;
 namespace app.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231204012447_AdicionaSolicitacoes")]
+    partial class AdicionaSolicitacoes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,51 +24,6 @@ namespace app.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("app.Entidades.CondicaoValor", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<Guid>("FatorCondicaoId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Valor")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("character varying(30)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FatorCondicaoId");
-
-                    b.ToTable("CondicaoValores");
-                });
-
-            modelBuilder.Entity("app.Entidades.CustoLogistico", b =>
-                {
-                    b.Property<int>("Custo")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Custo"));
-
-                    b.Property<int?>("RaioMax")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("RaioMin")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Valor")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Custo");
-
-                    b.ToTable("CustosLogisticos");
-                });
 
             modelBuilder.Entity("app.Entidades.Escola", b =>
                 {
@@ -84,7 +42,7 @@ namespace app.Migrations
                     b.Property<DateTime?>("DataAtualizacaoUtc")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<double>("DistanciaPolo")
+                    b.Property<double>("DistanciaSuperintendencia")
                         .HasColumnType("double precision");
 
                     b.Property<string>("Endereco")
@@ -117,9 +75,6 @@ namespace app.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 
-                    b.Property<int?>("PoloId")
-                        .HasColumnType("integer");
-
                     b.Property<int?>("Porte")
                         .HasColumnType("integer");
 
@@ -127,6 +82,9 @@ namespace app.Migrations
                         .HasColumnType("integer");
 
                     b.Property<int?>("Situacao")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("SuperintendenciaId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Telefone")
@@ -150,7 +108,7 @@ namespace app.Migrations
 
                     b.HasIndex("MunicipioId");
 
-                    b.HasIndex("PoloId");
+                    b.HasIndex("SuperintendenciaId");
 
                     b.ToTable("Escolas");
                 });
@@ -203,75 +161,6 @@ namespace app.Migrations
                     b.ToTable("EscolaRanques");
                 });
 
-            modelBuilder.Entity("app.Entidades.FatorCondicao", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("FatorPriorizacaoId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("Operador")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Propriedade")
-                        .HasMaxLength(30)
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FatorPriorizacaoId");
-
-                    b.ToTable("FatorCondicoes");
-                });
-
-            modelBuilder.Entity("app.Entidades.FatorEscola", b =>
-                {
-                    b.Property<Guid>("FatorPriorizacaoId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("EscolaId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("Valor")
-                        .HasColumnType("integer");
-
-                    b.HasKey("FatorPriorizacaoId", "EscolaId");
-
-                    b.HasIndex("EscolaId");
-
-                    b.ToTable("FatorEscolas");
-                });
-
-            modelBuilder.Entity("app.Entidades.FatorPriorizacao", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<bool>("Ativo")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime?>("DeleteTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Nome")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<int>("Peso")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("Primario")
-                        .HasColumnType("boolean");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("FatorPriorizacoes");
-                });
-
             modelBuilder.Entity("app.Entidades.Municipio", b =>
                 {
                     b.Property<int>("Id")
@@ -291,48 +180,6 @@ namespace app.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Municipios");
-                });
-
-            modelBuilder.Entity("app.Entidades.Polo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Cep")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("character varying(10)");
-
-                    b.Property<string>("Endereco")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Latitude")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Longitude")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("MunicipioId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Nome")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("Uf")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MunicipioId");
-
-                    b.ToTable("Polos");
                 });
 
             modelBuilder.Entity("app.Entidades.Ranque", b =>
@@ -425,13 +272,37 @@ namespace app.Migrations
                     b.ToTable("Solicitacoes");
                 });
 
-            modelBuilder.Entity("app.Entidades.CondicaoValor", b =>
+            modelBuilder.Entity("app.Entidades.Superintendencia", b =>
                 {
-                    b.HasOne("app.Entidades.FatorCondicao", null)
-                        .WithMany("Valores")
-                        .HasForeignKey("FatorCondicaoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Cep")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
+
+                    b.Property<string>("Endereco")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Latitude")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Longitude")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Uf")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Superintendencias");
                 });
 
             modelBuilder.Entity("app.Entidades.Escola", b =>
@@ -440,13 +311,13 @@ namespace app.Migrations
                         .WithMany()
                         .HasForeignKey("MunicipioId");
 
-                    b.HasOne("app.Entidades.Polo", "Polo")
+                    b.HasOne("app.Entidades.Superintendencia", "Superintendencia")
                         .WithMany()
-                        .HasForeignKey("PoloId");
+                        .HasForeignKey("SuperintendenciaId");
 
                     b.Navigation("Municipio");
 
-                    b.Navigation("Polo");
+                    b.Navigation("Superintendencia");
                 });
 
             modelBuilder.Entity("app.Entidades.EscolaEtapaEnsino", b =>
@@ -479,45 +350,6 @@ namespace app.Migrations
                     b.Navigation("Ranque");
                 });
 
-            modelBuilder.Entity("app.Entidades.FatorCondicao", b =>
-                {
-                    b.HasOne("app.Entidades.FatorPriorizacao", null)
-                        .WithMany("FatorCondicoes")
-                        .HasForeignKey("FatorPriorizacaoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("app.Entidades.FatorEscola", b =>
-                {
-                    b.HasOne("app.Entidades.Escola", "Escola")
-                        .WithMany()
-                        .HasForeignKey("EscolaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("app.Entidades.FatorPriorizacao", "FatorPriorizacao")
-                        .WithMany()
-                        .HasForeignKey("FatorPriorizacaoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Escola");
-                    
-                    b.Navigation("FatorPriorizacao");
-                });
-                
-            modelBuilder.Entity("app.Entidades.Polo", b =>
-                {
-                    b.HasOne("app.Entidades.Municipio", "Municipio")
-                        .WithMany()
-                        .HasForeignKey("MunicipioId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Municipio");
-                });
-
             modelBuilder.Entity("app.Entidades.SolicitacaoAcao", b =>
                 {
                     b.HasOne("app.Entidades.Escola", "Escola")
@@ -540,21 +372,6 @@ namespace app.Migrations
                     b.Navigation("EtapasEnsino");
 
                     b.Navigation("Solicitacao");
-                });
-
-            modelBuilder.Entity("app.Entidades.Ranque", b =>
-                {
-                    b.Navigation("EscolaRanques");
-                });
-
-            modelBuilder.Entity("app.Entidades.FatorCondicao", b =>
-                {
-                    b.Navigation("Valores");
-                });
-
-            modelBuilder.Entity("app.Entidades.FatorPriorizacao", b =>
-                {
-                    b.Navigation("FatorCondicoes");
                 });
 
             modelBuilder.Entity("app.Entidades.Ranque", b =>

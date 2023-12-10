@@ -1,8 +1,4 @@
-﻿
-using api.Fatores;
-using app.Entidades;
-using app.Services;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+﻿using app.Entidades;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -15,16 +11,34 @@ namespace test.Stubs
         private static List<Municipio>? municipios;
         private static Mutex municipios_mutex = new Mutex();
 
-        public static List<Escola> PopulaEscolas(this AppDbContext dbContext, int limite = 1, bool comEtapas = true)
+        public static List<SolicitacaoAcao> PopulaSolicitacoes(this AppDbContext dbContext, int limite = 1)
         {
-            dbContext.Clear();
-            var escolas = new List<Escola>();
-            
+            var sols = new List<SolicitacaoAcao>();
             if (!dbContext.Municipios.Any())
             {
                 dbContext.PopulaMunicipios(limite);
             }
-            
+            var municipios = dbContext.Municipios.Take(1).ToList();
+
+            foreach (var sol in SolicitacaoAcaoStub.ListarSolicitacoes(municipios).Take(limite))
+            {
+                dbContext.Solicitacoes.Add(sol);
+                sols.Add(sol);
+            }
+            dbContext.SaveChanges();
+            return sols;
+        }
+
+        public static List<Escola> PopulaEscolas(this AppDbContext dbContext, int limite = 1, bool comEtapas = true)
+        {
+            dbContext.Clear();
+            var escolas = new List<Escola>();
+
+            if (!dbContext.Municipios.Any())
+            {
+                dbContext.PopulaMunicipios(limite);
+            }
+
             var municipios = dbContext.Municipios.Take(1).ToList();
 
             foreach (var escola in EscolaStub.ListarEscolas(municipios, comEtapas).Take(limite))
@@ -54,12 +68,18 @@ namespace test.Stubs
             return municipiosDb;
         }
 
-        public static List<Superintendencia> PopulaSuperintendencias(this AppDbContext dbContext, int limit, int idStart = 1)
+        public static List<Polo> PopulaPolos(this AppDbContext dbContext, int limit, int idStart = 1)
         {
-            var superintendencias = SuperintendenciaStub.Listar(idStart).Take(limit).ToList();
-            dbContext.AddRange(superintendencias);
+            if (!dbContext.Municipios.Any())
+            {
+                dbContext.PopulaMunicipios(limit);
+            }
+
+            var listaMunicipios = dbContext.Municipios.Take(1).ToList();
+            var polos = PoloStub.Listar(listaMunicipios, idStart).Take(limit).ToList();
+            dbContext.AddRange(polos);
             dbContext.SaveChanges();
-            return superintendencias;
+            return polos;
         }
 
         public static List<CustoLogistico> PopulaCustosLogisticos(this AppDbContext dbContext, int limit)
@@ -90,12 +110,13 @@ namespace test.Stubs
         public static void Clear(this AppDbContext dbContext)
         {
             dbContext.RemoveRange(dbContext.Escolas);
+            dbContext.RemoveRange(dbContext.Solicitacoes);
             dbContext.RemoveRange(dbContext.EscolaEtapaEnsino);
             dbContext.RemoveRange(dbContext.Municipios);
             dbContext.RemoveRange(dbContext.EscolaRanques);
             dbContext.RemoveRange(dbContext.Ranques);
-            dbContext.RemoveRange(dbContext.Superintendencias);
             dbContext.RemoveRange(dbContext.CustosLogisticos);
+            dbContext.RemoveRange(dbContext.Polos);
             dbContext.SaveChanges();
         }
     }

@@ -3,8 +3,9 @@ using api.CustoLogistico;
 using api.Escolas;
 using api.Fatores;
 using api.Municipios;
+using api.Polos;
 using api.Ranques;
-using api.Superintendencias;
+using api.Solicitacoes;
 using app.Entidades;
 using EnumsNET;
 
@@ -43,13 +44,30 @@ namespace app.Services
                 NumeroTotalDeDocentes = value.TotalDocentes,
                 NumeroTotalDeAlunos = value.TotalAlunos,
                 IdMunicipio = value.MunicipioId,
-                SuperintendenciaId = value.SuperintendenciaId,
-                DistanciaSuperintendencia = value.DistanciaSuperintendencia,
-                UfSuperintendencia = value.Superintendencia?.Uf.ToString(),
+                PoloId = value.PoloId,
+                DistanciaPolo = value.DistanciaPolo,
+                UfPolo = value.Polo?.Uf.ToString(),
                 NomeMunicipio = value.Municipio?.Nome,
                 EtapasEnsino = value.EtapasEnsino?.ConvertAll(e => e.EtapaEnsino),
                 EtapaEnsino = value.EtapasEnsino?.ToDictionary(e => (int)e.EtapaEnsino, e => e.EtapaEnsino.AsString(EnumFormat.Description) ?? ""),
+                TemSolicitacao = value.Solicitacao == null,
             };
+
+        private SolicitacaoAcaoModel _ToModel(SolicitacaoAcao solicitacao)
+        {
+            return new()
+            {
+                Id = solicitacao.Id,
+                Email = solicitacao.Email,
+                Observacoes = solicitacao.Observacoes,
+                Nome = solicitacao.EscolaNome,
+                NomeSolicitante = solicitacao.NomeSolicitante,
+                Vinculo = solicitacao.Vinculo,
+                Telefone = solicitacao.Telefone,
+                QuantidadeAlunos = solicitacao.TotalAlunos,
+                Uf = solicitacao.EscolaUf,
+            };
+        }
 
         public UfModel ToModel(UF uf) =>
             new UfModel
@@ -93,8 +111,9 @@ namespace app.Services
                     EtapaEnsino = escolaRanque.Escola.EtapasEnsino?.ConvertAll(e => ToModel(e.EtapaEnsino)),
                     Municipio = escolaRanque.Escola.Municipio != null ? ToModel(escolaRanque.Escola.Municipio) : null,
                     Uf = escolaRanque.Escola.Uf.HasValue ? ToModel(escolaRanque.Escola.Uf.Value) : null,
-                    Superintendencia = escolaRanque.Escola.Superintendencia != null ? ToModel(escolaRanque.Escola.Superintendencia): null,
-                    DistanciaSuperintendencia = escolaRanque.Escola.DistanciaSuperintendencia,
+                    Polo = escolaRanque.Escola.Polo != null ? ToModel(escolaRanque.Escola.Polo): null,
+                    DistanciaPolo = escolaRanque.Escola.DistanciaPolo,
+                    TemSolicitacao = escolaRanque.Escola.Solicitacao != null,
                 }
             };
 
@@ -119,8 +138,9 @@ namespace app.Services
                 Localizacao = escola.Localizacao.HasValue ? ToModel(escola.Localizacao.Value) : null,
                 Situacao = escola.Situacao.HasValue ? ToModel(escola.Situacao.Value) : null,
                 EtapasEnsino = escola.EtapasEnsino?.ConvertAll(e => ToModel(e.EtapaEnsino)),
-                Superintendencia = ToModel(escola.Superintendencia),
-                DistanciaSuperintendencia = escola.DistanciaSuperintendencia,
+                Polo = ToModel(escola.Polo),
+                DistanciaPolo = escola.DistanciaPolo,
+                TemSolicitacao = escola.Solicitacao != null,
             };
 
         public PorteModel ToModel(Porte porte) =>
@@ -144,11 +164,17 @@ namespace app.Services
                 Descricao = localizacao.ToString(),
             };
 
-        public SuperintendenciaModel ToModel(Superintendencia superintendencia) =>
-            new SuperintendenciaModel
+        public PoloModel ToModel(Polo polo) =>
+            new PoloModel
             {
-                Id = superintendencia.Id,
-                Uf = superintendencia.Uf,
+                Id = polo.Id,
+                Uf = ToModel(polo.Uf), 
+                Nome = polo.Nome,
+                Municipio = ToModel(polo.Municipio),
+                Cep = polo.Cep,
+                Endereco = polo.Endereco,
+                Latitude = polo.Latitude,
+                Longitude = polo.Longitude,
             };
 
         public CustoLogisticoItem ToModel(CustoLogistico custoLogistico) =>
@@ -201,6 +227,66 @@ namespace app.Services
                 Valores = fatorCondicaoModel.Valores.ConvertAll(v => new CondicaoValor{ FatorCondicaoId = fatorCondicaoModel.Id, Valor = v }),
             };
         
+        public SolicitacaoAcaoModel ToModel(SolicitacaoAcao solicitacao)
+        {
+            return new()
+            {
+                Id = solicitacao.Id,
+                Email = solicitacao.Email,
+                Observacoes = solicitacao.Observacoes,
+                Nome = solicitacao.EscolaNome,
+                NomeSolicitante = solicitacao.NomeSolicitante,
+                Vinculo = solicitacao.Vinculo,
+                Telefone = solicitacao.Telefone,
+                QuantidadeAlunos = solicitacao.TotalAlunos,
+                Uf = solicitacao.EscolaUf,
+                Municipio = ToModel(solicitacao.EscolaMunicipio!),
+                CodigoEscola = solicitacao.EscolaCodigoInep,
+                Escola = solicitacao.Escola == null
+                    ? null
+                    : _ToModel(solicitacao.Escola!),
+            };
+        }
+
+        private static EscolaCorretaModel _ToModel(Escola value) =>
+            new()
+            {
+                IdEscola = value.Id,
+                CodigoEscola = value.Codigo,
+                NomeEscola = value.Nome,
+                Telefone = value.Telefone,
+                UltimaAtualizacao = value.DataAtualizacao?.LocalDateTime,
+                Cep = value.Cep,
+                Endereco = value.Endereco,
+                Uf = value.Uf,
+                IdUf = (int?)value.Uf,
+                SiglaUf = value.Uf?.ToString(),
+                DescricaoUf = value.Uf?.AsString(EnumFormat.Description),
+                IdSituacao = (int?)value.Situacao,
+                Situacao = value.Situacao,
+                DescricaoSituacao = value.Situacao?.AsString(EnumFormat.Description),
+                IdRede = (int?)value.Rede,
+                Rede = value.Rede,
+                DescricaoRede = value.Rede.AsString(EnumFormat.Description),
+                IdPorte = (int?)value.Porte,
+                Porte = value.Porte,
+                Observacao = value.Observacao,
+                IdLocalizacao = (int?)value.Localizacao,
+                Localizacao = value.Localizacao,
+                DescricaoLocalizacao = value.Localizacao?.ToString(),
+                Latitude = value.Latitude,
+                Longitude = value.Longitude,
+                NumeroTotalDeDocentes = value.TotalDocentes,
+                NumeroTotalDeAlunos = value.TotalAlunos,
+                IdMunicipio = value.MunicipioId,
+                PoloId = value.PoloId,
+                DistanciaPolo = value.DistanciaPolo,
+                UfPolo = value.Polo?.Uf.ToString(),
+                NomeMunicipio = value.Municipio?.Nome,
+                EtapasEnsino = value.EtapasEnsino?.ConvertAll(e => e.EtapaEnsino),
+                EtapaEnsino = value.EtapasEnsino?.ToDictionary(e => (int)e.EtapaEnsino, e => e.EtapaEnsino.AsString(EnumFormat.Description) ?? ""),
+                TemSolicitacao = true,
+            };
         public RanqueDetalhesModel ToModel(Ranque ranque, FatorModel[] fatores)
         {
             return new RanqueDetalhesModel{
