@@ -40,6 +40,26 @@ namespace test
             await Assert.ThrowsAsync<ApiException>(() => planejamentoRepositorio.ObterPlanejamentoMacroAsync(Guid.NewGuid()));
         }
         
+        [Fact]
+        public async Task DeletePlanejamentoMacro_QuandoExistir_DeveDeletar()
+        {
+            dbContext.PopulaPlanejamentoMacro(1);
+            var planejamento = await dbContext.PlanejamentoMacro.FirstOrDefaultAsync();
+            Assert.NotNull(planejamento);
+
+            planejamentoRepositorio.ExcluirPlanejamentoMacro(planejamento);
+            await dbContext.SaveChangesAsync();
+
+            Assert.False(await dbContext.PlanejamentoMacro.AnyAsync(e => e.Id == planejamento.Id));
+            Assert.IsNotType<ApiException>(() => planejamentoRepositorio.ExcluirPlanejamentoMacro(planejamento));
+        }
+
+        [Fact]
+        public async Task DeletePlanejamentoMacro_QuandoNaoExistir_DeveLancarExcecao()
+        {
+            await Assert.ThrowsAsync<ApiException>(async() => await planejamentoRepositorio.ObterPlanejamentoMacroAsync(Guid.NewGuid()));
+        }
+
         public new void Dispose()
         {
             dbContext.Clear();

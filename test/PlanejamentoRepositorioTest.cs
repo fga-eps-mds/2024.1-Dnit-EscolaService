@@ -50,11 +50,16 @@ namespace test
             Assert.NotNull(planejBanco);
     
             planejamentoRepositorio.ExcluirPlanejamentoMacro(planejBanco);
-            
+            dbContext.SaveChangesAsync();
+
             Assert.False(await dbContext.PlanejamentoMacro.AnyAsync(e => e.Id == planejBanco.Id));
             Assert.IsNotType<ApiException>(() => planejamentoRepositorio.ExcluirPlanejamentoMacro(planejBanco));
         }
         
+        public async Task DeletePlanejamentoMacro_QuandoNaoExistir_DeveLancarExcecao()
+        {
+            await Assert.ThrowsAsync<ApiException>(async() => await planejamentoRepositorio.ObterPlanejamentoMacroAsync(Guid.NewGuid()));
+        }
         public new void Dispose()
         {
             dbContext.Clear();
