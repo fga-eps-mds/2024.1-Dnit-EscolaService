@@ -1,3 +1,5 @@
+using System.Linq.Expressions;
+using api;
 using api.Planejamento;
 using app.Entidades;
 
@@ -10,6 +12,7 @@ namespace app.Repositorios.Interfaces
         void ExcluirPlanejamentoMacroEscola(PlanejamentoMacroEscola pm);
         Task<PlanejamentoMacro> ObterPlanejamentoMacroAsync(Guid id);
         PlanejamentoMacro RegistrarPlanejamentoMacro(PlanejamentoMacro pm);
-        // Task<List<PlanejamentoMacro>> ListarAsync();
+        Task<ListaPaginada<PlanejamentoMacro>> ListarPaginadaAsync(PesquisaPlanejamentoFiltro filtro);
+        Task<List<PlanejamentoMacro>> ListarAsync(Expression<Func<PlanejamentoMacro, bool>>? filter = null);
     }
 }
