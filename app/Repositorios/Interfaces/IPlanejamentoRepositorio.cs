@@ -12,7 +12,13 @@ namespace app.Repositorios.Interfaces
         void ExcluirPlanejamentoMacroEscola(PlanejamentoMacroEscola pm);
         Task<PlanejamentoMacro> ObterPlanejamentoMacroAsync(Guid id);
         PlanejamentoMacro RegistrarPlanejamentoMacro(PlanejamentoMacro pm);
+<<<<<<< HEAD
         Task<ListaPaginada<PlanejamentoMacro>> ListarPaginadaAsync(PesquisaPlanejamentoFiltro filtro);
         Task<List<PlanejamentoMacro>> ListarAsync(Expression<Func<PlanejamentoMacro, bool>>? filter = null);
+=======
+        // Task<List<PlanejamentoMacro>> ListarAsync();
+
+        void RegistrarPlanejamentoMacroMensal(PlanejamentoMacroEscola pme);
+>>>>>>> 0adb0228ee92301afb010d0af9e4973560fa44a7
     }
 }

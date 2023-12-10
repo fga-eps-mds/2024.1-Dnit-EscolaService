@@ -132,19 +132,52 @@ namespace app.Services
             return planejamentoMacro;
         }
 
-        public async Task<PlanejamentoMacro> EditarPlanejamentoMacro(PlanejamentoMacro planejamento, PlanejamentoMacroDTO dto)
+        public async Task<PlanejamentoMacro> EditarPlanejamentoMacro(Guid id, string nome, List<PlanejamentoMacroMensalDTO> planejamentoMacroMensal)
         {
-            var planejamentoMacroAtualizar = await planejamentoRepositorio.ObterPlanejamentoMacroAsync(planejamento.Id) ?? throw new KeyNotFoundException("Planejamento não encontrado");
+            var planejamentoMacroAtualizar = await planejamentoRepositorio
+                .ObterPlanejamentoMacroAsync(id) ?? 
+                throw new KeyNotFoundException("Planejamento não encontrado");
 
-            planejamentoMacroAtualizar.Nome = dto.Nome;
-            planejamentoMacroAtualizar.Responsavel = dto.Responsavel;
-            planejamentoMacroAtualizar.MesInicio = dto.MesInicio;
-            planejamentoMacroAtualizar.MesFim = dto.MesFim;
-            planejamentoMacroAtualizar.AnoInicio = dto.AnoInicio;
-            planejamentoMacroAtualizar.AnoFim = dto.AnoFim;
-            planejamentoMacroAtualizar.QuantidadeAcoes = dto.QuantidadeAcoes;
+            planejamentoMacroAtualizar.Nome = nome;
 
-            await dbContext.SaveChangesAsync();
+            foreach(var mes in planejamentoMacroMensal)
+            {
+                mes.Escolas.ForEach(e => {
+                    var plan = planejamentoMacroAtualizar.Escolas
+                        .FirstOrDefault(pme => pme.EscolaId == e);
+                    
+                    if(plan == null)
+                    {
+                        //registra novo PlanejamentoMacroEscola
+                        planejamentoRepositorio.RegistrarPlanejamentoMacroMensal
+                        (
+                            new PlanejamentoMacroEscola
+                            {
+                                Mes = mes.Mes,
+                                Ano = mes.Ano,
+                                PlanejamentoMacroId = planejamentoMacroAtualizar.Id,
+                                EscolaId = e
+                            }
+                        );
+                    }
+                    else{
+                        plan.Ano = mes.Ano;
+                        plan.Mes = mes.Mes;
+                    }
+                });
+            }
+
+            foreach(var plan in planejamentoMacroAtualizar.Escolas)
+            {
+                var mes = planejamentoMacroMensal.FirstOrDefault(p => p.Mes == plan.Mes && p.Ano == plan.Ano);
+                
+                if(!mes!.Escolas.Contains(plan.EscolaId))
+                {
+                    planejamentoRepositorio.ExcluirPlanejamentoMacroEscola(plan);
+                }
+            }
+
+            dbContext.SaveChanges();
 
             return planejamentoMacroAtualizar;
         }

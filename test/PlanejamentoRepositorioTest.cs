@@ -56,6 +56,7 @@ namespace test
             Assert.IsNotType<ApiException>(() => planejamentoRepositorio.ExcluirPlanejamentoMacro(planejBanco));
         }
         
+        [Fact]
         public async Task DeletePlanejamentoMacro_QuandoNaoExistir_DeveLancarExcecao()
         {
             await Assert.ThrowsAsync<ApiException>(async() => await planejamentoRepositorio.ObterPlanejamentoMacroAsync(Guid.NewGuid()));
