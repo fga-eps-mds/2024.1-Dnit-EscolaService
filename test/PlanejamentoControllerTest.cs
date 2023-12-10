@@ -11,6 +11,7 @@ using Moq;
 using service.Interfaces;
 using System.Linq;
 using api.Planejamento;
+using auth;
 
 namespace test
 {
@@ -88,9 +89,22 @@ namespace test
 
             var resultado = await controller.ObterPlanejamentosAsync(filtro);
 
-            // Assert.Equal(filtro.Pagina, resultado.Pagina);
+            Assert.Equal(filtro.Pagina, resultado.Pagina);
             Assert.Equal(filtro.TamanhoPagina, resultado.ItemsPorPagina);
             Assert.True(planejamentoDb.All(e => resultado.Items.Exists(ee => ee.Id == e.Id)));
+        }
+
+        [Fact]
+        public async Task ObterEscolasAsync_QuandoNaoTiverPermissao_DeveSerBloqueado(){
+            var planejamentoDb = dbContext.PlanejamentoMacro.ToList();
+
+            var filtro = new PesquisaPlanejamentoFiltro();
+            filtro.Pagina = 1;
+            filtro.TamanhoPagina = planejamentoDb.Count();
+
+            AutenticarUsuario(controller, permissoes: new() { });
+            
+            await Assert.ThrowsAsync<AuthForbiddenException>(async() => await controller.ObterPlanejamentosAsync(filtro));
         }
 
         public new void Dispose()
