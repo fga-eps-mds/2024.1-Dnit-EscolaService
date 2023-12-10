@@ -12,6 +12,8 @@ using service.Interfaces;
 using System.Linq;
 using api.Planejamento;
 using auth;
+using System.Collections.Generic;
+using MathNet.Numerics;
 
 namespace test
 {
@@ -68,7 +70,7 @@ namespace test
         }
         
         [Fact]
-        public async Task CriarPlanejamentoMacro_QuandoSolicitacaoForEnviada_DeveGerarRecomendacao()
+        public async Task CriarPlanejamentoMacro_QuandoSolicitacaoForEnviada_DeveRetornarOk()
         {
             PlanejamentoMacroStub stub = new();
             var criaPlanejamentoDTO = stub.CriarPlanejamentoMacroDTO();
@@ -116,6 +118,18 @@ namespace test
             
             await Assert.ThrowsAsync<AuthForbiddenException>(async() => await controller.ObterPlanejamentosAsync(filtro));
         }
+
+        [Fact]
+        public async Task EditarEscolasAsync_QuandoNaoTiverPermissao_DeveSerBloqueado(){
+
+            PlanejamentoMacroStub stub = new();
+            var planejamentoDetalhadoDTO = stub.CriaPlanejamentoMacroDetalhadoDTO();
+
+            AutenticarUsuario(controller, permissoes: new() {});
+
+            await Assert.ThrowsAsync<AuthForbiddenException>(async() => await controller.EditarPlanejamentoMacro(Guid.NewGuid() , planejamentoDetalhadoDTO));
+        }
+
 
         public new void Dispose()
         {
