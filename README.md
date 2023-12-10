@@ -31,6 +31,16 @@ git clone https://github.com/fga-eps-mds/2023.2-Dnit-EscolaService.git
 cd 2023.2-Dnit-EscolaService
 ```
 
+
+**Observação**: é necessário adicionar um arquivo `.env` dentro da pasta `app/`, 
+com as seguintes informações:
+
+    EMAIL_SERVICE_ADDRESS="email usado para enviar a mensagem"
+    EMAIL_SERVICE_PASSWORD="senha do email acima"
+    EMAIL_SERVICE_SMTP="endereco do servidor smtp"
+    EMAIL_DNIT="email que receberá a mensagem"
+
+
 **NOTA**: lembre-se de criar a rede pelo UsuarioService: [banco-de-dados.md](https://github.com/fga-eps-mds/2023.2-Dnit-UsuarioService/blob/main/docs/banco-de-dados.md).
 
 Inicie todos os containeres:
