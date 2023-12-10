@@ -48,7 +48,7 @@ namespace test
             var custoTamanhoInvalido = CustoLogisticoStub.ObterCustoLogisticoTamanhoInvalido();
             var exception = await Assert.ThrowsAsync<InvalidOperationException>(
                 () => priorizacaoService.EditarCustosLogisticos(custoTamanhoInvalido));
-            Assert.Equal("Operação Inválida: Deve conter as 4 categorias de custo logístico", exception.Message);
+            Assert.Equal("OperaÃ§Ã£o InvÃ¡lida: Deve conter as 4 categorias de custo logÃ­stico", exception.Message);
 		}
 
         [Fact]
@@ -57,7 +57,7 @@ namespace test
             var custoRaioInvalido = CustoLogisticoStub.ObterCustoLogisticoComRaioMinDiferenteDoRaioMaxAnterior();
             var exception = await Assert.ThrowsAsync<InvalidOperationException>(
                 () => priorizacaoService.EditarCustosLogisticos(custoRaioInvalido));
-            Assert.Equal("Operação Inválida: O RaioMin deve ser igual ao RaioMax anterior", exception.Message);
+            Assert.Equal("OperaÃ§Ã£o InvÃ¡lida: O RaioMin deve ser igual ao RaioMax anterior", exception.Message);
         }
 
         [Fact]
@@ -66,7 +66,7 @@ namespace test
             var custoRaioInvalido = CustoLogisticoStub.ObterCustoLogisticoComRaioMinMaiorOuIgualAoRaioMax();
             var exception = await Assert.ThrowsAsync<InvalidOperationException>(
                 () => priorizacaoService.EditarCustosLogisticos(custoRaioInvalido));
-            Assert.Equal("Operação Inválida: O RaioMin deve ser menor que o RaioMax", exception.Message);
+            Assert.Equal("OperaÃ§Ã£o InvÃ¡lida: O RaioMin deve ser menor que o RaioMax", exception.Message);
         }
 
         [Fact]
@@ -75,7 +75,7 @@ namespace test
             var custoDuplicado = CustoLogisticoStub.ObterCustoLogisticoComDuplicacao();
             var exception = await Assert.ThrowsAsync<InvalidOperationException>(
                 () => priorizacaoService.EditarCustosLogisticos(custoDuplicado));
-            Assert.Equal("Operação Inválida: Categorias de custo logístico repetidas", exception.Message);
+            Assert.Equal("OperaÃ§Ã£o InvÃ¡lida: Categorias de custo logÃ­stico repetidas", exception.Message);
         }
 
         [Fact]
@@ -84,7 +84,7 @@ namespace test
             var custoInvalido= CustoLogisticoStub.ObterCustoLogisticoComCustoInvalido();
             var exception = await Assert.ThrowsAsync<InvalidOperationException>(
                 () => priorizacaoService.EditarCustosLogisticos(custoInvalido));
-            Assert.Equal("Operação Inválida: Deve conter categorias de 1 a 4", exception.Message);
+            Assert.Equal("OperaÃ§Ã£o InvÃ¡lida: Deve conter categorias de 1 a 4", exception.Message);
         }
     }
 }

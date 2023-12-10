@@ -99,7 +99,7 @@ namespace app.Services
             await priorizacaoRepositorio.DeletarFatorId(Id);
         }
 
-        public async Task<FatorPriorizacao> EditarFatorPorId(Guid Id, FatorPrioriModel itemAtualizado)
+        public async Task<FatorPrioriModel> EditarFatorPorId(Guid Id, FatorPrioriModel itemAtualizado)
         {
             var fator = await priorizacaoRepositorio.ObterFatorPrioriPorIdAsync(Id);
             await priorizacaoRepositorio.DeletarFatorId(fator.Id);
@@ -108,7 +108,7 @@ namespace app.Services
             priorizacaoRepositorio.AdicionarFatorPriorizacao(novoFator);
 
             await dbContext.SaveChangesAsync();
-            return novoFator;
+            return modelConverter.ToModel(novoFator);
         }
 
         private static FatorPriorizacao CopiarFatorPriorizacao(FatorPriorizacao fatorPriorizacao) 

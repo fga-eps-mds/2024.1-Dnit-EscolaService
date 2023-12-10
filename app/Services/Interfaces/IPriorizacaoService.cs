@@ -6,7 +6,7 @@ namespace app.Services.Interfaces
 {
     public interface IPriorizacaoService
     {
-        Task<FatorPriorizacao> EditarFatorPorId(Guid Id, FatorPrioriModel itemAtualizado);
+        Task<FatorPrioriModel> EditarFatorPorId(Guid Id, FatorPrioriModel itemAtualizado);
         Task DeletarFatorId(Guid Id);
         Task <FatorPrioriModel> VisualizarFatorId(Guid Id);
         Task<List<FatorPrioriModel>> ListarFatores();

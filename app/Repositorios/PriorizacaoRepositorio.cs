@@ -40,6 +40,7 @@ namespace app.Repositorios
         {
             FatorPriorizacao item = await ObterFatorPrioriPorIdAsync(Id);
             item.DeleteTime = DateTime.UtcNow;
+            item.Ativo = false;
             dbContext.FatorPriorizacoes.Update(item);
             dbContext.SaveChanges();
         }

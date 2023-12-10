@@ -31,6 +31,18 @@ namespace test
         }
 
         [Fact]
+        public async Task EditarCustosLogisticos_QuandoFornecidoEntradaInvalida_DeveRetornarStatusCode400()
+        {
+            var custoInvalido = CustoLogisticoStub.ObterCustoLogisticoComCustoInvalido();
+
+            var resposta = await controller.EditarCustosLogisticos(custoInvalido);
+
+            Assert.IsType<ObjectResult>(resposta);
+            ObjectResult objectResult = (ObjectResult)resposta;
+            Assert.Equal(400, objectResult.StatusCode);
+        }
+
+        [Fact]
         public async Task EditarCustosLogisticos_QuandoMetodoForChamado_RetornaParametrosDeCustoAtualizados()
         {
             var custoLogisticoAtualizado = CustoLogisticoStub.ObterCustoLogisticoAtualizado();
@@ -55,14 +67,14 @@ namespace test
 
             Assert.NotNull(priorizacoes);
             Assert.NotNull(visualizar);
-            Assert.Equal(visualizar.Nome, priorizacoes[0].Nome);  
+            Assert.Equal(visualizar.Nome, priorizacoes.First().Nome);  
         }
 
         [Fact]
         public async Task ListarFatores_QuandoMetodoForChamado_DeveRetornarLista()
         {
-           var priorizacoes = db.FatorPriorizacoes.ToList();
-           var visualizar = await controller.ListarFatores();
+            var priorizacoes = db.FatorPriorizacoes.Where(f => f.DeleteTime == null).ToList();
+            var visualizar = await controller.ListarFatores();
 
             Assert.NotNull(priorizacoes);
             Assert.NotNull(visualizar);
@@ -72,7 +84,7 @@ namespace test
         [Fact]
         public async Task DeletarFatorId_QuandoColocadoId_DeveRetornarOk()
         {
-            var priorizacao = db.FatorPriorizacoes.FirstOrDefault();
+            var priorizacao = db.FatorPriorizacoes.LastOrDefault();
             
             Assert.NotNull(priorizacao);
 
@@ -96,33 +108,22 @@ namespace test
         }
 
         [Fact]
-        public async Task EditarCustosLogisticos_QuandoFornecidoEntradaInvalida_DeveRetornarStatusCode400()
-        {
-            var custoInvalido = CustoLogisticoStub.ObterCustoLogisticoComCustoInvalido();
-
-            var resposta = await controller.EditarCustosLogisticos(custoInvalido);
-
-            Assert.IsType<ObjectResult>(resposta);
-            ObjectResult objectResult = (ObjectResult)resposta;
-            Assert.Equal(400, objectResult.StatusCode);
-        }
-
-        [Fact]
         public async Task EditarFatorPriorizacao_QuandoMetodoForChamado_RetornaOK()
         {
-            var priorizacaoDb = db.FatorPriorizacoes.FirstOrDefault();
+            var priorizacaoDb = db.FatorPriorizacoes.First();
             var priorizacaoAtualizado = PriorizacaoStub.ObterPriorizacaoComCondicao();
+            
             var resposta = await controller.EditarFator(priorizacaoDb.Id, priorizacaoAtualizado);
+            
             var priorizacaoDbAtualizado = db.FatorPriorizacoes.ToList();
 
-            var itemDb = priorizacaoDbAtualizado.FirstOrDefault(c => c.Id == priorizacaoAtualizado.Id);
+            var itemDb = priorizacaoDbAtualizado.FirstOrDefault(c => c.Id == resposta.Id);
 
             Assert.NotNull(itemDb);
-            Assert.Equal(priorizacaoAtualizado.Id, itemDb.Id);
-            Assert.Equal(priorizacaoAtualizado.Nome, itemDb.Nome);
-            Assert.Equal(priorizacaoAtualizado.Primario, itemDb.Primario);
-            Assert.Equal(priorizacaoAtualizado.Ativo, itemDb.Ativo);
-            Assert.IsType<ObjectResult>(resposta);
+            Assert.Equal(resposta.Id, itemDb.Id);
+            Assert.Equal(resposta.Nome, itemDb.Nome);
+            Assert.Equal(resposta.Primario, itemDb.Primario);
+            Assert.Equal(resposta.Ativo, itemDb.Ativo);
         }
     }
 }

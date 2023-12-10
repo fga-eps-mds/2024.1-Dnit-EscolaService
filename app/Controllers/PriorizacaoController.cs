@@ -73,18 +73,10 @@ namespace app.Controllers
         }
 
         [HttpPut("fatores/{Id}")]
-        public async Task<IActionResult> EditarFator(Guid Id, [FromBody] FatorPrioriModel fatorPrioriModel)
+        public async Task<FatorPrioriModel> EditarFator(Guid Id, [FromBody] FatorPrioriModel fatorPrioriModel)
         {
             fatorPrioriModel.Id = Id;
-            try
-            {
-                await priorizacaoService.EditarFatorPorId(Id, fatorPrioriModel);
-                return Ok("Empresa Editada com sucesso");
-            }
-            catch(InvalidOperationException ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+            return await priorizacaoService.EditarFatorPorId(Id, fatorPrioriModel);
         }
     }
 }
