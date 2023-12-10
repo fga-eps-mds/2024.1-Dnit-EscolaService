@@ -53,6 +53,13 @@ namespace test
             Assert.False(await dbContext.PlanejamentoMacro.AnyAsync(e => e.Id == planejamento.Id));
             Assert.IsNotType<ApiException>(() => planejamentoRepositorio.ExcluirPlanejamentoMacro(planejamento));
         }
+
+        [Fact]
+        public async Task DeletePlanejamentoMacro_QuandoNaoExistir_DeveLancarExcecao()
+        {
+            await Assert.ThrowsAsync<ApiException>(async() => await planejamentoRepositorio.ObterPlanejamentoMacroAsync(Guid.NewGuid()));
+        }
+
         public new void Dispose()
         {
             dbContext.Clear();
