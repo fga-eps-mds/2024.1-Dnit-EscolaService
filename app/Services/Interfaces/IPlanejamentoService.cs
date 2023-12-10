@@ -1,4 +1,5 @@
 using System.Numerics;
+using api;
 using api.Planejamento;
 using app.Entidades;
 
@@ -12,5 +13,6 @@ namespace service.Interfaces
         Task<PlanejamentoMacro> EditarPlanejamentoMacro(PlanejamentoMacro planejamento, PlanejamentoMacroDTO dto); 
         Task<PlanejamentoMacro> ObterPlanejamentoMacroAsync(Guid id);
         Task ExcluirPlanejamentoMacro(Guid id);
+        Task<ListaPaginada<PlanejamentoMacroDetalhadoModel>> ListarPaginadaAsync(PesquisaPlanejamentoFiltro filtro);
     }
 } 

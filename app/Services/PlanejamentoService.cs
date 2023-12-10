@@ -149,6 +149,13 @@ namespace app.Services
             return planejamentoMacroAtualizar;
         }
 
+        public async Task<ListaPaginada<PlanejamentoMacroDetalhadoModel>> ListarPaginadaAsync(PesquisaPlanejamentoFiltro filtro)
+        {
+            var planejamentos = await planejamentoRepositorio.ListarPaginadaAsync(filtro);
+            var planejamentosCorretos = planejamentos.Items.ConvertAll(modelConverter.ToModel);
+            return new ListaPaginada<PlanejamentoMacroDetalhadoModel>(planejamentosCorretos, planejamentos.Pagina, planejamentos.ItemsPorPagina, planejamentos.Total);
+        }
+
         // public async Task EditarPlanejamentoMacroAsync(Guid id, PlanejamentoMacroplanejamento pmplanejamento)
         // {
         //     var planejamento = await planejamentoRepositorio.ObterPlanejamentoMacroAsync(id);
