@@ -30,16 +30,12 @@ namespace app.Controllers
             this.modelConverter = modelConverter;
         }
 
+        [Authorize]    
         [HttpGet]
-        [Authorize]
-        public async Task<IActionResult> listarPlanejamentos(int pageIndex, int pageSize, string? nome = null)
-        {
+        public async Task<ListaPaginada<PlanejamentoMacroDetalhadoModel>> ObterPlanejamentosAsync([FromQuery] PesquisaPlanejamentoFiltro filtro){
             authService.Require(Usuario, Permissao.PlanejamentoVisualizar);
-
-            // Deve retornar uma lista paginada dos planejamentos cadastrados
-            // ListaPaginada<PlanejamentoMacroModel>
             
-            return Ok("Não implementado");
+            return await planejamentoService.ListarPaginadaAsync(filtro);
         }
 
         [HttpGet("{id}")]
