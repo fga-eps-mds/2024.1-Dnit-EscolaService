@@ -14,6 +14,8 @@ using api.Planejamento;
 using auth;
 using System.Collections.Generic;
 using MathNet.Numerics;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
+using System.Security;
 
 namespace test
 {
@@ -120,7 +122,7 @@ namespace test
         }
 
         [Fact]
-        public async Task EditarEscolasAsync_QuandoNaoTiverPermissao_DeveSerBloqueado(){
+        public async Task EditarPlanejamentoAsync_QuandoNaoTiverPermissao_DeveSerBloqueado(){
 
             PlanejamentoMacroStub stub = new();
             var planejamentoDetalhadoDTO = stub.CriaPlanejamentoMacroDetalhadoDTO();
@@ -130,6 +132,23 @@ namespace test
             await Assert.ThrowsAsync<AuthForbiddenException>(async() => await controller.EditarPlanejamentoMacro(Guid.NewGuid() , planejamentoDetalhadoDTO));
         }
 
+        [Fact]
+        public async Task EditarPlanejamentosAsync_QuandoSolicitacaoForEnviada_DeveRetornarOk(){
+            dbContext.PopulaPlanejamentoMacro(1);
+
+            var planejBanco = await dbContext.PlanejamentoMacro.FirstOrDefaultAsync();
+            Assert.NotNull(planejBanco);
+
+            PlanejamentoMacroStub stub = new();
+            var planStub = stub.CriaPlanejamentoMacroDetalhadoDTO();
+
+            var planejamento = await controller.EditarPlanejamentoMacro(planejBanco.Id, planStub);
+
+            planejBanco.Nome = dbContext.PlanejamentoMacro.First().Nome;
+            planejBanco.Escolas = dbContext.PlanejamentoMacro.First().Escolas;  
+
+            Assert.Equal(planStub.Nome, planejBanco.Nome);
+        }
 
         public new void Dispose()
         {
