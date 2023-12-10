@@ -14,7 +14,7 @@ namespace app.Entidades
         [Required]
         public Guid EscolaId { get; set; }
 
-        [Key, Column(Order = 1)]
+        [Key, Column(Order = 2)]
         public Escola Escola { get; set; }
 
         [Required]

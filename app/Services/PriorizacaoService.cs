@@ -165,7 +165,6 @@ namespace app.Services
                 // Como min será sempre zero, então 
                 // valor_normalizado = valor / max
                 var upsNormalizado = e.Ups / (double)UpsMax * 100;
-            
 
                 if (dbContext.FatorEscolas.Any(ef => ef.EscolaId == e.Id && ef.FatorPriorizacaoId == fatorUps.Id))
                 {

@@ -17,6 +17,7 @@ namespace app.Entidades
         public DbSet<FatorEscola> FatorEscolas { get; set; }
         public DbSet<CustoLogistico> CustosLogisticos { get; set; }
         public DbSet<CondicaoValor> CondicaoValores { get; set; }
+        public DbSet<FatorRanque> FatorRanques { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -47,6 +48,15 @@ namespace app.Entidades
             modelBuilder.Entity<FatorCondicao>()
                 .Navigation(c => c.Valores)
                 .AutoInclude();
+
+            modelBuilder.Entity<FatorRanque>()
+                .HasKey(r => new { r.FatorPriorizacaoId, r.RanqueId });
+
+            modelBuilder.Entity<FatorRanque>()
+                .HasOne(f => f.FatorPriorizacao);
+
+            modelBuilder.Entity<FatorRanque>()
+                .HasOne(f => f.Ranque);
         }
 
         public void Popula()

@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using app.Migrations;
 
 namespace app.Entidades
 {
