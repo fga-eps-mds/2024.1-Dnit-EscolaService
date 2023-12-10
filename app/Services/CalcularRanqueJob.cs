@@ -71,8 +71,12 @@ namespace app.Services
 
             try
             {
-                SalvarFatorRanque(fatorUps, ranqueId);
-                SalvarFatorRanque(fatorCustoLogisticos, ranqueId);
+                if (fatorUps != null)
+                    SalvarFatorRanque(fatorUps, ranqueId);
+                
+                if (fatorCustoLogisticos != null)
+                    SalvarFatorRanque(fatorCustoLogisticos, ranqueId);
+                
                 foreach(var fator in outrosFatores)
                 {
                     SalvarFatorRanque(fator, ranqueId);
@@ -83,10 +87,12 @@ namespace app.Services
             foreach(var escola in escolas)
             {
                 // Preenche Ups em fatorEscola
-                CalcularESalvarFatorUps(escola, fatorUps, upsMax);
+                if (fatorUps != null)
+                    CalcularESalvarFatorUps(escola, fatorUps, upsMax);
 
                 // Preenche CustoLogistico em fatorEscola
-                CalcularESalvarFatorCustoLogistico(escola, fatorCustoLogisticos, custosLogisticos);
+                if (fatorCustoLogisticos != null)
+                    CalcularESalvarFatorCustoLogistico(escola, fatorCustoLogisticos, custosLogisticos);
 
                 // Preenche Outros Fatores em fatorEscola
                 CalcularESalvarOutrosFatores(escola, outrosFatores);
@@ -158,13 +164,14 @@ namespace app.Services
         {
             foreach(var fator in fatores)
             {
+                Console.WriteLine("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
                 if (ExisteFatorEscola(fator, escola)) continue;
                 
                 FatorEscola fatorEscola = new FatorEscola
                 {
                     EscolaId = escola.Id,
                     FatorPriorizacaoId = fator.Id,
-                    Valor = CalcularCondicoes(escola, fator.FatorCondicoes)
+                    Valor = CalcularCondicoes(escola, fator.FatorCondicoes) * fator.Peso
                 };
 
                 dbContext.Add(fatorEscola);
@@ -186,41 +193,47 @@ namespace app.Services
 
         private bool EvaluateCondicao(Escola escola, FatorCondicao condicao)
         {
-            var query = dbContext.Escolas.Where(e => e.Id == escola.Id);
+            var valores = condicao.Valores.ConvertAll(v => CondicaoValorToInt(v.Valor));
 
             switch (condicao.Propriedade)
             {
                 case PropriedadeCondicao.Porte:
-                    return query.Any(e => condicao.Valores.Any(v => (Porte)CondicaoValorToInt(v.Valor) == e.Porte));
-                
+                    return valores.Contains((int)(escola.Porte ?? 0));
+                     
                 case PropriedadeCondicao.Situacao:
-                    return query.Any(e => condicao.Valores.Any(v => (Situacao)CondicaoValorToInt(v.Valor) == e.Situacao));
+                    return valores.Contains((int)(escola.Situacao ?? 0));
                 
                 case PropriedadeCondicao.Municipio:
-                    return query.Any(e => condicao.Valores.Any(v => CondicaoValorToInt(v.Valor) == e.Municipio.Id));
+                    return valores.Contains(escola.MunicipioId ?? 0);
                 
                 case PropriedadeCondicao.UF:
-                    return query.Any(e => condicao.Valores.Any(v => (UF)CondicaoValorToInt(v.Valor) == e.Uf));
+                    return valores.Contains((int)(escola.Uf ?? 0));
                 
                 case PropriedadeCondicao.Localizacao:
-                    return query.Any(e => condicao.Valores.Any(v => (Localizacao)CondicaoValorToInt(v.Valor) == e.Localizacao));
+                    return valores.Contains((int)(escola.Localizacao ?? 0));
 
                 case PropriedadeCondicao.TotalAlunos:
+                    // Como este campo é numerico, deve haver somente um valor
+                    var valor = valores.First();
                     if (condicao.Operador == OperacaoCondicao.GTE)
                     {
-                        return query.Any(e => condicao.Valores.Any(v => CondicaoValorToInt(v.Valor) >= e.TotalAlunos));
+                        return valor >= escola.TotalAlunos;
                     }
                     if (condicao.Operador == OperacaoCondicao.LTE)
                     {
-                        return query.Any(e => condicao.Valores.Any(v => CondicaoValorToInt(v.Valor) <= e.TotalAlunos));
+                        return valor <= escola.TotalAlunos;
                     }
                     break;
                 
                 case PropriedadeCondicao.EtapaEnsino:
-                    return query.Any(e => e.EtapasEnsino.Any(ee => condicao.Valores.Any(v => (EtapaEnsino)CondicaoValorToInt(v.Valor) == ee.EtapaEnsino)));
-                
+                    foreach(var etapaEnsino in escola.EtapasEnsino)
+                    {
+                        if (valores.Contains((int)etapaEnsino.EtapaEnsino)) return true;
+                    }
+                    break;
+                    
                 case PropriedadeCondicao.Rede:
-                    return query.Any(e => condicao.Valores.Any(v => (Rede)CondicaoValorToInt(v.Valor) == e.Rede));
+                    return valores.Contains((int)escola.Rede);
             }
 
             return false;
@@ -240,6 +253,8 @@ namespace app.Services
 
         private void SalvarFatorRanque(FatorPriorizacao fator, int ranqueId)
         {
+            if (dbContext.FatorRanques.Any(f => f.RanqueId == ranqueId && f.FatorPriorizacaoId == fator.Id)) return;
+
             var fatorRanque = new FatorRanque
             {
                 FatorPriorizacaoId = fator.Id,

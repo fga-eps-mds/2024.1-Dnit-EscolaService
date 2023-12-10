@@ -35,6 +35,7 @@ namespace app.DI
             services.AddScoped<IUpsService, UpsService>();
             services.AddScoped<IPriorizacaoService, PriorizacaoService>();
             services.AddScoped<IPriorizacaoRepositorio, PriorizacaoRepositorio>();
+            services.AddScoped<ICalcularRanqueJob, CalcularRanqueJob>();
             services.AddHttpClient<UpsService>();
 
             services.Configure<UpsServiceConfig>(configuration.GetSection("UpsServiceConfig"));
