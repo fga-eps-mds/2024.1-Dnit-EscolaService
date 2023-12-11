@@ -4,8 +4,6 @@ using api.Escolas;
 using api.Planejamento;
 using app.Entidades;
 using app.Repositorios.Interfaces;
-using EnumsNET;
-using Microsoft.VisualBasic;
 using OptimizationPSO;
 using OptimizationPSO.Swarm;
 using service.Interfaces;
@@ -17,11 +15,13 @@ namespace app.Services
         private readonly IPlanejamentoRepositorio planejamentoRepositorio;
         private readonly IRanqueService ranqueService;
         private readonly ModelConverter modelConverter;
+        private readonly IEscolaRepositorio escolaRepositorio;
         private readonly AppDbContext dbContext;
 
         public PlanejamentoService
         (
             IPlanejamentoRepositorio planejamentoRepositorio,
+            IEscolaRepositorio escolaRepositorio,
             ModelConverter modelConverter,
             IRanqueService ranqueService,
             AppDbContext dbContext
@@ -31,15 +31,13 @@ namespace app.Services
             this.modelConverter = modelConverter;
             this.dbContext = dbContext;
             this.ranqueService = ranqueService;
+            this.escolaRepositorio = escolaRepositorio;
         }
 
-        // Implementar os metodos da inteface
-        //Obtém planejamento macro pelo ID
         public async Task<PlanejamentoMacro> ObterPlanejamentoMacroAsync(Guid id)
         {
             return await planejamentoRepositorio.ObterPlanejamentoMacroAsync(id);
         }
-
             
         public async Task ExcluirPlanejamentoMacro(Guid id)
         {
@@ -47,8 +45,7 @@ namespace app.Services
             planejamento.Escolas.ForEach(e => planejamentoRepositorio.ExcluirPlanejamentoMacroEscola(e));
             planejamentoRepositorio.ExcluirPlanejamentoMacro(planejamento);
             await dbContext.SaveChangesAsync();
-        }
-        
+        }        
 
         public async Task<PlanejamentoMacro> GerarRecomendacaoDePlanejamento(PlanejamentoMacroDTO planejamento)
         {            
@@ -147,23 +144,26 @@ namespace app.Services
 
             foreach(var mes in planejamentoMacroMensal)
             {
-                mes.Escolas.ForEach(e => {
+                mes.Escolas.ForEach(async e => {
                     var plan = planejamentoMacroAtualizar.Escolas
-                        .FirstOrDefault(pme => pme.EscolaId == e);
+                        .Find(pme => pme.EscolaId == e);
                     
+                    Console.WriteLine(plan == null);
+
                     if(plan == null)
-                    {
+                    {                        
+                        var novoPlanejamentoMacroEscola = new PlanejamentoMacroEscola
+                        {
+                            Mes = mes.Mes,
+                            Ano = mes.Ano,
+                            PlanejamentoMacroId = planejamentoMacroAtualizar.Id,
+                            EscolaId = e
+                        };
+
                         //registra novo PlanejamentoMacroEscola
-                        planejamentoRepositorio.RegistrarPlanejamentoMacroMensal
-                        (
-                            new PlanejamentoMacroEscola
-                            {
-                                Mes = mes.Mes,
-                                Ano = mes.Ano,
-                                PlanejamentoMacroId = planejamentoMacroAtualizar.Id,
-                                EscolaId = e
-                            }
-                        );
+                        planejamentoRepositorio.RegistrarPlanejamentoMacroMensal(novoPlanejamentoMacroEscola);
+
+                        //planejamentoMacroAtualizar.Escolas.Add(novoPlanejamentoMacroEscola);
                     }
                     else{
                         plan.Ano = mes.Ano;
@@ -179,10 +179,16 @@ namespace app.Services
                 if(!mes!.Escolas.Contains(plan.EscolaId))
                 {
                     planejamentoRepositorio.ExcluirPlanejamentoMacroEscola(plan);
+                    //planejamentoMacroAtualizar.Escolas.Remove(plan);
                 }
             }
 
             dbContext.SaveChanges();
+
+            foreach(var pme in planejamentoMacroAtualizar.Escolas)
+            {
+                pme.Escola ??= await escolaRepositorio.ObterPorIdAsync(pme.EscolaId);
+            }
 
             return planejamentoMacroAtualizar;
         }
@@ -242,7 +248,12 @@ namespace app.Services
             Func<double[], double> func = x => FuncaoCusto(x);
             var solver = new ParticleSwarmMinimization(func, solveConfig);
 
-            var resultado = solver.Solve().BestPosition;
+            double[] resultado;
+            
+            do
+            {
+                resultado = solver.Solve().BestPosition;
+            }while(resultado.Select(Convert.ToInt32).Distinct().Count() != NumDim);            
 
             var listaOtimizada = new List<Guid>();
 

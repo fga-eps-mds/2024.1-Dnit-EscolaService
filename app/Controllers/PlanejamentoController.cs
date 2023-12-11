@@ -18,6 +18,7 @@ namespace app.Controllers
         private readonly IPlanejamentoService planejamentoService;
         private readonly AuthService authService;
         private readonly ModelConverter modelConverter;
+
         public PlanejamentoController(
             IPlanejamentoService planejamentoService,
             AuthService authService,
@@ -52,8 +53,6 @@ namespace app.Controllers
         public async Task<IActionResult> ExcluirPlanejamentoMacro(Guid id)
         {
             authService.Require(Usuario, Permissao.PlanejamentoRemover);
-            
-            var planejamentoExistente = await planejamentoService.ObterPlanejamentoMacroAsync(id);
             await planejamentoService.ExcluirPlanejamentoMacro(id);
 
             return Ok();
@@ -67,18 +66,8 @@ namespace app.Controllers
             var recomendacao = await planejamentoService.GerarRecomendacaoDePlanejamento(planejamentoMacro); //retorna entidade sem id
             var planejamentoMacroCriado = planejamentoService.CriarPlanejamentoMacro(recomendacao);
             var planejamentoMacroDetalhadoModel = modelConverter.ToModel(planejamentoMacroCriado);
-            
-            //inserir no banco
-
-            //pegar objeto do banco e retornar como model para o front (usar o ModelConverter)
-
-            
-            // deve registrar o planejamento macro no banco
 
             return Ok(planejamentoMacroDetalhadoModel);
-            // Deve retornar um objeto PlanejamentoMacroDetralhadoModel
-            // está retornando essa recomendação só para testar pelo swagger o retorno 
-            // da geração  de recomendação 
         }
 
         [HttpPut("{id}")]
@@ -97,6 +86,9 @@ namespace app.Controllers
                 return NotFound("Planejamento Macro não encontrado.");
             }
             catch(DbUpdateException){
+                return UnprocessableEntity("Erro ao editar Planejamento.");
+            }
+            catch(InvalidOperationException){
                 return UnprocessableEntity("Erro ao editar Planejamento.");
             }
             catch(Exception ex){

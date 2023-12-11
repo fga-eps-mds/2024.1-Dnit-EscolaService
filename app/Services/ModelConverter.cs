@@ -250,6 +250,11 @@ namespace app.Services
 
         public PlanejamentoMacroMensalModel ToModel(List<PlanejamentoMacroEscola> planejamentoMacroEscola)
         {
+            if(planejamentoMacroEscola == null || planejamentoMacroEscola.Any(i => i==null))
+            {
+                throw new InvalidOperationException();
+            }
+
             List<DetalhesEscolaMensal> detalhesEscolaMensal = planejamentoMacroEscola
                 .Select(pme => new DetalhesEscolaMensal
                 {
@@ -259,7 +264,6 @@ namespace app.Services
                     UF = pme.Escola.Uf,
                     QuantidadeAlunos = pme.Escola.TotalAlunos,
                     DistanciaPolo = pme.Escola.DistanciaPolo
-
                 })
                 .ToList();
 

@@ -47,10 +47,6 @@ namespace app.Repositorios
             var query = dbContext.PlanejamentoMacro
                 .Include(e => e.Escolas)
                 .ThenInclude(e => e.Escola)
-                // .Include(e => e.MesInicio)
-                // .Include(e => e.MesFim)
-                // .Include(e => e.AnoInicio)
-                // .Include(e => e.AnoFim)
                 .AsQueryable();
             
             if(filtro.Nome != null)
@@ -100,7 +96,7 @@ namespace app.Repositorios
 
         public void RegistrarPlanejamentoMacroMensal(PlanejamentoMacroEscola pme)
         {
-           dbContext.PlanejamentoMacroEscola.Add(pme);
+            dbContext.PlanejamentoMacroEscola.Add(pme);            
         }
     }
 }
