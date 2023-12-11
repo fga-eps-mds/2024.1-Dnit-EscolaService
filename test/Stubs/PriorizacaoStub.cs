@@ -57,8 +57,8 @@ namespace test.Stubs
                     new FatorCondicaoModel
                     {
                         Id = Guid.NewGuid(),
-                        Propriedade = (int)PropriedadeCondicao.Situacao,
-                        Operador = 1,
+                        Propriedade = PropriedadeCondicao.Situacao,
+                        Operador = OperacaoCondicao.Equals,
                         Valores = new List<string>{"1"},
                     }
                 }
