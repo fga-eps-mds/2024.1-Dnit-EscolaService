@@ -133,6 +133,47 @@ namespace api
         FormatoJsonNaoReconhecido,
         [Description("Fator de Priorização não encontrado")]
         FatorNaoEncontrado,
+        [Description("Planejamento Macro não encontrado")]
+        PlanejamentoMacroNaoEncontrado,
+    }
+
+    public enum Mes
+    {
+        [Description("Janeiro")]
+        Janeiro = 1,
+
+        [Description("Fevereiro")]
+        Fevereiro,
+
+        [Description("Março")]
+        Marco,
+
+        [Description("Abril")]
+        Abril,
+
+        [Description("Maio")]
+        Maio,
+
+        [Description("Junho")]
+        Junho,
+
+        [Description("Julho")]
+        Julho,
+
+        [Description("Agosto")]
+        Agosto,
+
+        [Description("Setembro")]
+        Setembro,
+
+        [Description("Outubro")]
+        Outubro,
+
+        [Description("Novembro")]
+        Novembro,
+
+        [Description("Dezembro")]
+        Dezembro
     }
 
     public enum Permissao
@@ -154,24 +195,29 @@ namespace api
         RanqueCalcular = 5003,
         [Description("Poll ranking em processamento")]
         RanquePollProcessamento = 5004,
-        
-        [Description("Cadastrar Polo")]
-        PoloCadastrar = 10000,
-
-        [Description("Editar Polo")]
-        PoloEditar = 10001,
-
-        [Description("Remover Polo")]
-        PoloRemover = 10002,
-
-        [Description("Visualizar Polo")]
-        PoloVisualizar = 10003,
-
         [Description("Exportar Ranking de Escolas")]
         RanqueExportar = 5005,
 
         [Description("Visualizar solicitação")]
         SolicitacaoVisualizar = 9000,
+        
+        [Description("Cadastrar Polo")]
+        PoloCadastrar = 10000,
+        [Description("Editar Polo")]
+        PoloEditar = 10001,
+        [Description("Remover Polo")]
+        PoloRemover = 10002,
+        [Description("Visualizar Polo")]
+        PoloVisualizar = 10003,
+
+        [Description("Visualizar Planejamento Macro")]
+        PlanejamentoVisualizar = 11000,
+        [Description("Criar Planejamento Macro")]
+        PlanejamentoCriar = 11001,
+        [Description("Editar Planejamento Macro")]
+        PlanejamentoEditar = 11002,
+        [Description("Remover Planejamento Macro")]
+        PlanejamentoRemover = 11003,
     }
 
     public enum PropriedadeCondicao

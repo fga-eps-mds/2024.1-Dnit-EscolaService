@@ -18,6 +18,8 @@ namespace app.Entidades
         public DbSet<CustoLogistico> CustosLogisticos { get; set; }
         public DbSet<CondicaoValor> CondicaoValores { get; set; }
         public DbSet<FatorRanque> FatorRanques { get; set; }
+        public DbSet<PlanejamentoMacro> PlanejamentoMacro { get; set; }
+        public DbSet<PlanejamentoMacroEscola> PlanejamentoMacroEscola {get; set; }
         public DbSet<Polo> Polos { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
@@ -28,9 +30,12 @@ namespace app.Entidades
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Escola>().HasMany(escola => escola.EtapasEnsino).WithOne(e => e.Escola);
+            modelBuilder.Entity<Escola>()
+                .HasMany(escola => escola.EtapasEnsino)
+                .WithOne(e => e.Escola);
             modelBuilder.Entity<Ranque>()
-                .Property(r => r.Id).ValueGeneratedOnAdd();
+                .Property(r => r.Id)
+                .ValueGeneratedOnAdd();
             modelBuilder.Entity<EscolaRanque>()
                 .Property(r => r.Id).ValueGeneratedOnAdd();
 
@@ -58,6 +63,14 @@ namespace app.Entidades
 
             modelBuilder.Entity<FatorRanque>()
                 .HasOne(f => f.Ranque);
+
+            modelBuilder.Entity<PlanejamentoMacro>()
+                .HasMany(planejamentoMacro => planejamentoMacro.Escolas)
+                .WithOne(escolas => escolas.PlanejamentoMacro);
+            
+            modelBuilder.Entity<PlanejamentoMacroEscola>()
+                .HasOne(PlanejamentoMacroEscola => PlanejamentoMacroEscola.Escola)
+                .WithMany();
         }
 
         public void Popula()

@@ -30,6 +30,7 @@ namespace test.Fixtures
             services.AddScoped<IMunicipioRepositorio, MunicipioRepositorio>();
             services.AddScoped<IRanqueRepositorio, RanqueRepositorio>();
             services.AddScoped<IPriorizacaoRepositorio, PriorizacaoRepositorio>();
+            services.AddScoped<IPlanejamentoRepositorio, PlanejamentoRepositorio>();
             services.AddScoped<IPoloRepositorio, PoloRepositorio>();
             services.AddScoped<ISolicitacaoAcaoRepositorio, SolicitacaoAcaoRepositorio>();
 
@@ -42,6 +43,7 @@ namespace test.Fixtures
             services.AddScoped<IBackgroundJobClient, BackgroundJobClientFake>();
             services.AddSingleton<ModelConverter>();
             services.AddScoped<IPriorizacaoService, PriorizacaoService>();
+            services.AddScoped<IPlanejamentoService, PlanejamentoService>();
             services.AddScoped<IPoloService, PoloService>();
             services.AddScoped<ICalcularRanqueJob, CalcularRanqueJob>();
 
@@ -50,6 +52,7 @@ namespace test.Fixtures
             services.AddScoped<EscolaController>();
             services.AddScoped<RanqueController>();
             services.AddScoped<PriorizacaoController>();
+            services.AddScoped<PlanejamentoController>();
             services.AddScoped<PolosController>();
 
             services.AddAuth(configuration);

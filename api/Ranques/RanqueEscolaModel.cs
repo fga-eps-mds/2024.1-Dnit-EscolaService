@@ -1,5 +1,6 @@
 using api.Municipios;
 using api.Polos;
+using api.Escolas;
 
 namespace api.Ranques
 {
@@ -21,5 +22,11 @@ namespace api.Ranques
         public double DistanciaPolo { get; set; }
         public PoloModel Polo { get; set; }
         public bool TemSolicitacao { get; set; } = false;
+        public int Ups { get; set; }
+        public EscolaParaOtimizacao ParaOtimizacao()
+        {   
+            UF ufRetorno = (UF) (Uf == null ? 0 : Uf.Id);
+            return new EscolaParaOtimizacao(Id, Ups, DistanciaPolo, ufRetorno);
+        }
     }
 }
