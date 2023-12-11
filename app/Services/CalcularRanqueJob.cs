@@ -16,13 +16,15 @@ namespace app.Services
         private readonly IEscolaRepositorio escolaRepositorio;
         private readonly IRanqueService ranqueService;
         private readonly IOptions<UpsServiceConfig> upsConfig;
+        private readonly IUpsService upsService;
 
         public CalcularRanqueJob(
             AppDbContext dbContext,
             IBackgroundJobClient jobClient,
             IEscolaRepositorio escolaRepositorio,
             IRanqueService ranqueService,
-            IOptions<UpsServiceConfig> config
+            IOptions<UpsServiceConfig> config,
+            IUpsService upsService
         )
         {
             this.dbContext = dbContext;
@@ -134,7 +136,7 @@ namespace app.Services
             }
         }
 
-        private bool ExisteFatorEscola(FatorPriorizacao fator, Escola escola)
+        public bool ExisteFatorEscola(FatorPriorizacao fator, Escola escola)
         {
             return dbContext.FatorEscolas.Any(f => f.FatorPriorizacao.Id == fator.Id && f.EscolaId == escola.Id);
         }

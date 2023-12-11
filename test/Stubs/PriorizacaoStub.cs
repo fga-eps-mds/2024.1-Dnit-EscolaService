@@ -83,6 +83,27 @@ namespace test.Stubs
                     };
           
         }
+
+        public static FatorEscola ObterFatorEscola()
+        {
+            return new FatorEscola{
+                FatorPriorizacaoId = Guid.NewGuid(),
+                FatorPriorizacao = new FatorPriorizacao{
+                    Nome = "nome",
+                },
+                EscolaId = Guid.NewGuid(),
+                Escola = new Escola{
+                    Nome = "nome",
+                    Codigo = 123,
+                    Endereco = "Rua1",
+                    Latitude = "1124",
+                    Longitude = "1234",
+                    Cep = "12345662",
+                    Telefone = "12345123"
+                },
+                Valor = 12,
+            };
+        }
         public static IEnumerable<FatorPrioriModel> ListarFatorPrioriModel(bool hasId = true)
         {
             while (true)

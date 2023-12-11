@@ -9,6 +9,7 @@ using app.Repositorios.Interfaces;
 using app.Services;
 using Hangfire;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Moq;
 using RichardSzalay.MockHttp;
 using service.Interfaces;
@@ -29,8 +30,8 @@ namespace test
         private readonly Mock<IBackgroundJobClient> jobClientMock;
         private readonly MockHttpMessageHandler handlerMock;
         private readonly Mock<IUpsService> upsServiceMock;
-        private readonly UpsServiceConfig upsServiceConfig = new() { Host = "http://localhost/" };
-        private CalcularUpsJob upsJob;
+        private readonly UpsServiceConfig upsServiceConfig = new() { Host = "http://localhost/api/calcular/ups/escolas" };
+        private readonly CalcularRanqueJob RanqueJob;
 
 
         public CalcularRanqueJobTest(ITestOutputHelper testOutputHelper, Base fixture) : base(testOutputHelper, fixture)
@@ -45,12 +46,12 @@ namespace test
             handlerMock = new MockHttpMessageHandler();
             upsServiceMock = new Mock<IUpsService>();
 
-            upsJob = new(
+            RanqueJob = new(
                 db,
-                escolaRepositorio,
-                ranqueRepositorio,
-                ranqueServiceMock.Object,
                 jobClientMock.Object,
+                escolaRepositorio,
+                ranqueServiceMock.Object,
+                Options.Create(upsServiceConfig),
                 upsServiceMock.Object
             );
         }
@@ -64,9 +65,27 @@ namespace test
             db.SaveChanges();
 
             await ranqueJobService.ExecutarAsync(ranqueId, 10);
+            
             var ranqueAtualizado = db.Ranques.ToList();
             
             Assert.NotNull(ranqueAtualizado);    
         }
+
+        [Fact]
+        public async Task SeExistirEscolaComFator_DeveRetornarTrue()
+        {
+            var escolaFator = PriorizacaoStub.ObterFatorEscola();
+            db.FatorEscolas.Add(escolaFator);
+            var fator = escolaFator.FatorPriorizacao;
+            var escola = escolaFator.Escola;
+            db.SaveChanges();
+
+            ranqueJobService.ExisteFatorEscola(fator, escola);
+
+            Assert.NotNull(fator);
+            Assert.NotNull(escola);
+               
+        }
+
     }
 }
