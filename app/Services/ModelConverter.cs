@@ -1,6 +1,7 @@
 ﻿using api;
 using api.Escolas;
 using api.Municipios;
+using api.Planejamento;
 using api.Polos;
 using api.Ranques;
 using api.Solicitacoes;
@@ -112,6 +113,7 @@ namespace app.Services
                     Polo = escolaRanque.Escola.Polo != null ? ToModel(escolaRanque.Escola.Polo): null,
                     DistanciaPolo = escolaRanque.Escola.DistanciaPolo,
                     TemSolicitacao = escolaRanque.Escola.Solicitacao != null,
+                    Ups = escolaRanque.Escola.Ups
                 }
             };
 
@@ -243,6 +245,73 @@ namespace app.Services
                 NumEscolas = ranque.EscolaRanques.Count(),
                 Descricao = ranque.Descricao,
                 Fatores = fatores
+            };
+        }
+
+        public PlanejamentoMacroMensalModel ToModel(List<PlanejamentoMacroEscola> planejamentoMacroEscola)
+        {
+            if(planejamentoMacroEscola == null || planejamentoMacroEscola.Any(i => i==null))
+            {
+                throw new InvalidOperationException();
+            }
+
+            List<DetalhesEscolaMensal> detalhesEscolaMensal = planejamentoMacroEscola
+                .Select(pme => new DetalhesEscolaMensal
+                {
+                    Id = pme.EscolaId,
+                    UPS = pme.Escola.Ups,
+                    Nome = pme.Escola.Nome,
+                    UF = pme.Escola.Uf,
+                    QuantidadeAlunos = pme.Escola.TotalAlunos,
+                    DistanciaPolo = pme.Escola.DistanciaPolo
+                })
+                .ToList();
+
+            List<DetalhesPorUF> detalhesPorUFs = detalhesEscolaMensal
+                .GroupBy(dem => dem.UF)
+                .Select(gp => new DetalhesPorUF 
+                {
+                    UF = gp.Key,
+                    QuantidadeEscolasTotal = gp.Count()
+                })
+                .ToList();
+
+            var planejamentoMacroMensalModel = new PlanejamentoMacroMensalModel
+            {
+                Mes = planejamentoMacroEscola[0].Mes,
+                Ano = planejamentoMacroEscola[0].Ano,
+                UPSTotal = detalhesEscolaMensal.Sum(dem => dem.UPS),
+                QuantidadeAlunosTotal = detalhesEscolaMensal.Sum(dem => dem.QuantidadeAlunos),
+                QuantidadeEscolasTotal = planejamentoMacroEscola.Count,
+                Escolas = detalhesEscolaMensal,
+                DetalhesPorUF = detalhesPorUFs
+            };
+
+            return planejamentoMacroMensalModel;
+        }
+
+        public PlanejamentoMacroDetalhadoModel ToModel(PlanejamentoMacro planejamentoMacro)
+        {
+            var listaPorMes = planejamentoMacro.Escolas
+                .GroupBy(g => g.Mes)
+                .Select(m => new { l = m.ToList()})
+                .ToList();
+            
+            var planejamentoMacroMensalModels = new List<PlanejamentoMacroMensalModel>();
+            
+            listaPorMes.ForEach(lista => planejamentoMacroMensalModels.Add(ToModel(lista.l)));
+
+            return new PlanejamentoMacroDetalhadoModel
+            {
+                Id = planejamentoMacro.Id,
+                Nome = planejamentoMacro.Nome,
+                Responsavel = planejamentoMacro.Responsavel,
+                MesInicio = planejamentoMacro.MesInicio,
+                MesFim = planejamentoMacro.MesFim,
+                AnoInicio = planejamentoMacro.AnoInicio,
+                AnoFim = planejamentoMacro.AnoFim,
+                QuantidadeAcoes = planejamentoMacro.QuantidadeAcoes,
+                PlanejamentoMacroMensal = planejamentoMacroMensalModels
             };
         }
     }

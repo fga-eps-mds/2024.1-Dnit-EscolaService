@@ -84,6 +84,22 @@ namespace test.Stubs
             return polos;
         }
 
+        public static List<PlanejamentoMacro> PopulaPlanejamentoMacro(this AppDbContext dbContext, int limit)
+        {
+            dbContext.Clear();
+            if (!dbContext.Municipios.Any())
+            {
+                dbContext.PopulaMunicipios(limit);
+            }
+            List<PlanejamentoMacro> planejamentosMacros = new List<PlanejamentoMacro>();
+            foreach (var pm in PlanejamentoMacroStub.ListarPlanejamentoMacro(dbContext.Municipios.Take(1).ToList()).Take(limit))
+            {
+                dbContext.Add(pm);
+                planejamentosMacros.Add(pm);
+            }
+            return planejamentosMacros;
+        }
+
         public static void Clear(this AppDbContext dbContext)
         {
             dbContext.RemoveRange(dbContext.Escolas);

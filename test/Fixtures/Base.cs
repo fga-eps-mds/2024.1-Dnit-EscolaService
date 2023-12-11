@@ -29,6 +29,7 @@ namespace test.Fixtures
             services.AddScoped<IEscolaRepositorio, EscolaRepositorio>();
             services.AddScoped<IMunicipioRepositorio, MunicipioRepositorio>();
             services.AddScoped<IRanqueRepositorio, RanqueRepositorio>();
+            services.AddScoped<IPlanejamentoRepositorio, PlanejamentoRepositorio>();
             services.AddScoped<IPoloRepositorio, PoloRepositorio>();
             services.AddScoped<ISolicitacaoAcaoRepositorio, SolicitacaoAcaoRepositorio>();
 
@@ -40,12 +41,14 @@ namespace test.Fixtures
             services.AddScoped<IUpsService, UpsServiceMock>();
             services.AddScoped<IBackgroundJobClient, BackgroundJobClientFake>();
             services.AddSingleton<ModelConverter>();
+            services.AddScoped<IPlanejamentoService, PlanejamentoService>();
             services.AddScoped<IPoloService, PoloService>();
 
             // Controllers
             services.AddScoped<DominioController>();
             services.AddScoped<EscolaController>();
             services.AddScoped<RanqueController>();
+            services.AddScoped<PlanejamentoController>();
             services.AddScoped<PolosController>();
 
             services.AddAuth(configuration);
