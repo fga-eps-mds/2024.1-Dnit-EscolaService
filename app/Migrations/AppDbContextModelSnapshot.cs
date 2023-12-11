@@ -571,7 +571,6 @@ namespace app.Migrations
                 });
 
             modelBuilder.Entity("app.Entidades.FatorEscola", b =>
-            modelBuilder.Entity("app.Entidades.PlanejamentoMacroEscola", b =>
                 {
                     b.HasOne("app.Entidades.Escola", "Escola")
                         .WithMany()
@@ -582,9 +581,6 @@ namespace app.Migrations
                     b.HasOne("app.Entidades.FatorPriorizacao", "FatorPriorizacao")
                         .WithMany()
                         .HasForeignKey("FatorPriorizacaoId")
-                    b.HasOne("app.Entidades.PlanejamentoMacro", "PlanejamentoMacro")
-                        .WithMany("Escolas")
-                        .HasForeignKey("PlanejamentoMacroId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -610,6 +606,24 @@ namespace app.Migrations
                     b.Navigation("FatorPriorizacao");
 
                     b.Navigation("Ranque");
+                });
+
+            modelBuilder.Entity("app.Entidades.PlanejamentoMacroEscola", b =>
+                {
+                    b.HasOne("app.Entidades.Escola", "Escola")
+                        .WithMany()
+                        .HasForeignKey("EscolaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("app.Entidades.PlanejamentoMacro", "PlanejamentoMacro")
+                        .WithMany("Escolas")
+                        .HasForeignKey("PlanejamentoMacroId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Escola");
+
                     b.Navigation("PlanejamentoMacro");
                 });
 
@@ -656,6 +670,8 @@ namespace app.Migrations
             modelBuilder.Entity("app.Entidades.FatorPriorizacao", b =>
                 {
                     b.Navigation("FatorCondicoes");
+                });
+
             modelBuilder.Entity("app.Entidades.PlanejamentoMacro", b =>
                 {
                     b.Navigation("Escolas");
