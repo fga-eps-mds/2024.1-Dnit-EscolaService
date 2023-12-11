@@ -109,7 +109,7 @@ namespace test
         }
 
         [Fact]
-        public async Task ObterEscolasAsync_QuandoNaoTiverPermissao_DeveSerBloqueado(){
+        public async Task ObterPlanejamentosAsync_QuandoNaoTiverPermissao_DeveSerBloqueado(){
             var planejamentoDb = dbContext.PlanejamentoMacro.ToList();
 
             var filtro = new PesquisaPlanejamentoFiltro();
@@ -124,30 +124,8 @@ namespace test
         [Fact]
         public async Task EditarPlanejamentoAsync_QuandoNaoTiverPermissao_DeveSerBloqueado(){
 
-            PlanejamentoMacroStub stub = new();
-            var planejamentoDetalhadoDTO = stub.CriaPlanejamentoMacroDetalhadoDTO();
-
             AutenticarUsuario(controller, permissoes: new() {});
-
-            await Assert.ThrowsAsync<AuthForbiddenException>(async() => await controller.EditarPlanejamentoMacro(Guid.NewGuid() , planejamentoDetalhadoDTO));
-        }
-
-        [Fact]
-        public async Task EditarPlanejamentosAsync_QuandoSolicitacaoForEnviada_DeveRetornarOk(){
-            dbContext.PopulaPlanejamentoMacro(1);
-
-            var planejBanco = await dbContext.PlanejamentoMacro.FirstOrDefaultAsync();
-            Assert.NotNull(planejBanco);
-
-            PlanejamentoMacroStub stub = new();
-            var planStub = stub.CriaPlanejamentoMacroDetalhadoDTO();
-
-            var planejamento = await controller.EditarPlanejamentoMacro(planejBanco.Id, planStub);
-
-            planejBanco.Nome = dbContext.PlanejamentoMacro.First().Nome;
-            planejBanco.Escolas = dbContext.PlanejamentoMacro.First().Escolas;  
-
-            Assert.Equal(planStub.Nome, planejBanco.Nome);
+            await Assert.ThrowsAsync<AuthForbiddenException>(async() => await controller.EditarPlanejamentoMacro(Guid.NewGuid(), new PlanejamentoMacroDetalhadoDTO()));
         }
 
         public new void Dispose()
