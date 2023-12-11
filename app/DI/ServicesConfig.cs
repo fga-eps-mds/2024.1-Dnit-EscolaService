@@ -6,6 +6,8 @@ using service.Interfaces;
 using app.Services.Interfaces;
 using Hangfire;
 using Hangfire.PostgreSql;
+using app.Repositorios;
+using app.Repositorios.Interfaces;
 
 namespace app.DI
 {
@@ -29,6 +31,9 @@ namespace app.DI
             services.AddScoped<IBackgroundJobClient, BackgroundJobClient>();
             services.AddScoped<ICalcularUpsJob, CalcularUpsJob>();
             services.AddScoped<IUpsService, UpsService>();
+            services.AddScoped<IPriorizacaoService, PriorizacaoService>();
+            services.AddScoped<IPriorizacaoRepositorio, PriorizacaoRepositorio>();
+            services.AddScoped<ICalcularRanqueJob, CalcularRanqueJob>();
             services.AddScoped<IPlanejamentoService, PlanejamentoService>();
             services.AddHttpClient<UpsService>();
 

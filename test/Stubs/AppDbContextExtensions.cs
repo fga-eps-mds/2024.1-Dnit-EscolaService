@@ -1,6 +1,4 @@
-﻿
-using app.Entidades;
-using Microsoft.EntityFrameworkCore.Storage;
+﻿using app.Entidades;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -84,6 +82,30 @@ namespace test.Stubs
             return polos;
         }
 
+        public static List<CustoLogistico> PopulaCustosLogisticos(this AppDbContext dbContext, int limit)
+        {
+            dbContext.Clear();
+            var custoLogisticos = CustoLogisticoStub.ObterCustoLogisticosValidos();
+            dbContext.AddRange(custoLogisticos);
+            dbContext.SaveChanges();
+            return custoLogisticos;
+        }
+
+        public static List<FatorPriorizacao> PopulaPriorizacao(this AppDbContext dbContext, int limit)
+        {
+            var Priorizacoes = PriorizacaoStub.ObterListaPriorizacoes();
+            dbContext.AddRange(Priorizacoes);
+            dbContext.SaveChanges();
+            return Priorizacoes;
+        }
+
+        public static FatorCondicao PopulaCondicao(this AppDbContext dbContext, int limit)
+        {
+            var condicoes = PriorizacaoStub.ObterCondicao();
+            dbContext.AddRange(condicoes); 
+            dbContext.SaveChanges();
+            return condicoes;
+        }
         public static List<PlanejamentoMacro> PopulaPlanejamentoMacro(this AppDbContext dbContext, int limit)
         {
             dbContext.Clear();
@@ -108,6 +130,7 @@ namespace test.Stubs
             dbContext.RemoveRange(dbContext.Municipios);
             dbContext.RemoveRange(dbContext.EscolaRanques);
             dbContext.RemoveRange(dbContext.Ranques);
+            dbContext.RemoveRange(dbContext.CustosLogisticos);
             dbContext.RemoveRange(dbContext.Polos);
             dbContext.SaveChanges();
         }

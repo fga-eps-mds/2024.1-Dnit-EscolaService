@@ -54,17 +54,20 @@ namespace app.Services
             dbContext.Ranques.Add(novoRanque);
             await dbContext.SaveChangesAsync();
 
-            for (int pagina = 1; pagina <= totalPaginas; pagina++)
-            {
-                filtro.Pagina = pagina;
-                jobClient.Enqueue<ICalcularUpsJob>((calcularUpsJob) =>
-                    calcularUpsJob.ExecutarAsync(filtro, novoRanque.Id, ExpiracaoMinutos));
-            }
+            jobClient.Enqueue<ICalcularRanqueJob>((calcularRanqueJob) => 
+                calcularRanqueJob.ExecutarAsync(novoRanque.Id, ExpiracaoMinutos));
+
+            // for (int pagina = 1; pagina <= totalPaginas; pagina++)
+            // {
+            //     filtro.Pagina = pagina;
+            //     jobClient.Enqueue<ICalcularUpsJob>((calcularUpsJob) =>
+            //         calcularUpsJob.ExecutarAsync(filtro, novoRanque.Id, ExpiracaoMinutos));
+            // }
 
             // TODO: Calcular outros fatores para a pontuação. 
             // Vai ser feito na US 5.
 
-            await dbContext.SaveChangesAsync();
+            // await dbContext.SaveChangesAsync();
         }
 
         public async Task<ListaPaginada<RanqueEscolaModel>> ListarEscolasUltimoRanqueAsync(PesquisaEscolaFiltro filtro)

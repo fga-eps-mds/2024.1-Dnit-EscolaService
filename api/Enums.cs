@@ -131,6 +131,8 @@ namespace api
         RanqueJaSendoCalculado,
         [Description("Formato JSON não reconhecido")]
         FormatoJsonNaoReconhecido,
+        [Description("Fator de Priorização não encontrado")]
+        FatorNaoEncontrado,
         [Description("Planejamento Macro não encontrado")]
         PlanejamentoMacroNaoEncontrado,
     }
@@ -216,5 +218,24 @@ namespace api
         PlanejamentoEditar = 11002,
         [Description("Remover Planejamento Macro")]
         PlanejamentoRemover = 11003,
+    }
+
+    public enum PropriedadeCondicao
+    {
+        Porte = 1,
+        Situacao,
+        Municipio,
+        UF,
+        Localizacao,
+        TotalAlunos,
+        EtapaEnsino,
+        Rede
+    }
+
+    public enum OperacaoCondicao
+    {
+        Equals = 1,
+        GTE,
+        LTE
     }
 }

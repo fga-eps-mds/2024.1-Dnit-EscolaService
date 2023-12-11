@@ -1,5 +1,7 @@
 ﻿using api;
+using api.CustoLogistico;
 using api.Escolas;
+using api.Fatores;
 using api.Municipios;
 using api.Planejamento;
 using api.Polos;
@@ -177,6 +179,56 @@ namespace app.Services
                 Longitude = polo.Longitude,
             };
 
+        public CustoLogisticoItem ToModel(CustoLogistico custoLogistico) =>
+            new CustoLogisticoItem
+            {
+                Custo = custoLogistico.Custo,
+                RaioMin = custoLogistico.RaioMin,
+                RaioMax = custoLogistico.RaioMax,
+                Valor = custoLogistico.Valor,
+            };
+        
+        public FatorPrioriModel ToModel(FatorPriorizacao fatorPriorizacao) =>
+            new FatorPrioriModel
+            {
+                Id = fatorPriorizacao.Id,
+                Nome = fatorPriorizacao.Nome,
+                Peso = fatorPriorizacao.Peso,
+                Ativo = fatorPriorizacao.Ativo,
+                Primario = fatorPriorizacao.Primario,
+                FatorCondicoes = fatorPriorizacao.FatorCondicoes.ConvertAll(ToModel)
+            };
+
+        public FatorPriorizacao ToModel(FatorPrioriModel fator) =>
+            new FatorPriorizacao
+            {
+                Id = fator.Id,
+                Nome = fator.Nome,
+                Peso = fator.Peso,
+                Ativo = fator.Ativo,
+                Primario = fator.Primario,
+                FatorCondicoes = fator.FatorCondicoes.ConvertAll(ToModel)
+            };
+
+        public FatorCondicaoModel ToModel(FatorCondicao fatorCondicao) =>   
+            new FatorCondicaoModel
+            {
+                Id = fatorCondicao.Id,
+                Propriedade = fatorCondicao.Propriedade,
+                Operador = fatorCondicao.Operador,
+                Valores = fatorCondicao.Valores.ConvertAll(v => v.Valor),
+                FatorPriorizacaoId = fatorCondicao.FatorPriorizacaoId
+            };
+
+        public FatorCondicao ToModel(FatorCondicaoModel fatorCondicaoModel) => 
+            new FatorCondicao
+            {
+                Id = fatorCondicaoModel.Id,
+                Propriedade = (PropriedadeCondicao)fatorCondicaoModel.Propriedade,
+                Operador = (OperacaoCondicao)fatorCondicaoModel.Operador,
+                Valores = fatorCondicaoModel.Valores.ConvertAll(v => new CondicaoValor{ FatorCondicaoId = fatorCondicaoModel.Id, Valor = v }),
+            };
+        
         public SolicitacaoAcaoModel ToModel(SolicitacaoAcao solicitacao)
         {
             return new()
@@ -248,6 +300,12 @@ namespace app.Services
             };
         }
 
+        public PropriedadeCondicaoModel ToModel(PropriedadeCondicao propriedadeCondicao) =>
+            new PropriedadeCondicaoModel
+            {
+                Id = (int)propriedadeCondicao,
+                Rotulo = propriedadeCondicao.ToString()
+            };
         public PlanejamentoMacroMensalModel ToModel(List<PlanejamentoMacroEscola> planejamentoMacroEscola)
         {
             if(planejamentoMacroEscola == null || planejamentoMacroEscola.Any(i => i==null))

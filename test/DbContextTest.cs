@@ -19,6 +19,14 @@ namespace test
         }
 
         [Fact]
+        public void Popula_QuandoNaoExistirCustosLogisticos_DevePopular()
+        {
+            dbContext.PopulaCustosLogisticosPorArquivo(4, Path.Join("..", "..", "..", "..", "app", "Migrations", "Data", "custoslogisticos.csv"));
+
+            Assert.Equal(4, dbContext.CustosLogisticos.Count());
+        }
+
+        [Fact]
         public void Popula_QuandoNaoExistirMunicipio_DevePopular()
         {
             dbContext.PopulaMunicipiosPorArquivo(5, Path.Join("..", "..", "..", "..", "app", "Migrations", "Data", "municipios.csv"));
