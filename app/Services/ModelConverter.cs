@@ -214,8 +214,8 @@ namespace app.Services
             new FatorCondicaoModel
             {
                 Id = fatorCondicao.Id,
-                Propriedade = (int)fatorCondicao.Propriedade,
-                Operador = (int)fatorCondicao.Operador,
+                Propriedade = fatorCondicao.Propriedade,
+                Operador = fatorCondicao.Operador,
                 Valores = fatorCondicao.Valores.ConvertAll(v => v.Valor),
                 FatorPriorizacaoId = fatorCondicao.FatorPriorizacaoId
             };
