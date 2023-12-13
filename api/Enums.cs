@@ -229,13 +229,21 @@ namespace api
 
     public enum PropriedadeCondicao
     {
+        [Description("Porte")]
         Porte = 1,
+        [Description("Situação")]
         Situacao,
+        [Description("Município")]
         Municipio,
+        [Description("UF")]
         UF,
+        [Description("Localização")]
         Localizacao,
+        [Description("Total de Alunos")]
         TotalAlunos,
+        [Description("Etapas de Ensino")]
         EtapaEnsino,
+        [Description("Rede")]
         Rede
     }
 

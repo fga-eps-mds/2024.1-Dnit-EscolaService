@@ -304,7 +304,7 @@ namespace app.Services
             new PropriedadeCondicaoModel
             {
                 Id = (int)propriedadeCondicao,
-                Rotulo = propriedadeCondicao.ToString()
+                Rotulo = propriedadeCondicao.AsString(EnumFormat.Description)!
             };
         public PlanejamentoMacroMensalModel ToModel(List<PlanejamentoMacroEscola> planejamentoMacroEscola)
         {
