@@ -13,8 +13,5 @@ namespace app.Services.Interfaces
         Task<FatorPrioriModel> AdicionarFatorPriorizacao(FatorPrioriModel novoFator);
         Task<List<CustoLogisticoItem>> ListarCustosLogisticos();
         Task<List<CustoLogisticoItem>> EditarCustosLogisticos(List<CustoLogisticoItem> custoItems);
-        void CalcularFatorUps();
-        void CalcularFatorCustoLogistico();
-        void CalcularFatorOutro(Guid fatorId);
     }
 }

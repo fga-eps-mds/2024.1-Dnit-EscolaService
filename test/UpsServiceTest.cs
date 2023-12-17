@@ -23,8 +23,8 @@ namespace test
             db = fixture.GetService<AppDbContext>(testOutputHelper)!;
             handler = new();
             service = new UpsService(
-                handler.ToHttpClient(),
-                Options.Create(config));
+                Options.Create(config),
+                handler.ToHttpClient());
         }
 
         [Fact]

@@ -14,5 +14,6 @@ namespace app.Repositorios.Interfaces
         Task<EscolaRanque?> ObterEscolaRanquePorIdAsync(Guid escolaId, int ranqueId);
         Task<ListaPaginada<Ranque>> ListarRanques( PesquisaEscolaFiltro filtro);
         Task<List<EscolaRanque>> ListarEscolaRanquesAsync(int ranqueId);
+        Task<List<FatorEscola>> ObterFatoresEscolaDeRanquePorId(Guid escolaId, int ranqueId);
     }
 }

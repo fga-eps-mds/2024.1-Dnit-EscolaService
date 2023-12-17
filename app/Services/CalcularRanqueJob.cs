@@ -12,30 +12,25 @@ namespace app.Services
     public class CalcularRanqueJob : ICalcularRanqueJob
     {
         private readonly AppDbContext dbContext;
-        private readonly IBackgroundJobClient jobClient;
         private readonly IEscolaRepositorio escolaRepositorio;
         private readonly IRanqueService ranqueService;
         private readonly IOptions<UpsServiceConfig> upsConfig;
-        private readonly IUpsService upsService;
 
         public CalcularRanqueJob(
             AppDbContext dbContext,
-            IBackgroundJobClient jobClient,
             IEscolaRepositorio escolaRepositorio,
             IRanqueService ranqueService,
-            IOptions<UpsServiceConfig> config,
-            IUpsService upsService
+            IOptions<UpsServiceConfig> config
         )
         {
             this.dbContext = dbContext;
-            this.jobClient = jobClient;
             this.escolaRepositorio = escolaRepositorio;
             this.ranqueService = ranqueService;
             this.upsConfig = config;
         }
 
         [MaximumConcurrentExecutions(1)]
-        public async Task ExecutarAsync(int novoRanqueId, int timeoutMinutos)
+        public async Task ExecutarAsync(int novoRanqueId, bool calcularUps = true)
         {
             var TamanhoBatelada = 50;
 
@@ -50,7 +45,9 @@ namespace app.Services
                 filtro.Pagina = pagina;
                 var lista = await escolaRepositorio.ListarPaginadaAsync(filtro);
                 
-                await CalcularUpsEscolas(lista.Items);
+                if (calcularUps)
+                    await CalcularUpsEscolas(lista.Items);
+                    
                 CalcularPontuacaoEscolas(lista.Items, novoRanqueId);
                 
                 ranque.BateladasEmProgresso = (int)totalPaginas - pagina;
@@ -68,11 +65,7 @@ namespace app.Services
             var raio = 2.0D;
             var desde = 2019;
 
-            HttpClient httpClient = new();
-            UpsService upsService = new UpsService(
-                httpClient,
-                upsConfig
-            );
+            UpsService upsService = new UpsService(upsConfig, null);
 
             var upss = await upsService.CalcularUpsEscolasAsync(escolas, raio, desde, 20);
 
@@ -322,7 +315,7 @@ namespace app.Services
             dbContext.SaveChanges();
         }
 
-        private bool ExisteEscolaRanque(Escola escola, int ranqueId)
+        public bool ExisteEscolaRanque(Escola escola, int ranqueId)
         {
             return dbContext.EscolaRanques.Any(e => e.EscolaId == escola.Id && e.RanqueId == ranqueId);
         }

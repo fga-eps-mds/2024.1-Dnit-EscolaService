@@ -13,34 +13,37 @@ namespace test.Stubs
                 
                 new FatorPriorizacao{
                     Id = Guid.NewGuid(),
-                    Nome = "teste",
-                    Peso = 1,
+                    Nome = "UPS",
+                    Peso = 80,
                     Ativo = true,
-                    Primario = false
+                    Primario = false,
+                    DeleteTime = null
                 },
 
                 new FatorPriorizacao{
                     Id = Guid.NewGuid(),
-                    Nome = "teste1",
-                    Peso = 12,
+                    Nome = "Custo Logistico",
+                    Peso = 50,
                     Ativo = true,
-                    Primario = false
+                    Primario = false,
+                    DeleteTime = null
+                },
+                new FatorPriorizacao{
+                    Id = Guid.NewGuid(),
+                    Nome = "teste1",
+                    Peso = 13,
+                    Ativo = false,
+                    Primario = false,
+                    DeleteTime = DateTime.UtcNow
                 },
                 new FatorPriorizacao{
                     Id = Guid.NewGuid(),
                     Nome = "teste2",
-                    Peso = 13,
-                    Ativo = true,
-                    Primario = false
-                },
-                new FatorPriorizacao{
-                    Id = Guid.NewGuid(),
-                    Nome = "teste3",
                     Peso = 14,
                     Ativo = true,
-                    Primario = false
-                },
-                
+                    Primario = false,
+                    DeleteTime = null
+                },                
             };
         }
 
@@ -104,6 +107,25 @@ namespace test.Stubs
                 Valor = 12,
             };
         }
+
+        public static FatorRanque ObterFatorRanque()
+        {
+            return new FatorRanque {
+                FatorPriorizacaoId = Guid.NewGuid(),
+                RanqueId = 1
+            };
+        }
+
+        public static EscolaRanque ObterEscolaRanque(Guid escolaId, int ranqueId)
+        {
+            return new EscolaRanque {
+                Id = Random.Shared.Next(),
+                EscolaId = escolaId,
+                RanqueId = ranqueId,
+                Pontuacao = Random.Shared.Next(),
+            };
+        }
+        
         public static IEnumerable<FatorPrioriModel> ListarFatorPrioriModel(bool hasId = true)
         {
             while (true)

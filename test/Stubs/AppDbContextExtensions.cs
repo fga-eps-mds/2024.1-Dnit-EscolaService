@@ -99,6 +99,23 @@ namespace test.Stubs
             return Priorizacoes;
         }
 
+        public static List<EscolaRanque> PopulaEscolaRanque(this AppDbContext dbContext)
+        {
+            var escolas = PopulaEscolas(dbContext);
+            Ranque ranque = new() {
+                Id = 1,
+                DataInicioUtc = DateTime.UtcNow,
+                DataFimUtc = null,
+                BateladasEmProgresso = 1,
+            };
+            List<EscolaRanque> escolasRanque = escolas.ConvertAll(e => (EscolaRanque)PriorizacaoStub.ObterEscolaRanque(e.Id, ranque.Id));
+
+            dbContext.AddRange(escolasRanque);
+            dbContext.SaveChanges();
+
+            return escolasRanque;
+        }
+
         public static FatorCondicao PopulaCondicao(this AppDbContext dbContext, int limit)
         {
             var condicoes = PriorizacaoStub.ObterCondicao();
