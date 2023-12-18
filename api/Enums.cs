@@ -218,17 +218,32 @@ namespace api
         PlanejamentoEditar = 11002,
         [Description("Remover Planejamento Macro")]
         PlanejamentoRemover = 11003,
+
+        [Description("Visualizar Prioridades")]
+        PrioridadesVisualizar = 12000,
+        [Description("Editar Prioridades")]
+        PrioridadesEditar = 12001,
+        [Description("Excluir Prioridades")]
+        PrioridadesExcluir = 12002,
     }
 
     public enum PropriedadeCondicao
     {
+        [Description("Porte")]
         Porte = 1,
+        [Description("Situação")]
         Situacao,
+        [Description("Município")]
         Municipio,
+        [Description("UF")]
         UF,
+        [Description("Localização")]
         Localizacao,
+        [Description("Total de Alunos")]
         TotalAlunos,
+        [Description("Etapas de Ensino")]
         EtapaEnsino,
+        [Description("Rede")]
         Rede
     }
 

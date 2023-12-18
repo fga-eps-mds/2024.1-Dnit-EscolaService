@@ -14,12 +14,13 @@ namespace app.Services
         private readonly UpsServiceConfig config;
         private readonly string Endpoint = "api/calcular/ups/escolas";
 
-        public UpsService(HttpClient httpClient, IOptions<UpsServiceConfig> config)
+        public UpsService(IOptions<UpsServiceConfig> config, HttpClient? httpClient)
         {
-            this.httpClient = httpClient;
             this.config = config.Value;
+            this.httpClient = httpClient ?? new HttpClient();
             this.httpClient.DefaultRequestHeaders.Add("Authorization", config.Value.ApiKey);
         }
+
         public async Task<List<int>> CalcularUpsEscolasAsync(List<Escola> escolas, double raioKm, int desdeAno, int expiracaoMinutos)
         {
             var localizacoes = escolas.Select(

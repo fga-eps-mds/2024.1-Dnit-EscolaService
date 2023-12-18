@@ -6,11 +6,8 @@ using EnumsNET;
 using api;
 using app.Repositorios.Interfaces;
 using api.Escolas;
-using System.Globalization;
 using System.Data;
-using System.Text.RegularExpressions;
 using app.util;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
 

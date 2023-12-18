@@ -22,7 +22,7 @@ namespace test
 {
     public class CalcularRanqueJobTest : TestBed<Base>
     {
-         private readonly AppDbContext db;
+        private readonly AppDbContext db;
         private readonly IEscolaRepositorio escolaRepositorio;
         private readonly IRanqueRepositorio ranqueRepositorio;
         private readonly ICalcularRanqueJob ranqueJobService;
@@ -48,11 +48,9 @@ namespace test
 
             RanqueJob = new(
                 db,
-                jobClientMock.Object,
                 escolaRepositorio,
                 ranqueServiceMock.Object,
-                Options.Create(upsServiceConfig),
-                upsServiceMock.Object
+                Options.Create(upsServiceConfig)
             );
         }
 
@@ -64,11 +62,11 @@ namespace test
             db.Ranques.Add(new Ranque() { Id = ranqueId, BateladasEmProgresso = 10 });
             db.SaveChanges();
 
-            await ranqueJobService.ExecutarAsync(ranqueId, 10);
+            await ranqueJobService.ExecutarAsync(ranqueId, false);
             
             var ranqueAtualizado = db.Ranques.ToList();
             
-            Assert.NotNull(ranqueAtualizado);    
+            Assert.NotNull(ranqueAtualizado);
         }
 
         [Fact]
@@ -85,6 +83,15 @@ namespace test
             Assert.NotNull(fator);
             Assert.NotNull(escola);
                
+        }
+
+        [Fact]
+        public void SeExistirEscolaRanque_DeveRetornarTrue()
+        {
+            var escolasRanque = db.PopulaEscolaRanque();
+            var escola = db.Escolas.Where(e => e.Id == escolasRanque.First().EscolaId).First();
+            var existe = ranqueJobService.ExisteEscolaRanque(escola, escolasRanque.First().RanqueId);
+            Assert.True(existe);
         }
 
     }

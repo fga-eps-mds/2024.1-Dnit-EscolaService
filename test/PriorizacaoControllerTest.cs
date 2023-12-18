@@ -20,6 +20,7 @@ namespace test
             db.PopulaCustosLogisticos(4);
             db.PopulaPriorizacao(4);
             controller = fixture.GetService<PriorizacaoController>(testOutputHelper)!;
+            AutenticarUsuario(controller);
         }
 
         [Fact]

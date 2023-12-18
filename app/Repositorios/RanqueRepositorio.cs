@@ -120,5 +120,19 @@ namespace app.Repositorios
 
             return items;
         }
+
+        public async Task<List<FatorEscola>> ObterFatoresEscolaDeRanquePorId(Guid escolaId, int ranqueId)
+        {
+            var fatoresRanque = dbContext.FatorRanques
+                .Where(f => f.RanqueId == ranqueId)
+                .Select(f => f.FatorPriorizacaoId);
+
+            var fatoresEscola = await dbContext.FatorEscolas
+                .Where(f => f.EscolaId == escolaId && fatoresRanque.Contains(f.FatorPriorizacaoId))
+                .Include(f => f.FatorPriorizacao)
+                .ToListAsync();
+
+            return fatoresEscola;
+        }
     }
 }

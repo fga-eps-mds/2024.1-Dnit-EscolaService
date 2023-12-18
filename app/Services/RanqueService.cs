@@ -55,19 +55,7 @@ namespace app.Services
             await dbContext.SaveChangesAsync();
 
             jobClient.Enqueue<ICalcularRanqueJob>((calcularRanqueJob) => 
-                calcularRanqueJob.ExecutarAsync(novoRanque.Id, ExpiracaoMinutos));
-
-            // for (int pagina = 1; pagina <= totalPaginas; pagina++)
-            // {
-            //     filtro.Pagina = pagina;
-            //     jobClient.Enqueue<ICalcularUpsJob>((calcularUpsJob) =>
-            //         calcularUpsJob.ExecutarAsync(filtro, novoRanque.Id, ExpiracaoMinutos));
-            // }
-
-            // TODO: Calcular outros fatores para a pontuação. 
-            // Vai ser feito na US 5.
-
-            // await dbContext.SaveChangesAsync();
+                calcularRanqueJob.ExecutarAsync(novoRanque.Id, true));
         }
 
         public async Task<ListaPaginada<RanqueEscolaModel>> ListarEscolasUltimoRanqueAsync(PesquisaEscolaFiltro filtro)
@@ -110,11 +98,13 @@ namespace app.Services
             var escola = await escolaRepositorio.ObterPorIdAsync(escolaId, incluirEtapas: true);
             var ranque = await ranqueRepositorio.ObterUltimoRanqueAsync();
             var escolaRanque = await ranqueRepositorio.ObterEscolaRanquePorIdAsync(escolaId, ranque!.Id);
+            var fatoresEscola = await ranqueRepositorio.ObterFatoresEscolaDeRanquePorId(escolaId, ranque!.Id);
 
-            // FIXME(US5): Dados mockados. Tem que buscar do banco de dados no futuro.
-            FatorModel[] fatores = {
-                new() { Nome = "UPS", Peso = 1, Valor = escola.Ups },
-            };
+            var fatores = fatoresEscola.ConvertAll<FatorModel>(f => new() { 
+                Nome = f.FatorPriorizacao.Nome, 
+                Peso = f.FatorPriorizacao.Peso,
+                Valor = f.Valor
+            }).ToArray();
 
             var ranqueInfo = new RanqueInfo
             {
