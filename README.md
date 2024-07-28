@@ -27,8 +27,8 @@ Se você precisa de `sudo` para executar comandos do Docker, consulte o
 ## Executar
 
 ```sh
-git clone https://github.com/fga-eps-mds/2023.2-Dnit-EscolaService.git
-cd 2023.2-Dnit-EscolaService
+git clone https://github.com/fga-eps-mds/2024.1-Dnit-EscolaService.git
+cd 2024.1-Dnit-EscolaService
 ```
 
 
@@ -77,19 +77,3 @@ no repositório `UsuarioService`.
 O projeto EscolaService está sob as regras aplicadas na licença 
 [AGPL-3.0](https://github.com/fga-eps-mds/2023.2-Dnit-EscolaService/blob/main/LICENSE).
 
-## Contribuidores
-
-- [Daniel Porto](https://github.com/DanielPortods)
-- [Rafael Berto](https://github.com/RafaelBP02)
-- [Thiago Sampaio](https://github.com/thiagohdaqw)
-- [Victor Hugo](https://github.com/victorhugo21)
-- [Vitor Lamego](https://github.com/VitorLamego)
-- [Wagner Martins](https://github.com/wagnermc506)
-- [Yudi Yamane](https://github.com/yudi)
-- [André Emanuel](https://github.com/Hunter104)
-- [Artur Henrique](https://github.com/H0lzz)
-- [Cássio Sousa](https://github.com/csreis72)
-- [Eduardo Matheus](https://github.com/DiceRunner714)
-- [João Antonio](https://github.com/joaoseisei)
-- [Lucas Gama](https://github.com/bottinolucas)
-- [Márcio Henrique](https://github.com/DeM4rcio)
