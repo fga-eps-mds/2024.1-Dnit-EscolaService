@@ -17,5 +17,7 @@ namespace app.Entidades
         public Guid PlanejamentoMacroEscolaId  { get; set; }
 
         public PlanejamentoMacroEscola PlanejamentoMacroEscola { get; set; }
+
+        public ICollection<Acao> EscolasParticipantesPlanejamentos { get; set;}
     }
 }
