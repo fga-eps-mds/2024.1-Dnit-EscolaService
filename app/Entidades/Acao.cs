@@ -14,5 +14,6 @@ namespace app.Entidades
 
         public EscolasParticipantesPlanejamento EscolasParticipantesPlanejamento;
 
+        public ICollection<Atividade> Atividade{get; set;}
     }
 }
