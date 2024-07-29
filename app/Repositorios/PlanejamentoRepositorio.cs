@@ -45,7 +45,7 @@ namespace app.Repositorios
         public async Task<ListaPaginada<PlanejamentoMacro>> ListarPaginadaAsync(PesquisaPlanejamentoFiltro filtro)
         {
             var query = dbContext.PlanejamentoMacro
-                .Include(e => e.Escolas)
+                .Include(e => e.PlanejamentoMacroEscolas)
                 .ThenInclude(e => e.Escola)
                 .AsQueryable();
             
@@ -83,7 +83,7 @@ namespace app.Repositorios
         public async Task<PlanejamentoMacro> ObterPlanejamentoMacroAsync(Guid id)
         {
             return await dbContext.PlanejamentoMacro
-                .Include(p => p.Escolas)
+                .Include(p => p.PlanejamentoMacroEscolas)
                 .ThenInclude(e => e.Escola)
                 .FirstOrDefaultAsync(x => x.Id==id) ?? throw new ApiException(api.ErrorCodes.PlanejamentoMacroNaoEncontrado);
         }

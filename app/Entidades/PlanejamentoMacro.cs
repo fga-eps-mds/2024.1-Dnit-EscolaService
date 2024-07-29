@@ -29,6 +29,6 @@ namespace app.Entidades
         [Required]
         public int QuantidadeAcoes { get; set; }
 
-        public List<PlanejamentoMacroEscola> Escolas { get; set; }
+        public List<PlanejamentoMacroEscola> PlanejamentoMacroEscolas { get; set; }
     }
 }

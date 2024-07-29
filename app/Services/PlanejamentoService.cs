@@ -42,7 +42,7 @@ namespace app.Services
         public async Task ExcluirPlanejamentoMacro(Guid id)
         {
             var planejamento = await planejamentoRepositorio.ObterPlanejamentoMacroAsync(id);
-            planejamento.Escolas.ForEach(e => planejamentoRepositorio.ExcluirPlanejamentoMacroEscola(e));
+            planejamento.PlanejamentoMacroEscolas.ForEach(e => planejamentoRepositorio.ExcluirPlanejamentoMacroEscola(e));
             planejamentoRepositorio.ExcluirPlanejamentoMacro(planejamento);
             await dbContext.SaveChangesAsync();
         }        
@@ -98,7 +98,7 @@ namespace app.Services
                 AnoInicio = planejamento.AnoInicio,
                 AnoFim = planejamento.AnoFim,
                 QuantidadeAcoes = planejamento.QuantidadeAcoes,
-                Escolas = lista                
+                PlanejamentoMacroEscolas = lista                
             };          
 
             //algoritmo de recomendação:    
@@ -145,7 +145,7 @@ namespace app.Services
             foreach(var mes in planejamentoMacroMensal)
             {
                 mes.Escolas.ForEach(async e => {
-                    var plan = planejamentoMacroAtualizar.Escolas
+                    var plan = planejamentoMacroAtualizar.PlanejamentoMacroEscolas
                         .Find(pme => pme.EscolaId == e);
                     
                     Console.WriteLine(plan == null);
@@ -172,7 +172,7 @@ namespace app.Services
                 });
             }
 
-            foreach(var plan in planejamentoMacroAtualizar.Escolas)
+            foreach(var plan in planejamentoMacroAtualizar.PlanejamentoMacroEscolas)
             {
                 var mes = planejamentoMacroMensal.FirstOrDefault(p => p.Mes == plan.Mes && p.Ano == plan.Ano);
                 
@@ -185,7 +185,7 @@ namespace app.Services
 
             dbContext.SaveChanges();
 
-            foreach(var pme in planejamentoMacroAtualizar.Escolas)
+            foreach(var pme in planejamentoMacroAtualizar.PlanejamentoMacroEscolas)
             {
                 pme.Escola ??= await escolaRepositorio.ObterPorIdAsync(pme.EscolaId);
             }

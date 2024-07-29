@@ -40,7 +40,7 @@ namespace test.Stubs
                 };
 
                 var planejamentoMacroEscola = ListarPlanejamentoMacroEscolas(municipios, planejamentoMacro).Take(Random.Shared.Next(0,5));
-                planejamentoMacro.Escolas = planejamentoMacroEscola.ToList();
+                planejamentoMacro.PlanejamentoMacroEscolas = planejamentoMacroEscola.ToList();
 
                 yield return planejamentoMacro;
             }

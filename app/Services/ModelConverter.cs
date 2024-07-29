@@ -350,7 +350,7 @@ namespace app.Services
 
         public PlanejamentoMacroDetalhadoModel ToModel(PlanejamentoMacro planejamentoMacro)
         {
-            var listaPorMes = planejamentoMacro.Escolas
+            var listaPorMes = planejamentoMacro.PlanejamentoMacroEscolas
                 .GroupBy(g => g.Mes)
                 .Select(m => new { l = m.ToList()})
                 .ToList();

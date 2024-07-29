@@ -65,7 +65,7 @@ namespace app.Entidades
                 .HasOne(f => f.Ranque);
 
             modelBuilder.Entity<PlanejamentoMacro>()
-                .HasMany(planejamentoMacro => planejamentoMacro.Escolas)
+                .HasMany(planejamentoMacro => planejamentoMacro.PlanejamentoMacroEscolas)
                 .WithOne(escolas => escolas.PlanejamentoMacro);
             
             modelBuilder.Entity<PlanejamentoMacroEscola>()
