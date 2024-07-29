@@ -22,6 +22,7 @@ namespace app.Entidades
         public DbSet<PlanejamentoMacroEscola> PlanejamentoMacroEscola {get; set; }
         public DbSet<EscolasParticipantesPlanejamento> EscolasParticipantesPlanejamento { get; set; }
         public DbSet<Polo> Polos { get; set; }
+        public DbSet<Atividade> Atividades { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -90,6 +91,9 @@ namespace app.Entidades
                 .HasOne(acao => acao.EscolasParticipantesPlanejamento)
                 .WithMany();
                 
+            modelBuilder.Entity<Atividade>()
+                .HasOne(Atividade => Atividade.Acao)  
+                .WithMany();
         }
 
         public void Popula()
