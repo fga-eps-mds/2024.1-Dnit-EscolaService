@@ -85,6 +85,10 @@ namespace app.Entidades
                 .HasOne(epp => epp.PlanejamentoMacroEscola)
                 .WithMany(pm => pm.EscolasParticipantesPlanejamentos)
                 .HasForeignKey(epp => epp.PlanejamentoMacroEscolaId);
+
+            modelBuilder.Entity<Acao>()
+                .HasOne(acao => acao.EscolasParticipantesPlanejamento)
+                .WithMany();
                 
         }
 
