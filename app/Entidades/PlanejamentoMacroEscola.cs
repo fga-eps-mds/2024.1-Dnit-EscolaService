@@ -23,5 +23,7 @@ namespace app.Entidades
         public Guid EscolaId { get; set; }
 
         public Escola Escola { get; set; }
+
+        public ICollection<EscolasParticipantesPlanejamento> EscolasParticipantesPlanejamentos { get; set; }
     }
 }
