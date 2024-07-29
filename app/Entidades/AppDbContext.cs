@@ -20,6 +20,7 @@ namespace app.Entidades
         public DbSet<FatorRanque> FatorRanques { get; set; }
         public DbSet<PlanejamentoMacro> PlanejamentoMacro { get; set; }
         public DbSet<PlanejamentoMacroEscola> PlanejamentoMacroEscola {get; set; }
+        public DbSet<EscolasParticipantesPlanejamento> EscolasParticipantesPlanejamento { get; set; }
         public DbSet<Polo> Polos { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
@@ -71,6 +72,20 @@ namespace app.Entidades
             modelBuilder.Entity<PlanejamentoMacroEscola>()
                 .HasOne(PlanejamentoMacroEscola => PlanejamentoMacroEscola.Escola)
                 .WithMany();
+            
+            modelBuilder.Entity<EscolasParticipantesPlanejamento>()
+                .HasKey(epp => new { epp.EscolaId, epp.PlanejamentoMacroEscolaId });
+
+            modelBuilder.Entity<EscolasParticipantesPlanejamento>()
+                .HasOne(epp => epp.Escola)
+                .WithMany(e => e.EscolasParticipantesPlanejamentos)
+                .HasForeignKey(epp => epp.EscolaId);
+
+            modelBuilder.Entity<EscolasParticipantesPlanejamento>()
+                .HasOne(epp => epp.PlanejamentoMacroEscola)
+                .WithMany(pm => pm.EscolasParticipantesPlanejamentos)
+                .HasForeignKey(epp => epp.PlanejamentoMacroEscolaId);
+                
         }
 
         public void Popula()

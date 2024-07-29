@@ -74,7 +74,7 @@ namespace app.Entidades
         }
         public SolicitacaoAcao? Solicitacao { get; set; }
 
-        public ICollection<EscolasParticipantesPlanejamento> EscolasParticipantesPlanejamento { get; set; }
+        public ICollection<EscolasParticipantesPlanejamento> EscolasParticipantesPlanejamentos { get; set; }
         public List<object?> Serialize()
         {
             return new ()
