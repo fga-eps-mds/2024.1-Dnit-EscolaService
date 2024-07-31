@@ -12,7 +12,7 @@ namespace app.Entidades
         [Required]
         public Guid EscolasParticipantesPlanejamentoId { get; set;}
 
-        public EscolasParticipantesPlanejamento EscolasParticipantesPlanejamento;
+        public EscolasParticipantesPlanejamento EscolasParticipantesPlanejamento{get;set;}  
 
         public ICollection<Atividade> Atividade{get; set;}
     }

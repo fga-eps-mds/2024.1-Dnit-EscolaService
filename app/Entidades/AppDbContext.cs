@@ -95,7 +95,8 @@ namespace app.Entidades
                 
             modelBuilder.Entity<Atividade>()
                 .HasOne(Atividade => Atividade.Acao)  
-                .WithMany();
+                .WithMany()
+                .HasForeignKey(Atividade => Atividade.AcaoId);
         }
 
         public void Popula()
