@@ -23,6 +23,8 @@ namespace app.Entidades
         public DbSet<EscolasParticipantesPlanejamento> EscolasParticipantesPlanejamento { get; set; }
         public DbSet<Polo> Polos { get; set; }
         public DbSet<Atividade> Atividades { get; set; }
+        public DbSet<Acao> Acoes { get; set; }
+           
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {

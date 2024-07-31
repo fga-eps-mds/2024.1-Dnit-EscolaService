@@ -15,6 +15,6 @@ namespace app.Entidades
         public Acao Acao{ get; set; }
 
         
-
+    }
         
 }
