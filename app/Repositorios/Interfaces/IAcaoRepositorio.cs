@@ -8,6 +8,6 @@ namespace app.Repositorios.Interfaces
 {
     public interface IAcaoRepositorio
     {
-        Task<ListaPaginada<Acao>> ListarPaginadaAsync(Guid escolaId,PesquisaAcaoFiltro filtro);
+        Task<ListaPaginada<Acao>> ListarPaginadaAsync(Guid escolaId,Guid planejamentoMacroEscolaId,PesquisaAcaoFiltro filtro);
     }
 }

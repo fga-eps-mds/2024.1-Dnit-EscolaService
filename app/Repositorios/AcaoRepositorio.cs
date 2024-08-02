@@ -14,10 +14,11 @@ public class AcaoRepositorio : IAcaoRepositorio
         this.dbContext = dbContext;
     }
 
-    public async Task<ListaPaginada<Acao>> ListarPaginadaAsync(Guid escolaId,PesquisaAcaoFiltro filtro)
+    public async Task<ListaPaginada<Acao>> ListarPaginadaAsync(Guid escolaId,Guid planejamentoMacroEscolaId,PesquisaAcaoFiltro filtro)
     {
         var query = dbContext.Acoes
             .Where(ac=>ac.EscolaId == escolaId)
+            .Where(ac=>ac.PlanejamentoMacroEscolaId == planejamentoMacroEscolaId)
             .Include(e=>e.Atividade)
             .AsQueryable();
 

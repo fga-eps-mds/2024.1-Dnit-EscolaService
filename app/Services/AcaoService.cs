@@ -19,9 +19,9 @@ public class AcaoService : IAcaoService
     {
         this.acaoRepositorio=acaoRepositorio;
     }
-    public async Task<ListaPaginada<AcaoPaginacaoResponse>> ListarPaginadaAsync(Guid escolaId,PesquisaAcaoFiltro pesquisaAcaoFiltro)
+    public async Task<ListaPaginada<AcaoPaginacaoResponse>> ListarPaginadaAsync(Guid escolaId,Guid planejamentoMacroEscolaId,PesquisaAcaoFiltro pesquisaAcaoFiltro)
     {
-        var listaPaginadaAcoes = await acaoRepositorio.ListarPaginadaAsync(escolaId,pesquisaAcaoFiltro);
+        var listaPaginadaAcoes = await acaoRepositorio.ListarPaginadaAsync(escolaId,planejamentoMacroEscolaId,pesquisaAcaoFiltro);
         var listaAcoesResponse = listaPaginadaAcoes.Items.ConvertAll(modelConverter.ToModel);
         return new ListaPaginada<AcaoPaginacaoResponse>(listaAcoesResponse,listaPaginadaAcoes.Pagina,listaPaginadaAcoes.ItemsPorPagina, listaPaginadaAcoes.Total);
     }

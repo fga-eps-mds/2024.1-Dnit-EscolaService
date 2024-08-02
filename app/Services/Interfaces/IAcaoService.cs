@@ -8,7 +8,7 @@ namespace service.Interfaces
 {
     public interface IAcaoService
     {
-        Task<ListaPaginada<AcaoPaginacaoResponse>> ListarPaginadaAsync(Guid escolaId,PesquisaAcaoFiltro pesquisaAcaoFiltro);
+        Task<ListaPaginada<AcaoPaginacaoResponse>> ListarPaginadaAsync(Guid escolaId,Guid planejamentoMacroEscolaId,PesquisaAcaoFiltro pesquisaAcaoFiltro);
     }
 }
 
