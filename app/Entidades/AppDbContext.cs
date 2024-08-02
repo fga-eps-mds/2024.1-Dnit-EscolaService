@@ -72,16 +72,16 @@ namespace app.Entidades
                 .HasMany(planejamentoMacro => planejamentoMacro.PlanejamentoMacroEscolas)
                 .WithOne(escolas => escolas.PlanejamentoMacro);
             
-            modelBuilder.Entity<PlanejamentoMacroEscola>()
-                .HasOne(PlanejamentoMacroEscola => PlanejamentoMacroEscola.Escola)
-                .WithMany();
+            // modelBuilder.Entity<PlanejamentoMacroEscola>()
+            //     .HasOne(PlanejamentoMacroEscola => PlanejamentoMacroEscola.Escola)
+            //     .WithMany();
             
             modelBuilder.Entity<EscolasParticipantesPlanejamento>()
                 .HasKey(epp => new { epp.EscolaId, epp.PlanejamentoMacroEscolaId });
 
             modelBuilder.Entity<EscolasParticipantesPlanejamento>()
                 .HasOne(epp => epp.Escola)
-                .WithMany(e => e.EscolasParticipantesPlanejamentos)
+                .WithMany(es => es.EscolasParticipantesPlanejamentos)
                 .HasForeignKey(epp => epp.EscolaId);
 
             modelBuilder.Entity<EscolasParticipantesPlanejamento>()
@@ -91,7 +91,8 @@ namespace app.Entidades
 
             modelBuilder.Entity<Acao>()
                 .HasOne(acao => acao.EscolasParticipantesPlanejamento)
-                .WithMany();
+                .WithMany(epp=> epp.Acoes)
+                .HasForeignKey(a => new { a.EscolaId, a.PlanejamentoMacroEscolaId });
                 
             modelBuilder.Entity<Atividade>()
                 .HasOne(Atividade => Atividade.Acao)  

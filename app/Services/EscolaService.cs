@@ -219,9 +219,9 @@ namespace app.Services
 
         public async Task<ListaEscolaPaginada<EscolaCorretaModel>> ListarPaginadaAsync(PesquisaEscolaFiltro filtro)
         {
-            var escolas = await escolaRepositorio.ListarPaginadaAsync(filtro);
-            var escolasCorretas = escolas.Items.ConvertAll(modelConverter.ToModel);
-            return new ListaEscolaPaginada<EscolaCorretaModel>(escolasCorretas, escolas.Pagina, escolas.ItemsPorPagina, escolas.Total);
+            var listaPaginadaEscolas = await escolaRepositorio.ListarPaginadaAsync(filtro);
+            var escolasCorretas = listaPaginadaEscolas.Items.ConvertAll(modelConverter.ToModel);
+            return new ListaEscolaPaginada<EscolaCorretaModel>(escolasCorretas, listaPaginadaEscolas.Pagina, listaPaginadaEscolas.ItemsPorPagina, listaPaginadaEscolas.Total);
         }
 
         public async Task<string?> ObterCodigoMunicipioPorCEPAsync(string cep)

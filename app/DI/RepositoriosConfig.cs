@@ -13,6 +13,7 @@ namespace app.DI
             services.AddScoped<ISolicitacaoAcaoRepositorio, SolicitacaoAcaoRepositorio>();
             services.AddScoped<IPlanejamentoRepositorio, PlanejamentoRepositorio>();
             services.AddScoped<IPoloRepositorio, PoloRepositorio>();
+            services.AddScoped<IAcaoRepositorio,AcaoRepositorio>();
         }
     }
 }

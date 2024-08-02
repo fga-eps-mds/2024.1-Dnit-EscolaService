@@ -253,4 +253,14 @@ namespace api
         GTE,
         LTE
     }
+
+        public enum SituacaoAcao
+    {
+        [Description("Reprovada")]
+        Reprovada = 0,
+        [Description("Aguardando")]
+        Aguardando,
+        [Description("Aprovada")]
+        Aprovada,
+    }
 }

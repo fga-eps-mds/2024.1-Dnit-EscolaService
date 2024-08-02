@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using service.Interfaces;
 using api;
+using api.Acao.Request;
+using api.Acao.Response;
 
 namespace app.Controllers
 {
@@ -11,11 +13,13 @@ namespace app.Controllers
     [Route("api/escolas")]
     public class EscolaController : AppController
     {
+        private readonly IAcaoService acaoService;
         private readonly IEscolaService escolaService;
         private readonly AuthService authService;
 
-        public EscolaController(IEscolaService escolaService, AuthService authService)
+        public EscolaController(IAcaoService acaoService,IEscolaService escolaService, AuthService authService)
         {
+            this.acaoService=acaoService;
             this.escolaService = escolaService;
             this.authService = authService;
         }
@@ -113,6 +117,16 @@ namespace app.Controllers
         {
             authService.Require(Usuario, Permissao.EscolaExportar);
             return await escolaService.ExportarEscolasAsync();
+        }
+
+        [Authorize]
+        [HttpGet("{escolaId:guid}/acao")]
+        public async Task<ListaPaginada<AcaoPaginacaoResponse>> ObterAcoesAsync([FromRoute] Guid escolaId ,[FromQuery] PesquisaAcaoFiltro pesquisaAcaoFiltro)
+        {
+            //TODO : Todos os Perfis podem visualizar uma ação?
+            // authService.Require(Usuario, Permissao.EscolaVisualizar);
+
+            return await acaoService.ListarPaginadaAsync(escolaId,pesquisaAcaoFiltro);
         }
     }
 }

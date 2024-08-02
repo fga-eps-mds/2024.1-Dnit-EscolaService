@@ -1,4 +1,5 @@
 ﻿using api;
+using api.Acao.Response;
 using api.CustoLogistico;
 using api.Escolas;
 using api.Fatores;
@@ -370,6 +371,17 @@ namespace app.Services
                 AnoFim = planejamentoMacro.AnoFim,
                 QuantidadeAcoes = planejamentoMacro.QuantidadeAcoes,
                 PlanejamentoMacroMensal = planejamentoMacroMensalModels
+            };
+        }
+
+        public AcaoPaginacaoResponse ToModel(Acao acao)
+        {
+            return new AcaoPaginacaoResponse{
+                IdAcao = acao.Id,
+                Data = acao.Data,
+                GestorOperacional= acao.GestorOperacional,
+                SituacaoAprovacao = acao.SituacaoAprovacao,
+                SituacaoVisita = acao.SituacaoVisita
             };
         }
     }

@@ -18,6 +18,6 @@ namespace app.Entidades
 
         public PlanejamentoMacroEscola PlanejamentoMacroEscola { get; set; }
 
-        public ICollection<Acao> EscolasParticipantesPlanejamentos { get; set;}
+        public ICollection<Acao> Acoes { get; set;}
     }
 }
