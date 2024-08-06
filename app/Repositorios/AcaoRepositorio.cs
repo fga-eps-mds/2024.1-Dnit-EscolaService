@@ -19,7 +19,7 @@ public class AcaoRepositorio : IAcaoRepositorio
         var query = dbContext.Acoes
             .Where(ac=>ac.EscolaId == escolaId)
             .Where(ac=>ac.PlanejamentoMacroEscolaId == planejamentoMacroEscolaId)
-            .Include(e=>e.Atividade)
+            // .Include(e=>e.Atividade)
             .AsQueryable();
 
         if(filtro.Responsavel != null)
