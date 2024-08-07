@@ -23,12 +23,13 @@ namespace app.Entidades
         
         [Required]
         public Guid EscolaId { get; set; }
+        public Escola Escola { get; set; }
         
         [Required]
         public Guid PlanejamentoMacroEscolaId { get; set; }
 
         public EscolasParticipantesPlanejamento EscolasParticipantesPlanejamento{get;set;}  
 
-        public ICollection<Atividade> Atividade{get; set;}
+        public ICollection<Atividade> Atividades{get; set;}
     }
 }

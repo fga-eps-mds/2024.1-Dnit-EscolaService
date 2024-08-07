@@ -14,6 +14,23 @@ public class AcaoRepositorio : IAcaoRepositorio
         this.dbContext = dbContext;
     }
 
+    public async Task<Acao> CadastrarAcao(CadastroAcaoData cadastroAcaoData)
+    {
+        Acao acao = new Acao{
+            Id = new Guid(),
+            Data = cadastroAcaoData.Data,
+            GestorOperacional= cadastroAcaoData.GestorOperacional,
+            SituacaoAprovacao = SituacaoAcao.Aguardando,
+            SituacaoVisita = SituacaoAcao.Aguardando,
+            EscolaId = cadastroAcaoData.EscolaId,
+            PlanejamentoMacroEscolaId= cadastroAcaoData.PlanejamentoMacroEscolaId
+        };
+
+        dbContext.Add(acao);
+        return acao;
+
+    }
+
     public async Task<ListaPaginada<Acao>> ListarPaginadaAsync(Guid escolaId,Guid planejamentoMacroEscolaId,PesquisaAcaoFiltro filtro)
     {
         var query = dbContext.Acoes

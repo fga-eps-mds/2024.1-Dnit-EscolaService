@@ -8,6 +8,7 @@ namespace app.Repositorios.Interfaces
 {
     public interface IAcaoRepositorio
     {
+        Task<Acao> CadastrarAcao(CadastroAcaoData cadastroAcaoData);
         Task<ListaPaginada<Acao>> ListarPaginadaAsync(Guid escolaId,Guid planejamentoMacroEscolaId,PesquisaAcaoFiltro filtro);
     }
 }

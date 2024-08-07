@@ -9,6 +9,8 @@ namespace service.Interfaces
     public interface IAcaoService
     {
         Task<ListaPaginada<AcaoPaginacaoResponse>> ListarPaginadaAsync(Guid escolaId,Guid planejamentoMacroEscolaId,PesquisaAcaoFiltro pesquisaAcaoFiltro);
+        Task CadastrarAcaoAsync(CadastroAcaoData cadastroAcaoData);
+        
     }
 }
 

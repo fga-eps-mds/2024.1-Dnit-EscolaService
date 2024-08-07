@@ -254,13 +254,35 @@ namespace api
         LTE
     }
 
-        public enum SituacaoAcao
+    public enum SituacaoAcao
     {
-        [Description("Reprovada")]
-        Reprovada = 0,
         [Description("Aguardando")]
-        Aguardando,
+        Aguardando = 0,
+        [Description("Reprovada")]
+        Reprovada,
         [Description("Aprovada")]
         Aprovada,
+    }
+
+    public enum TurnoEscola
+    {
+        [Description("Matutino")]
+        Matutino = 0,
+        [Description("Vespertino")]
+        Vespertino,
+        [Description("Noturno")]
+        Noturno,
+    }
+
+        //Atualizar com todos os valores
+        public enum NivelEscolar
+    {
+        
+        [Description("Fundamental")]
+        Fundamental=0,
+        [Description("Medio")]
+        Medio,
+        [Description("Superior")]
+        Superior,
     }
 }

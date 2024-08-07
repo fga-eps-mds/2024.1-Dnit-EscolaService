@@ -120,6 +120,14 @@ namespace app.Controllers
         }
 
         [Authorize]
+        [HttpPost("cadastrarAcao")]
+        public async Task CadastrarAcaoAsync(CadastroAcaoData cadastroAcaoData)
+        {
+            //authService.Require(Usuario, Permissao.EscolaCadastrar);
+            await acaoService.CadastrarAcaoAsync(cadastroAcaoData);
+        }
+
+        [Authorize]
         [HttpGet("{escolaId:guid}/{planejamentoMacroEscolaId:guid}/acao")]
         public async Task<ListaPaginada<AcaoPaginacaoResponse>> ObterAcoesAsync([FromRoute] Guid escolaId, [FromRoute] Guid planejamentoMacroEscolaId, [FromQuery] PesquisaAcaoFiltro pesquisaAcaoFiltro)
         {
