@@ -121,10 +121,11 @@ namespace app.Controllers
 
         [Authorize]
         [HttpPost("cadastrarAcao")]
-        public async Task CadastrarAcaoAsync(CadastroAcaoData cadastroAcaoData)
+        public async Task<ActionResult> CadastrarAcaoAsync( [FromBody] CadastroAcaoData cadastroAcaoData)
         {
             //authService.Require(Usuario, Permissao.EscolaCadastrar);
             await acaoService.CadastrarAcaoAsync(cadastroAcaoData);
+            return Ok();
         }
 
         [Authorize]
