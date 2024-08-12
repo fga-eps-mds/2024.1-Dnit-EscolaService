@@ -1,5 +1,6 @@
 using api;
 using api.Acao.Request;
+using api.Atividades.Request;
 using app.Entidades;
 using app.Repositorios.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -38,4 +39,22 @@ public class AcaoRepositorio : IAcaoRepositorio
 
         return new ListaPaginada<Acao>(items, filtro.Pagina, filtro.TamanhoPagina, total);
     }
+
+    public async Task<ListaPaginada<Atividade>> ObterAtividadesAsync(Guid acaoID, PesquisaAtividadeFiltro filtro)
+    {
+        var query = dbContext.Atividades
+            .Where(at=>at.AcaoId == acaoID)
+            .AsQueryable();
+        
+
+        var total = await query.CountAsync();
+        var items = await query
+            .OrderBy(e => e.Horario)
+            .Skip((filtro.Pagina - 1) * filtro.TamanhoPagina)
+            .Take(filtro.TamanhoPagina)
+            .ToListAsync();
+
+        return new ListaPaginada<Atividade>(items, filtro.Pagina, filtro.TamanhoPagina, total);
+    }
+
 }

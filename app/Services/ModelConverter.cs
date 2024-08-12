@@ -1,5 +1,6 @@
 ﻿using api;
 using api.Acao.Response;
+using api.Atividades.Response;
 using api.CustoLogistico;
 using api.Escolas;
 using api.Fatores;
@@ -382,6 +383,18 @@ namespace app.Services
                 GestorOperacional= acao.GestorOperacional,
                 SituacaoAprovacao = acao.SituacaoAprovacao,
                 SituacaoVisita = acao.SituacaoVisita
+            };
+        }
+
+        public AtividadePaginadaResponse ToModel(Atividade atividade)
+        {
+            return new AtividadePaginadaResponse{
+                IdAtividade = atividade.Id,
+                IdAcao = atividade.AcaoId,
+                Horario = atividade.Horario,
+                Local = atividade.Local,
+                NomeResponsavel = atividade.NomeResponsavel,
+                Turma = atividade.Turma
             };
         }
     }

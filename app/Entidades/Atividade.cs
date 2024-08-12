@@ -12,9 +12,17 @@ namespace app.Entidades
         [Required]
         public Guid AcaoId{ get; set;}
 
-        public Acao Acao{ get; set; }
+        public TimeSpan Horario { get; set; }
 
-        
+        public string NomeResponsavel { get; set; }
+
+        public string Local { get; set; }
+
+        public List<string> Monitores { get; set; } 
+
+        public string Turma { get; set; }
+
+        public Acao Acao{ get; set; }       
     }
         
 }

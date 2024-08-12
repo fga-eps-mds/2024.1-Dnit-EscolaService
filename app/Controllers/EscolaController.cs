@@ -119,14 +119,6 @@ namespace app.Controllers
             return await escolaService.ExportarEscolasAsync();
         }
 
-        [Authorize]
-        [HttpGet("{escolaId:guid}/{planejamentoMacroEscolaId:guid}/acao")]
-        public async Task<ListaPaginada<AcaoPaginacaoResponse>> ObterAcoesAsync([FromRoute] Guid escolaId, [FromRoute] Guid planejamentoMacroEscolaId, [FromQuery] PesquisaAcaoFiltro pesquisaAcaoFiltro)
-        {
-            //TODO : Todos os Perfis podem visualizar uma ação?
-            // authService.Require(Usuario, Permissao.EscolaVisualizar);
-
-            return await acaoService.ListarPaginadaAsync(escolaId,planejamentoMacroEscolaId,pesquisaAcaoFiltro);
-        }
+        
     }
 }
